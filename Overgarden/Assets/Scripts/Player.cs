@@ -17,10 +17,10 @@ public class Player : MonoBehaviour
     
     public Transform player;
     public GameObject plant;
+    public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
-    public Transform objectPosition;
-
+    
     public bool IsMoving
     {
         get
@@ -70,23 +70,9 @@ public class Player : MonoBehaviour
             currentStamina = 0;
         }
 
+        PickUp();
 
-        if (pickUpAllowed == true)
-        {
-            pressE.enabled = true;
-
-            if (Input.GetKey(KeyCode.E))
-            {
-                Debug.Log("Peguei a planta");
-                
-                plant.transform.SetParent(this.gameObject.transform);
-                
-            }
-        }
-        else
-        {
-            pressE.enabled = false;
-        }
+        
 
     }
     
@@ -146,7 +132,6 @@ public class Player : MonoBehaviour
        if (other.tag == "Game Plant")
        {
            pickUpAllowed = true;
-           
        }
         
     }
@@ -156,6 +141,31 @@ public class Player : MonoBehaviour
        {
            pickUpAllowed = false;
        }
+        
+    }
+
+    private void PickUp()
+    {
+        if (pickUpAllowed == true)
+        {
+            pressE.enabled = true;
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                plant.transform.SetParent(this.gameObject.transform);
+                plant.transform.position = onHand.transform.position; 
+                pressE.enabled = false;
+                     
+            }
+            if (Input.GetKey(KeyCode.Q))
+            {
+                plant.transform.SetParent(null);
+            }     
+        }
+        else
+        {
+            pressE.enabled = false;
+        }
         
     }
 
