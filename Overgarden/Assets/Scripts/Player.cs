@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class Player : MonoBehaviour
     public float runSpeed;
     public float normalSpeed;
     public float regen;
+    public Text pressE;
+    public GameObject plant;
+    public followScript myScript;
 
     public Rigidbody2D rigidbody;
     public Animator animator;
@@ -23,6 +27,8 @@ public class Player : MonoBehaviour
             return direction.x != 0 || direction.y !=0;
         }
     }
+
+    public bool pickUpAllowed = false;
     
     // Start is called before the first frame update
     void Start()
@@ -31,6 +37,8 @@ public class Player : MonoBehaviour
         staminaBar.SetMaxStamina(maxStamina);
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        myScript = GetComponent<followScript>();
+        //myScript.enable = false;
 
     }
 
@@ -59,6 +67,23 @@ public class Player : MonoBehaviour
         if (currentStamina < 0)
         {
             currentStamina = 0;
+        }
+
+
+        if (pickUpAllowed == true)
+        {
+            pressE.enabled = true;
+
+            if (Input.GetKey(KeyCode.E))
+            {
+                Debug.Log("Peguei a planta");
+                //myScript.enable = true;
+                
+            }
+        }
+        else
+        {
+            pressE.enabled = false;
         }
 
     }
@@ -112,6 +137,23 @@ public class Player : MonoBehaviour
         }
 
         animator.SetLayerWeight(animator.GetLayerIndex(layerName),1);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+       if (other.tag == "Game Plant")
+       {
+           pickUpAllowed = true;
+       }
+        
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+       if (other.tag == "Game Plant")
+       {
+           pickUpAllowed = false;
+       }
+        
     }
 
 
