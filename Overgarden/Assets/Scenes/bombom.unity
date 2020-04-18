@@ -856,6 +856,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 2124588126}
+  diff: {x: 0, y: 0, z: 0}
+  aux: 0
   slider: {fileID: 274106578}
   maxLife: 100
   bar: {fileID: 274106576}
