@@ -85,7 +85,7 @@ public class Player : MonoBehaviour
         }
 
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && IsMoving)
         {
             speed = runSpeed;
             currentStamina -= 0.8f;
