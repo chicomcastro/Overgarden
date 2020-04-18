@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public float normalSpeed;
     public float regen;
     public Text pressE;
+    
     public Transform player;
     public GameObject plant;
     public Rigidbody2D rigidbody;
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
         staminaBar.SetMaxStamina(maxStamina);
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        
         
 
     }
@@ -78,7 +80,8 @@ public class Player : MonoBehaviour
                 Debug.Log("Peguei a planta");
                 
                 plant.transform.SetParent(this.gameObject.transform);
-                pressE.enabled = false;
+                
+               
                 
                 
             }
@@ -159,5 +162,6 @@ public class Player : MonoBehaviour
         
     }
 
+   
 
 }
