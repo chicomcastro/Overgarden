@@ -81,9 +81,6 @@ public class Player : MonoBehaviour
                 
                 plant.transform.SetParent(this.gameObject.transform);
                 
-               
-                
-                
             }
         }
         else
