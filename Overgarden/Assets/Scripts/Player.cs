@@ -14,11 +14,11 @@ public class Player : MonoBehaviour
     public float normalSpeed;
     public float regen;
     public Text pressE;
+    public Transform player;
     public GameObject plant;
-    public followScript myScript;
-
     public Rigidbody2D rigidbody;
     public Animator animator;
+    public Transform objectPosition;
 
     public bool IsMoving
     {
@@ -37,8 +37,7 @@ public class Player : MonoBehaviour
         staminaBar.SetMaxStamina(maxStamina);
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        myScript = GetComponent<followScript>();
-        //myScript.enable = false;
+        
 
     }
 
@@ -77,7 +76,10 @@ public class Player : MonoBehaviour
             if (Input.GetKey(KeyCode.E))
             {
                 Debug.Log("Peguei a planta");
-                //myScript.enable = true;
+                
+                plant.transform.SetParent(this.gameObject.transform);
+                pressE.enabled = false;
+                
                 
             }
         }
@@ -144,6 +146,7 @@ public class Player : MonoBehaviour
        if (other.tag == "Game Plant")
        {
            pickUpAllowed = true;
+           
        }
         
     }
