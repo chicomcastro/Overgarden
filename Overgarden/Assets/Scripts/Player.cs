@@ -63,6 +63,11 @@ public class Player : MonoBehaviour
         {
             direction += Vector2.right;
         }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            Sprint();
+        }
     }
 
     public void ActivateLayer(string layerName)
@@ -73,6 +78,11 @@ public class Player : MonoBehaviour
         }
 
         animator.SetLayerWeight(animator.GetLayerIndex(layerName),1);
+    }
+
+    public void Sprint()
+    {
+        speed = 2 * speed;
     }
 
 }
