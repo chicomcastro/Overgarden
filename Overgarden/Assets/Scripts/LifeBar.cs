@@ -11,6 +11,8 @@ public class LifeBar : MonoBehaviour
     public Slider slider;
     public int maxLife = 100;
 
+    public GameObject bar;
+
     private void Start()
     {
         slider.minValue = 0;
