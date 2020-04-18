@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public float maxStamina = 100f;
+    public float currentStamina;
+    public StaminaBar staminaBar;
     Vector2 direction;
     public float speed;
+    public float runSpeed;
+    public float normalSpeed;
+    public float regen;
 
     public Rigidbody2D rigidbody;
     public Animator animator;
@@ -21,8 +27,11 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentStamina = maxStamina;
+        staminaBar.SetMaxStamina(maxStamina);
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -41,6 +50,17 @@ public class Player : MonoBehaviour
         {
             ActivateLayer("Idle Layer");
         }
+
+
+        if (currentStamina > maxStamina)
+        {
+            currentStamina = maxStamina;
+        }
+        if (currentStamina < 0)
+        {
+            currentStamina = 0;
+        }
+
     }
     
     public void GetInput()
@@ -64,9 +84,23 @@ public class Player : MonoBehaviour
             direction += Vector2.right;
         }
 
-        if (Input.GetKey(KeyCode.Space))
+
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            Sprint();
+            speed = runSpeed;
+            currentStamina -= 0.8f;
+            staminaBar.SetStamina(currentStamina);
+
+            if (currentStamina <= 0)
+            {
+                speed = normalSpeed;
+            }
+        }
+        else
+        {
+            speed = normalSpeed;
+            currentStamina += regen * Time.deltaTime;
+            staminaBar.SetStamina(currentStamina);
         }
     }
 
@@ -80,9 +114,5 @@ public class Player : MonoBehaviour
         animator.SetLayerWeight(animator.GetLayerIndex(layerName),1);
     }
 
-    public void Sprint()
-    {
-        speed = 2 * speed;
-    }
 
 }
