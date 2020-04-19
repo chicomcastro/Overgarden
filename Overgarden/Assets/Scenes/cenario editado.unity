@@ -429,7 +429,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4074314cd8bef524085006a0d298cc69, type: 3}
+  m_Sprite: {fileID: 21300166, guid: 1ad841731c12d4b4db98ce8bbc9eaa85, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2312,6 +2312,7 @@ GameObject:
   - component: {fileID: 523971960}
   - component: {fileID: 523971959}
   - component: {fileID: 523971958}
+  - component: {fileID: 523971962}
   m_Layer: 0
   m_Name: seed
   m_TagString: Seed
@@ -2393,12 +2394,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 6
-  m_Sprite: {fileID: 21300000, guid: 2785515d666fc8d41a2b254a3c12e6f2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f1e9301c9cef315459f4564d86b41111, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 20.625, y: 20}
+  m_Size: {x: 16, y: 9.46875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2418,6 +2419,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0.76500005, y: 0, z: 0}
+--- !u!114 &523971962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523971957}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2fc9a58355055e4187d65076f249eee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seed: {fileID: 11400000, guid: f2fb388d2e6dbe84e82380645e6ed6c8, type: 2}
+  nameText: {fileID: 0}
+  descriptionText: {fileID: 0}
+  artworkImage: {fileID: 0}
+  pointsText: {fileID: 0}
+  growthTimeText: {fileID: 0}
+  deathTimeText: {fileID: 0}
 --- !u!1 &597747270
 GameObject:
   m_ObjectHideFlags: 0
