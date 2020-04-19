@@ -6,19 +6,15 @@ using UnityEngine.UI;
 public class StageScript : MonoBehaviour
 {
     int aux = 0;
-    public LifeBar lifeBar;
-    public PlantScriptableObject plant;
+    public int stage = 1; // os estagios vao de 1 a 6, cada um tem uma sprite
     public Slider slider;
     public int maxStage = 100;
-    public Sprite plantImage;
     // Start is called before the first frame update
     void Start()
     {
         slider.minValue = 0;
         slider.maxValue = maxStage;
         slider.value = maxStage;
-        plantImage = plant.stageSprite[1];
-        plant.currentStage = 1;
     }
 
     // Update is called once per frame
@@ -36,16 +32,11 @@ public class StageScript : MonoBehaviour
         growing();
 
         passStage();
-
-        if(lifeBar.slider.value == lifeBar.slider.minValue)
-        {
-            plantImage = plant.stageSprite[6];
-        }
     }
     
     public void growing()
     {
-        if(aux%plant.stageTime[plant.currentStage] == 0)
+        if(aux%10 == 0)
         {
             slider.value++;
         }
@@ -61,25 +52,10 @@ public class StageScript : MonoBehaviour
         if(slider.value == maxStage)
         {
             slider.value = slider.minValue;
-            if(plant.currentStage < 6)
+            if(stage < 6)
             {
-                plant.currentStage++;
-                plantImage = plant.stageSprite[plant.currentStage];
-            }
-
-            if(plant.currentStage == 5)
-            {
-                readyToReap();
+                stage++;
             }
         }
-    }
-
-    bool readyToReap()
-    {
-        if(plant.currentStage == 5)
-        {
-            return true;
-        }
-        else return false;
     }
 }
