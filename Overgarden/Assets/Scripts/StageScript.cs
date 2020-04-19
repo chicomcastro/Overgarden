@@ -8,67 +8,86 @@ public class StageScript : MonoBehaviour
     int aux = 0;
     public GameObject virginGround;
     public GameObject plantStages;
-    public LifeBar lifeBar;
     public PlantScriptableObject plant;
-    public Slider slider;
+    public LifeBar lifeBar;
+    public Slider progressionBar;
     public int maxStage = 100;
-    public Sprite plantImage;
+    public SpriteRenderer plantImage;
+    public Sprite diedPlant;
+
     // Start is called before the first frame update
     void Start()
     {
-        slider.minValue = 0;
-        slider.maxValue = maxStage;
-        slider.value = maxStage;
-        plantImage = plant.stageSprite[1];
-        plant.currentStage = 1;
-        plantStages.SetActive(false);
-        virginGround.SetActive(true);
+        loadInitialState();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(plant.currentStage >= 2)
-
-            if(plant.currentStage == 2)
+        if (plant.currentStage >= (int)PlantStages.PLANT_SMALL)
+        {
+            if (plant.currentStage == (int)PlantStages.PLANT_SMALL)
             {
                 plantStages.SetActive(false);
                 virginGround.SetActive(false);
             }
-
             else
             {
                 plantStages.SetActive(true);
                 virginGround.SetActive(false);
             }
+        }
 
-           if(slider.value >= slider.maxValue)
-            {
-               slider.value = maxStage;
-            }
-            if(slider.value <= slider.minValue)
-            {
-                slider.value = slider.minValue;
-            }
+        if (progressionBar.value >= progressionBar.maxValue)
+        {
+            progressionBar.value = maxStage;
+        }
+        if (progressionBar.value <= progressionBar.minValue)
+        {
+            progressionBar.value = progressionBar.minValue;
+        }
 
+        if (plant.currentStage != (int)PlantStages.PLANT_READY && plant.currentStage != (int)PlantStages.VIRGIN_GROUND)
+        {
             growing();
 
             passStage();
+        }
 
-        if(lifeBar.slider.value == lifeBar.slider.minValue)
+        if (lifeBar.slider.value == lifeBar.slider.minValue)
         {
-            plantImage = plant.stageSprite[6];
+            if (plant.currentStage == (int)PlantStages.TREATED_GROUND)
+            {
+                loadInitialState();
+            }
+            else
+            {
+                plantImage.sprite = diedPlant;
+                plant.currentStage = (int)PlantStages.PLANT_DIED;
+            }
         }
     }
-    
+
+    public void loadInitialState()
+    {
+        progressionBar.minValue = 0;
+        progressionBar.maxValue = maxStage;
+        progressionBar.value = maxStage;
+        plant.currentStage = (int)PlantStages.VIRGIN_GROUND;
+        lifeBar.gameObject.SetActive(false);
+        progressionBar.gameObject.SetActive(false);
+        plantStages.SetActive(false);
+        virginGround.SetActive(true);
+    }
+
     public void growing()
     {
-        if(aux%plant.stageTime[plant.currentStage] == 0)
+        if (aux % plant.stageTime[plant.currentStage] == 0)
         {
-            slider.value++;
+            progressionBar.value++;
         }
         aux++;
-        if(aux == 1000)
+        if (aux == 1000)
         {
             aux = 0;
         }
@@ -76,28 +95,34 @@ public class StageScript : MonoBehaviour
 
     public void passStage()
     {
-        if(slider.value == maxStage)
+        if (progressionBar.value == maxStage)
         {
-            slider.value = slider.minValue;
-            if(plant.currentStage < 6)
+            progressionBar.value = progressionBar.minValue;
+            if (plant.currentStage < (int)PlantStages.PLANT_READY)
             {
                 plant.currentStage++;
-                plantImage = plant.stageSprite[plant.currentStage];
-            }
-
-            if(plant.currentStage == 5)
-            {
-                readyToReap();
+                plantImage.sprite = plant.stageSprite[plant.currentStage];
             }
         }
     }
 
     bool readyToReap()
     {
-        if(plant.currentStage == 5)
+        if (plant.currentStage == (int)PlantStages.PLANT_READY)
         {
             return true;
         }
         else return false;
     }
+}
+
+public enum PlantStages
+{
+    VIRGIN_GROUND = 1,
+    TREATED_GROUND = 2,
+    PLANT_SMALL = 3,
+    PLANT_MEDIUM = 4,
+    PLANT_GREAT = 5,
+    PLANT_READY = 6,
+    PLANT_DIED = 7
 }
