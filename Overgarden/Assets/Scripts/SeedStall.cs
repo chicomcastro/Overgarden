@@ -54,7 +54,8 @@ public class SeedStall : MonoBehaviour
     }
     public void Seed0()
     {
-        Debug.Log("Peguei a sacola");
+        Debug.Log("Peguei a semente de cenoura");
+
     }
     public void Seed1()
     {
