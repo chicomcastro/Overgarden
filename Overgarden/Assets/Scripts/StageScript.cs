@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class StageScript : MonoBehaviour
 {
-    int aux = 0;
+    int aux = 1;
+    public PlantProperties properties;
+    int difficulty;
     public int stage = 1; // os estagios vao de 1 a 6, cada um tem uma sprite
     public Slider slider;
     public int maxStage = 100;
@@ -36,7 +38,9 @@ public class StageScript : MonoBehaviour
     
     public void growing()
     {
-        if(aux%10 == 0)
+        difficulty = properties.difficultyToGrow(stage);
+
+        if(aux%difficulty == 0) // A barra só cresce em frames "múltiplos" de difficulty.
         {
             slider.value++;
         }
