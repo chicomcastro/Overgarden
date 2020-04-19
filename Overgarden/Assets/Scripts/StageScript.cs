@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class StageScript : MonoBehaviour
 {
     int aux = 0;
+    public GameObject virginGround;
+    public GameObject plantStages;
     public LifeBar lifeBar;
     public PlantScriptableObject plant;
     public Slider slider;
@@ -19,23 +21,39 @@ public class StageScript : MonoBehaviour
         slider.value = maxStage;
         plantImage = plant.stageSprite[1];
         plant.currentStage = 1;
+        plantStages.SetActive(false);
+        virginGround.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(slider.value >= slider.maxValue)
-        {
-            slider.value = maxStage;
-        }
-        if(slider.value <= slider.minValue)
-        {
-            slider.value = slider.minValue;
-        }
+        if(plant.currentStage >= 2)
 
-        growing();
+            if(plant.currentStage == 2)
+            {
+                plantStages.SetActive(false);
+                virginGround.SetActive(false);
+            }
 
-        passStage();
+            else
+            {
+                plantStages.SetActive(true);
+                virginGround.SetActive(false);
+            }
+
+           if(slider.value >= slider.maxValue)
+            {
+               slider.value = maxStage;
+            }
+            if(slider.value <= slider.minValue)
+            {
+                slider.value = slider.minValue;
+            }
+
+            growing();
+
+            passStage();
 
         if(lifeBar.slider.value == lifeBar.slider.minValue)
         {
