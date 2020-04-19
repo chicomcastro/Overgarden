@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
+    public GameObject spawnedSeedOther;
 
     //public bool pickCondition;
     
@@ -36,6 +37,7 @@ public class Player : MonoBehaviour
 
     public bool pickWater = false;
     public bool pickSeed = false;
+    public bool pickSpawnedSeed = false;
     
     // Start is called before the first frame update
     void Start()
@@ -80,6 +82,7 @@ public class Player : MonoBehaviour
         }
 
         PickUp();
+
 
         
 
@@ -173,8 +176,7 @@ public class Player : MonoBehaviour
             {
                 water.transform.SetParent(this.gameObject.transform);
                 water.transform.position = onHand.transform.position; 
-                pressE.enabled = false;
-                     
+                pressE.enabled = false;       
             }
             if (Input.GetKey(KeyCode.Q))
             {
@@ -190,11 +192,22 @@ public class Player : MonoBehaviour
                 seed.transform.SetParent(this.gameObject.transform);
                 seed.transform.position = onHand.transform.position; 
                 pressE.enabled = false;
+
+                if (spawnedSeedOther != null)
+                {
+                    spawnedSeedOther.transform.SetParent(this.gameObject.transform);
+                    spawnedSeedOther.transform.position = onHand.transform.position;
+                }
                      
             }
             if (Input.GetKey(KeyCode.Q))
             {
                 seed.transform.SetParent(null);
+                if (spawnedSeedOther != null)
+                {
+                    spawnedSeedOther.transform.SetParent(null);
+                    Destroy(spawnedSeedOther);
+                }
             }     
         }
         else
@@ -202,6 +215,12 @@ public class Player : MonoBehaviour
             pressE.enabled = false;
         }
         
+    }
+
+    //Button search seed
+    public void seedStallButton()
+    {
+        spawnedSeedOther = GameObject.FindGameObjectWithTag("Seed");
     }
 
    

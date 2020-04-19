@@ -8,6 +8,11 @@ public class SeedStall : MonoBehaviour
     private bool Interaction = false;
     public GameObject seedUI;
     public Text pressOpen;
+
+    public GameObject CarrotSeed;
+    public GameObject SpawnPoint;
+    public GameObject Player;
+    public GameObject spawnedSeed;
     void Start()
     {
         
@@ -26,6 +31,12 @@ public class SeedStall : MonoBehaviour
         {
             pressOpen.enabled = false;
         }
+
+
+        if (spawnedSeed != null && Input.GetKey(KeyCode.Q))
+        {
+            spawnedSeed.transform.SetParent(null);        
+        }     
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -55,14 +66,24 @@ public class SeedStall : MonoBehaviour
     public void Seed0()
     {
         Debug.Log("Peguei a semente de cenoura");
+        GameObject spawnedSeed = Instantiate(CarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
+        spawnedSeed.transform.SetParent(Player.gameObject.transform);
+        Player.gameObject.GetComponent<Player>().seedStallButton(); 
 
     }
     public void Seed1()
     {
-        Debug.Log("Peguei a maçã");
+        Debug.Log("Peguei a semente de cenoura dark");
+        GameObject spawnedSeed = Instantiate(CarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
+        spawnedSeed.transform.SetParent(Player.gameObject.transform);
+        Player.gameObject.GetComponent<Player>().seedStallButton(); 
+
     }
     public void Seed2()
     {
-        Debug.Log("Peguei a chave");
+        Debug.Log("Peguei a semente de abacaxi");
+        GameObject spawnedSeed = Instantiate(CarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
+        spawnedSeed.transform.SetParent(Player.gameObject.transform);
+        Player.gameObject.GetComponent<Player>().seedStallButton(); 
     }
 }
