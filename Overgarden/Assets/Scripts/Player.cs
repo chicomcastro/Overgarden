@@ -51,11 +51,15 @@ public class Player : MonoBehaviour
         rigidbody.velocity = direction.normalized * speed;
         GetInput();
 
-         if (IsMoving)
+        if (IsMoving)
         {
             ActivateLayer("Walk Layer");
             animator.SetFloat("x", direction.x);
             animator.SetFloat("y", direction.y);    
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            ActivateLayer("Hold Layer");
         }
         else
         {

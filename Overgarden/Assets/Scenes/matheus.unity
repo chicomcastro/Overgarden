@@ -167,7 +167,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 865a6ea75b6f03646a9aa56bef5eefd8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -187,8 +187,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19985234}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.54, y: -0.26, z: 0}
-  m_LocalScale: {x: 0.04487655, y: 0.0429118, z: 0.043549}
+  m_LocalPosition: {x: -1.4311, y: -0.159, z: 0}
+  m_LocalScale: {x: 0.055436, y: 0.053008948, z: 0.05379608}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -201,11 +201,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19985234}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1000000
+  m_UseAutoMass: 1
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -704,7 +704,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 598587360}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.057, y: 0.934, z: 0}
+  m_LocalPosition: {x: -0.051, y: 1.159, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2127840511}
@@ -1274,8 +1274,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 61c226c566901034bb1d4d9c8a397ead, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300000, guid: bf9ac837ccc60274a8947e516626f9b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1294,7 +1294,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127840508}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.037, z: 0}
+  m_LocalPosition: {x: 0, y: -0.037, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 598587361}
@@ -1313,7 +1313,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 1.1004477
+  m_Mass: 1.3123271
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -1370,6 +1370,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.9375, y: 1.375}
+  m_Offset: {x: -0.014531493, y: -0.08137655}
+  m_Size: {x: 0.8038101, y: 1.8051324}
   m_Direction: 0
