@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class StageScript : MonoBehaviour
 {
     int aux = 0;
-    int stage = 1; // os estagios vao de 1 a 6, cada um tem uma sprite
+    public int stage = 1; // os estagios vao de 1 a 6, cada um tem uma sprite
     public Slider slider;
     public int maxStage = 100;
     // Start is called before the first frame update
