@@ -193,11 +193,14 @@ public class Player : MonoBehaviour
                 seed.transform.position = onHand.transform.position; 
                 pressE.enabled = false;
 
+                spawnedSeedOther.transform.SetParent(this.gameObject.transform);
+                spawnedSeedOther.transform.position = onHand.transform.position;
+
                 if (spawnedSeedOther != null)
                 {
-                    spawnedSeedOther.transform.SetParent(this.gameObject.transform);
-                    spawnedSeedOther.transform.position = onHand.transform.position;
+                    Destroy(spawnedSeedOther);
                 }
+                
                      
             }
             if (Input.GetKey(KeyCode.Q))
@@ -208,6 +211,7 @@ public class Player : MonoBehaviour
                     spawnedSeedOther.transform.SetParent(null);
                     Destroy(spawnedSeedOther);
                 }
+
             }     
         }
         else
