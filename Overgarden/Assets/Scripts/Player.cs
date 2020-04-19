@@ -18,7 +18,8 @@ public class Player : MonoBehaviour
     public Text pressE;
     
     public Transform player;
-    public GameObject plant;
+    public GameObject water;
+    public GameObject seed;
     public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
@@ -33,7 +34,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    public bool pickUpAllowed = false;
+    public bool pickWater = false;
+    public bool pickSeed = false;
     
     // Start is called before the first frame update
     void Start()
@@ -42,9 +44,6 @@ public class Player : MonoBehaviour
         staminaBar.SetMaxStamina(maxStamina);
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        
-        
-
     }
 
     // Update is called once per frame
@@ -139,37 +138,63 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-       if (other.tag == "Game Plant")
+       if (other.tag == "Water")
        {
-           pickUpAllowed = true;
+           pickWater = true;
+       }
+
+       if (other.tag == "Seed")
+       {
+           pickSeed = true;
        }
         
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-       if (other.tag == "Game Plant")
+       if (other.tag == "Water")
        {
-           pickUpAllowed = false;
+           pickWater = false;
+       }
+
+       if (other.tag == "Seed")
+       {
+           pickSeed = false;
        }
         
     }
 
     private void PickUp()
     {
-        if (pickUpAllowed == true)
+        if (pickWater == true)
         {
             pressE.enabled = true;
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                plant.transform.SetParent(this.gameObject.transform);
-                plant.transform.position = onHand.transform.position; 
+                water.transform.SetParent(this.gameObject.transform);
+                water.transform.position = onHand.transform.position; 
                 pressE.enabled = false;
                      
             }
             if (Input.GetKey(KeyCode.Q))
             {
-                plant.transform.SetParent(null);
+                water.transform.SetParent(null);
+            }     
+        }
+        else if (pickSeed == true)
+        {
+            pressE.enabled = true;
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                seed.transform.SetParent(this.gameObject.transform);
+                seed.transform.position = onHand.transform.position; 
+                pressE.enabled = false;
+                     
+            }
+            if (Input.GetKey(KeyCode.Q))
+            {
+                seed.transform.SetParent(null);
             }     
         }
         else
