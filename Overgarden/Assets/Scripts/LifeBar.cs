@@ -47,10 +47,6 @@ public class LifeBar : MonoBehaviour
         {
             aux = 0;
         }
-        if(slider.value == slider.minValue)
-        {
-            Destroy(gameObject);
-        }
     }  
 
     public void waterThePlants()
