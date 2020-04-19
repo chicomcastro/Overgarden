@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class LifeBar : MonoBehaviour
 {   
-    public GameObject player;
+    GameObject player;
     Vector3 diff;
     int aux = 0;
     public Slider slider;
@@ -13,6 +13,12 @@ public class LifeBar : MonoBehaviour
 
     private void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        if (player == null) {
+            Destroy(this.gameObject);
+        }
+
         slider.minValue = 0;
         slider.maxValue = maxLife;
         slider.value = maxLife;
