@@ -9,10 +9,12 @@ public class Player : MonoBehaviour
     public float currentStamina;
     public StaminaBar staminaBar;
     Vector2 direction;
-    public float speed;
+    private float speed;
     public float runSpeed;
     public float normalSpeed;
-    public float regen;
+    private float regen;
+    public float walkRegen;
+    public float idleRegen;
     public Text pressE;
     
     public Transform player;
@@ -55,7 +57,8 @@ public class Player : MonoBehaviour
         {
             ActivateLayer("Walk Layer");
             animator.SetFloat("x", direction.x);
-            animator.SetFloat("y", direction.y);    
+            animator.SetFloat("y", direction.y);
+            regen = walkRegen;    
         }
         else if (Input.GetKey(KeyCode.E))
         {
@@ -64,6 +67,7 @@ public class Player : MonoBehaviour
         else
         {
             ActivateLayer("Idle Layer");
+            regen = idleRegen;
         }
 
 

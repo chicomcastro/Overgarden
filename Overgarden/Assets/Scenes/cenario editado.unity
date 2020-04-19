@@ -727,10 +727,10 @@ MonoBehaviour:
   maxStamina: 100
   currentStamina: 100
   staminaBar: {fileID: 11330492}
-  speed: 7.5
   runSpeed: 15
   normalSpeed: 7.5
-  regen: 20
+  walkRegen: 10
+  idleRegen: 20
   pressE: {fileID: 899645483}
   player: {fileID: 224260620}
   plant: {fileID: 258826662}
