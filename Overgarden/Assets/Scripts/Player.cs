@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
+
+    //public bool pickCondition;
     
     public bool IsMoving
     {

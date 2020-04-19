@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Overgarden/Assets/Sprites/unnamed.png.meta
-guid: b3a2c42fdb093984c8f7048d3125fc9f
-=======
-guid: 85554b2bff3f28246a0c9c4f5eeda1d9
->>>>>>> master:Overgarden/Assets/Sprites/Imported/character/grab_sheet.png.meta
+guid: 865a6ea75b6f03646a9aa56bef5eefd8
 TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
@@ -35,7 +31,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: -1
     aniso: -1
     mipBias: -100
     wrapU: 1
@@ -44,12 +40,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 46
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -90,7 +86,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 844de1941cbffb14b9e85a976fa260a0
+    spriteID: 50be3b589a968f3469e755c4533ceb7b
     vertices: []
     indices: 
     edges: []
