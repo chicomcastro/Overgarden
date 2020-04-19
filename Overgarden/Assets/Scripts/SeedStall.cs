@@ -10,6 +10,8 @@ public class SeedStall : MonoBehaviour
     public Text pressOpen;
 
     public GameObject CarrotSeed;
+    public GameObject DarkCarrotSeed;
+    public GameObject PineappleSeed;
     public GameObject SpawnPoint;
     public GameObject Player;
     public GameObject spawnedSeed;
@@ -74,7 +76,7 @@ public class SeedStall : MonoBehaviour
     public void Seed1()
     {
         Debug.Log("Peguei a semente de cenoura dark");
-        GameObject spawnedSeed = Instantiate(CarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
+        GameObject spawnedSeed = Instantiate(DarkCarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
         spawnedSeed.transform.SetParent(Player.gameObject.transform);
         Player.gameObject.GetComponent<Player>().seedStallButton(); 
 
@@ -82,7 +84,7 @@ public class SeedStall : MonoBehaviour
     public void Seed2()
     {
         Debug.Log("Peguei a semente de abacaxi");
-        GameObject spawnedSeed = Instantiate(CarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
+        GameObject spawnedSeed = Instantiate(PineappleSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
         spawnedSeed.transform.SetParent(Player.gameObject.transform);
         Player.gameObject.GetComponent<Player>().seedStallButton(); 
     }
