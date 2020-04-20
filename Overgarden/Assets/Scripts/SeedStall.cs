@@ -8,10 +8,6 @@ public class SeedStall : MonoBehaviour
     private bool Interaction = false;
     public GameObject seedUI;
     public Text pressOpen;
-
-    public GameObject CarrotSeedPrefab;
-    public GameObject DarkCarrotSeed;
-    public GameObject PineappleSeed;
     public GameObject SpawnPoint;
     public GameObject Player;
     public GameObject spawnedSeed;
@@ -58,7 +54,7 @@ public class SeedStall : MonoBehaviour
     {
         seedUI.SetActive(false);
     }
-    public void Seed0()
+  /*  public void Seed0()
     {
 
         Debug.Log("Peguei a semente de cenoura");
@@ -79,5 +75,5 @@ public class SeedStall : MonoBehaviour
         GameObject spawnedSeed = Instantiate(PineappleSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
         spawnedSeed.transform.SetParent(Player.gameObject.transform);
         Player.gameObject.GetComponent<Player>().seedStallButton(); 
-    }
+    }*/
 }
