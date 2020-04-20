@@ -30,6 +30,10 @@ public class LifeBar : MonoBehaviour
 
     private void Update()
     {
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+        
         if(slider.value >= slider.maxValue)
         {
             slider.value = maxLife;

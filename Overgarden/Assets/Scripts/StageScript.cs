@@ -30,6 +30,10 @@ public class StageScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+        
         HandleState();
 
         if (progressionBar.value >= progressionBar.maxValue)
