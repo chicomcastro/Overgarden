@@ -15,28 +15,27 @@ public class StageScript : MonoBehaviour
     public SpriteRenderer plantImage;
     public Sprite diedPlant;
 
+    private int currentStage = 0;
+
     // Start is called before the first frame update
     void Start()
     {
+        lifeBar.gameObject.SetActive(false);
+        progressionBar.gameObject.SetActive(false);
+        plantStages.SetActive(false);
+        virginGround.SetActive(true);
         loadInitialState();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (plant.currentStage >= (int)PlantStages.PLANT_SMALL)
+        if (plant == null)
         {
-            if (plant.currentStage == (int)PlantStages.PLANT_SMALL)
-            {
-                plantStages.SetActive(false);
-                virginGround.SetActive(false);
-            }
-            else
-            {
-                plantStages.SetActive(true);
-                virginGround.SetActive(false);
-            }
+            return;
         }
+
+        HandleState();
 
         if (progressionBar.value >= progressionBar.maxValue)
         {
@@ -47,24 +46,46 @@ public class StageScript : MonoBehaviour
             progressionBar.value = progressionBar.minValue;
         }
 
-        if (plant.currentStage != (int)PlantStages.PLANT_READY && plant.currentStage != (int)PlantStages.VIRGIN_GROUND)
-        {
-            growing();
-
-            passStage();
-        }
-
         if (lifeBar.slider.value == lifeBar.slider.minValue)
         {
-            if (plant.currentStage == (int)PlantStages.TREATED_GROUND)
+            if (currentStage == (int)PlantStages.TREATED_GROUND)
             {
                 loadInitialState();
             }
             else
             {
                 plantImage.sprite = diedPlant;
-                plant.currentStage = (int)PlantStages.PLANT_DIED;
+                currentStage = (int)PlantStages.PLANT_DIED;
             }
+        }
+    }
+
+    private void HandleState()
+    {
+        switch (currentStage)
+        {
+            case (int)PlantStages.VIRGIN_GROUND:
+                break;
+            case (int)PlantStages.TREATED_GROUND:
+                virginGround.SetActive(false);
+                lifeBar.gameObject.SetActive(true);
+                break;
+            case (int)PlantStages.PLANT_SMALL:
+            case (int)PlantStages.PLANT_MEDIUM:
+            case (int)PlantStages.PLANT_GREAT:
+            case (int)PlantStages.PLANT_READY:
+                progressionBar.gameObject.SetActive(true);
+                plantStages.SetActive(true);
+                growing();
+                if (progressionBar.value == maxStage)
+                {
+                    passStage();
+                }
+                break;
+            case (int)PlantStages.PLANT_DIED:
+                lifeBar.gameObject.SetActive(false);
+                progressionBar.gameObject.SetActive(false);
+                break;
         }
     }
 
@@ -73,16 +94,17 @@ public class StageScript : MonoBehaviour
         progressionBar.minValue = 0;
         progressionBar.maxValue = maxStage;
         progressionBar.value = maxStage;
-        plant.currentStage = (int)PlantStages.VIRGIN_GROUND;
+        plant = null;
         lifeBar.gameObject.SetActive(false);
         progressionBar.gameObject.SetActive(false);
         plantStages.SetActive(false);
         virginGround.SetActive(true);
+        currentStage = (int)PlantStages.VIRGIN_GROUND;
     }
 
     public void growing()
     {
-        if (aux % plant.stageTime[plant.currentStage] == 0)
+        if (aux % plant.stageTime[currentStage] == 0)
         {
             progressionBar.value++;
         }
@@ -95,24 +117,53 @@ public class StageScript : MonoBehaviour
 
     public void passStage()
     {
-        if (progressionBar.value == maxStage)
+        progressionBar.value = progressionBar.minValue;
+        if (currentStage < (int)PlantStages.PLANT_READY)
         {
-            progressionBar.value = progressionBar.minValue;
-            if (plant.currentStage < (int)PlantStages.PLANT_READY)
-            {
-                plant.currentStage++;
-                plantImage.sprite = plant.stageSprite[plant.currentStage];
-            }
+            currentStage++;
+            plantImage.sprite = plant.stageSprite[currentStage];
         }
     }
 
     bool readyToReap()
     {
-        if (plant.currentStage == (int)PlantStages.PLANT_READY)
+        if (currentStage == (int)PlantStages.PLANT_READY)
         {
             return true;
         }
         else return false;
+    }
+
+    public void interact(PlantScriptableObject seed)
+    {
+        if (plant == null)
+        {
+            plant = seed;
+            interact(HoldingItem.SEED);
+        }
+    }
+    public void interact(HoldingItem playerItem)
+    {
+        if (isCorrectItem(playerItem))
+        {
+            passStage();
+        }
+
+        if (playerItem == HoldingItem.WATER)
+        {
+            lifeBar.Reset();
+        }
+
+        if (playerItem == HoldingItem.NOTHING && readyToReap())
+        {
+            loadInitialState();
+        }
+    }
+
+    private bool isCorrectItem(HoldingItem playerItem)
+    {
+        return playerItem == HoldingItem.TOOL && currentStage == (int)PlantStages.VIRGIN_GROUND ||
+            playerItem == HoldingItem.SEED && currentStage == (int)PlantStages.TREATED_GROUND;
     }
 }
 

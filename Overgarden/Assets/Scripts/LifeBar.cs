@@ -19,6 +19,10 @@ public class LifeBar : MonoBehaviour
             Destroy(this.gameObject);
         }
 
+        Reset();
+    }
+
+    public void Reset() {
         slider.minValue = 0;
         slider.maxValue = maxLife;
         slider.value = maxLife;
@@ -42,8 +46,10 @@ public class LifeBar : MonoBehaviour
         waterThePlants();
 
     }
+
     public void damage()
     {
+        print("damaging");
         if(aux%10 == 0)
         {
             slider.value--;
