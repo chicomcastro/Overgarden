@@ -3,8 +3,15 @@
 public class EventsManager : MonoBehaviour
 {
     private Player player;
+
+    [HideInInspector]
     public HoldingItem holdingItem;
+
+    [HideInInspector]
     public PlantScriptableObject holdingSeed;
+
+    [HideInInspector]
+    public PlantScriptableObject holdingPlant;
 
     private void Start()
     {
