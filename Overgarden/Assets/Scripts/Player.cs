@@ -18,12 +18,12 @@ public class Player : MonoBehaviour
     public Text pressE;
     
     public Transform player;
-    public GameObject water;
     public GameObject seed;
     public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
     public GameObject spawnedSeedOther;
+    public GameObject spawnedWaterOther; 
 
     //public bool pickCondition;
     
@@ -168,39 +168,19 @@ public class Player : MonoBehaviour
     //Interação com itens do cenário
     private void PickUp()
     {
-        if (pickWater == true)
+        if (pickSeed == true)
         {
             pressE.enabled = true;
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                water.transform.SetParent(this.gameObject.transform);
-                water.transform.position = onHand.transform.position; 
-                pressE.enabled = false; 
-
-                if (spawnedSeedOther != null)
-                {
-                    Destroy(spawnedSeedOther);
-                }      
-            }
-            if (Input.GetKey(KeyCode.Q))
-            {
-                water.transform.SetParent(null);
-            }     
-        }
-        else if (pickSeed == true)
-        {
-            pressE.enabled = true;
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                seed.transform.SetParent(this.gameObject.transform);
-                seed.transform.position = onHand.transform.position; 
-                pressE.enabled = false;
 
                 spawnedSeedOther.transform.SetParent(this.gameObject.transform);
                 spawnedSeedOther.transform.position = onHand.transform.position;
 
+                GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
+
+                
                 if (spawnedSeedOther != null)
                 {
                     Destroy(spawnedSeedOther);
@@ -208,29 +188,36 @@ public class Player : MonoBehaviour
                 
                      
             }
-            if (Input.GetKey(KeyCode.Q))
-            {
-                seed.transform.SetParent(null);
-                if (spawnedSeedOther != null)
-                {
-                    spawnedSeedOther.transform.SetParent(null);
-                    Destroy(spawnedSeedOther);
-                }
-
-            }     
+            
         }
         else
         {
             pressE.enabled = false;
         }
+
+
+        if (pickWater == true)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Destroy(spawnedWaterOther);
+                
+                     
+            }
+        }
         
     }
 
-    //Receber semente do script seedstall
+    //Receber item de outro script
     public void seedStallButton()
     {
         spawnedSeedOther = GameObject.FindGameObjectWithTag("Seed");
+        Debug.Log(spawnedSeedOther);
+        GetComponent<EventsManager>().holdingItem = HoldingItem.SEED;
     }
+
+    
+
 
    
 

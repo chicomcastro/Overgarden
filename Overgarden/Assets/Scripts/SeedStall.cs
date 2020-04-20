@@ -15,10 +15,8 @@ public class SeedStall : MonoBehaviour
     public GameObject SpawnPoint;
     public GameObject Player;
     public GameObject spawnedSeed;
-    void Start()
-    {
-        
-    }
+    
+    
     void Update()
     {
         if (Interaction == true)
