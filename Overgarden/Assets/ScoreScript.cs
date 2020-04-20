@@ -7,6 +7,6 @@ public class ScoreScript : DataHolder
 
     private void Update()
     { 
-        points.text = DataHolder.instance.GetScore().ToString(); 
+        points.text = "Score: " + DataHolder.instance.GetScore().ToString(); 
     }
 }
