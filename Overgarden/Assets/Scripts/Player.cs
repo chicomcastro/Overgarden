@@ -275,7 +275,6 @@ public class Player : MonoBehaviour
         }
     }
 
- 
     public void waterTrigger()
     {
         spawnedWaterOther = GameObject.FindGameObjectWithTag("Water");
@@ -287,9 +286,4 @@ public class Player : MonoBehaviour
         spawnedToolOther = GameObject.FindGameObjectWithTag("Tool");
         GetComponent<EventsManager>().holdingItem = HoldingItem.TOOL;
     }
- 
-
-
-   
-
 }
