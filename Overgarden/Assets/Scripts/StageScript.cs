@@ -33,7 +33,7 @@ public class StageScript : MonoBehaviour
         if (MenuManager.instance.isPaused) {
             return;
         }
-        
+
         HandleState();
 
         if (progressionBar.value >= progressionBar.maxValue)
@@ -103,7 +103,7 @@ public class StageScript : MonoBehaviour
 
     public void growing()
     {
-        if (aux % plant.stageTime[getPlantRealState()] == 0)
+        if (aux % getGrowingTime() == 0)
         {
             progressionBar.value++;
         }
@@ -112,6 +112,10 @@ public class StageScript : MonoBehaviour
         {
             aux = 0;
         }
+    }
+
+    private int getGrowingTime() {
+        return plant.plantRarity * 5;
     }
 
     private int getPlantRealState() {
