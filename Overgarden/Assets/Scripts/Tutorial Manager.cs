@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialManager : MonoBehaviour
+public class NewBehaviourScript : MonoBehaviour
 {
-        void Start()
+    // Start is called before the first frame update
+    void Start()
     {
         
     }
 
-    
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }
