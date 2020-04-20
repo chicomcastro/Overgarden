@@ -15,13 +15,11 @@ MonoBehaviour:
   plantName: Carrot
   plantRarity: 1
   plantDescription: 
-  stageTime: 0a0000000a0000000b0000000a0000000a0000000a000000
+  stageTime: 0a0000000a0000000b0000000a000000
   currentStage: 1
-  stageValue: 00000000050000000a0000000a0000000f00000032000000
+  stageValue: 00000000050000000a00000019000000
   stageSprite:
   - {fileID: 21300010, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
   - {fileID: 21300042, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
   - {fileID: 21300074, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
   - {fileID: 21300106, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
-  - {fileID: 21300138, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
-  - {fileID: 21300170, guid: c5835a305ced1d142b100efe93c4b396, type: 3}

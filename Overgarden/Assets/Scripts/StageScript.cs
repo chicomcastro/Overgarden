@@ -30,11 +30,6 @@ public class StageScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (plant == null)
-        {
-            return;
-        }
-
         HandleState();
 
         if (progressionBar.value >= progressionBar.maxValue)
@@ -104,7 +99,7 @@ public class StageScript : MonoBehaviour
 
     public void growing()
     {
-        if (aux % plant.stageTime[currentStage] == 0)
+        if (aux % plant.stageTime[getPlantRealState()] == 0)
         {
             progressionBar.value++;
         }
@@ -115,13 +110,23 @@ public class StageScript : MonoBehaviour
         }
     }
 
+    private int getPlantRealState() {
+        // The firsts 2 stages are about ground, not plant
+        // And plant stages starts from 0
+        return currentStage - 3;
+    }
+
     public void passStage()
     {
         progressionBar.value = progressionBar.minValue;
+        lifeBar.Reset();
         if (currentStage < (int)PlantStages.PLANT_READY)
         {
             currentStage++;
-            plantImage.sprite = plant.stageSprite[currentStage];
+            if (currentStage > (int)PlantStages.TREATED_GROUND)
+            {
+                plantImage.sprite = plant.stageSprite[getPlantRealState()];
+            }
         }
     }
 
@@ -136,12 +141,13 @@ public class StageScript : MonoBehaviour
 
     public void interact(PlantScriptableObject seed)
     {
-        if (plant == null)
+        if (plant == null && currentStage == (int)PlantStages.TREATED_GROUND)
         {
             plant = seed;
             interact(HoldingItem.SEED);
         }
     }
+
     public void interact(HoldingItem playerItem)
     {
         if (isCorrectItem(playerItem))
