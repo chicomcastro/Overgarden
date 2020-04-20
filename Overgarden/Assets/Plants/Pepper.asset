@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pepper
   m_EditorClassIdentifier: 
   plantName: Pepper
-  plantRarity: 2
+  plantRarity: 3
   plantDescription: 
   main: {fileID: 21300018, guid: 34b2fb2c7e7ed0342b2c564dcf6265cb, type: 3}
   stageSprite:
