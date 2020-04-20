@@ -199,14 +199,15 @@ public class Player : MonoBehaviour
             
         }
         if (pickWater == true)
-        {
+        {   
             if (Input.GetKeyDown(KeyCode.E))
-            {
+            {   
                 GameObject[] waters = GameObject.FindGameObjectsWithTag("Water");
                 foreach (GameObject Water in waters)
                 {
                     GameObject.Destroy(Water);
                 } 
+                FindObjectOfType<AudioManager>().PlayOnce("Water the Plants Sound");
                 GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
                 
             }
