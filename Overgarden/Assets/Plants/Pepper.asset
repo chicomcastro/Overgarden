@@ -12,16 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5271c83fb61ab14f802c358137d2217, type: 3}
   m_Name: Pepper
   m_EditorClassIdentifier: 
-  plantName: 
-  plantRarity: 0
+  plantName: Pepper
+  plantRarity: 2
   plantDescription: 
-  stageTime: 000000000000000000000000000000000000000000000000
-  currentStage: 0
-  stageValue: 000000000000000000000000000000000000000000000000
+  main: {fileID: 21300018, guid: 34b2fb2c7e7ed0342b2c564dcf6265cb, type: 3}
   stageSprite:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300018, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
+  - {fileID: 21300050, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
+  - {fileID: 21300082, guid: c5835a305ced1d142b100efe93c4b396, type: 3}
+  - {fileID: 21300114, guid: c5835a305ced1d142b100efe93c4b396, type: 3}

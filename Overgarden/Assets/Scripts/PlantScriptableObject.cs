@@ -9,5 +9,6 @@ public class PlantScriptableObject : ScriptableObject
     public int plantRarity;
     public string plantDescription; //caso vcs queiram colocar descrições pra cada planta
 
+    public Sprite main;
     public Sprite[] stageSprite = new Sprite[4];
 }
