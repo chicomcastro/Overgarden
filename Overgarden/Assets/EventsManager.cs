@@ -4,20 +4,18 @@ public class EventsManager : MonoBehaviour
 {
     private Player player;
 
-    //[HideInInspector]
     public HoldingItem holdingItem;
-
-    [HideInInspector]
     public PlantScriptableObject holdingSeed;
-
-    [HideInInspector]
     public PlantScriptableObject holdingPlant;
 
     private void Start()
     {
         player = this.gameObject.GetComponent<Player>();
         holdingItem = HoldingItem.NOTHING;
+        holdingSeed = null;
+        holdingPlant = null;
     }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         Transform slot = other.gameObject.GetComponentInChildren<Transform>();
@@ -49,7 +47,7 @@ public class EventsManager : MonoBehaviour
         return (
             obj != null &&
             Input.GetKeyDown(KeyCode.E) &&
-            holdingItem != HoldingItem.NOTHING
+            holdingItem != HoldingItem.PLANT
         );
     }
 
