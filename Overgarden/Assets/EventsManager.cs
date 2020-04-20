@@ -24,16 +24,23 @@ public class EventsManager : MonoBehaviour
         StageScript plantSlot = slot.gameObject.GetComponentInChildren<StageScript>();
         if (CanInteractWith<StageScript>(plantSlot))
         {
-            if (holdingItem == HoldingItem.SEED && holdingSeed != null)
+            // Get references to send
+            PlantScriptableObject plantSeedToInteract = holdingSeed;
+            HoldingItem holdingItemToInteract = holdingItem;
+
+            // Clear references
+            holdingSeed = null;
+            holdingItem = HoldingItem.NOTHING;
+
+            // Send interactions
+            if (holdingItemToInteract == HoldingItem.SEED && plantSeedToInteract != null)
             {
-                plantSlot.interact(holdingSeed);
+                plantSlot.interact(plantSeedToInteract);
             }
             else
             {
-                plantSlot.interact(holdingItem);
+                plantSlot.interact(holdingItemToInteract);
             }
-            holdingSeed = null;
-            holdingItem = HoldingItem.NOTHING;
         }
     }
 
