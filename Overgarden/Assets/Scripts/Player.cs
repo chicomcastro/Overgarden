@@ -85,6 +85,8 @@ public class Player : MonoBehaviour
         PickUp();
 
         walkingSound();
+
+        pickUpSound();
     }
 
      
