@@ -1,0 +1,1191 @@
+fileFormatVersion: 2
+guid: 452dc35b403f2ef4c8064710cc6a5c1c
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Template - Copia_0
+    21300002: Template - Copia_1
+    21300004: Template - Copia_2
+    21300006: Template - Copia_3
+    21300008: Template - Copia_4
+    21300010: Template - Copia_5
+    21300012: Template - Copia_6
+    21300014: Template - Copia_7
+    21300016: Template - Copia_8
+    21300018: Template - Copia_9
+    21300020: Template - Copia_10
+    21300022: Template - Copia_11
+    21300024: Template - Copia_12
+    21300026: Template - Copia_13
+    21300028: Template - Copia_14
+    21300030: Template - Copia_15
+    21300032: Template - Copia_16
+    21300034: Template - Copia_17
+    21300036: Template - Copia_18
+    21300038: Template - Copia_19
+    21300040: Template - Copia_20
+    21300042: Template - Copia_21
+    21300044: Template - Copia_22
+    21300046: Template - Copia_23
+    21300048: Template - Copia_24
+    21300050: Template - Copia_25
+    21300052: Template - Copia_26
+    21300054: Template - Copia_27
+    21300056: Template - Copia_28
+    21300058: Template - Copia_29
+    21300060: Template - Copia_30
+    21300062: Template - Copia_31
+    21300064: Template - Copia_32
+    21300066: Template - Copia_33
+    21300068: Template - Copia_34
+    21300070: Template - Copia_35
+    21300072: Template - Copia_36
+    21300074: Template - Copia_37
+    21300076: Template - Copia_38
+    21300078: Template - Copia_39
+    21300080: Template - Copia_40
+    21300082: Template - Copia_41
+    21300084: Template - Copia_42
+    21300086: Template - Copia_43
+    21300088: Template - Copia_44
+    21300090: Template - Copia_45
+    21300092: Template - Copia_46
+    21300094: Template - Copia_47
+    21300096: Template - Copia_48
+    21300098: Template - Copia_49
+    21300100: Template - Copia_50
+    21300102: Template - Copia_51
+    21300104: Template - Copia_52
+    21300106: Template - Copia_53
+    21300108: Template - Copia_54
+    21300110: Template - Copia_55
+    21300112: Template - Copia_56
+    21300114: Template - Copia_57
+    21300116: Template - Copia_58
+    21300118: Template - Copia_59
+    21300120: Template - Copia_60
+    21300122: Template - Copia_61
+    21300124: Template - Copia_62
+    21300126: Template - Copia_63
+    21300128: Template - Copia_64
+    21300130: Template - Copia_65
+    21300132: Template - Copia_66
+    21300134: Template - Copia_67
+    21300136: Template - Copia_68
+    21300138: Template - Copia_69
+    21300140: Template - Copia_70
+    21300142: Template - Copia_71
+    21300144: Template - Copia_72
+    21300146: Template - Copia_73
+    21300148: Template - Copia_74
+    21300150: Template - Copia_75
+    21300152: Template - Copia_76
+    21300154: Template - Copia_77
+    21300156: Template - Copia_78
+    21300158: Template - Copia_79
+    21300160: Template - Copia_80
+    21300162: Template - Copia_81
+    21300164: Template - Copia_82
+    21300166: Template - Copia_83
+    21300168: Template - Copia_84
+    21300170: Template - Copia_85
+    21300172: Template - Copia_86
+    21300174: Template - Copia_87
+    21300176: Template - Copia_88
+    21300178: Template - Copia_89
+    21300180: Template - Copia_90
+    21300182: Template - Copia_91
+    21300184: Template - Copia_92
+    21300186: Template - Copia_93
+    21300188: Template - Copia_94
+    21300190: Template - Copia_95
+    21300192: Template - Copia_96
+    21300194: Template - Copia_97
+    21300196: Template - Copia_98
+    21300198: Template - Copia_99
+    21300200: Template - Copia_100
+    21300202: Template - Copia_101
+    21300204: Template - Copia_102
+    21300206: Template - Copia_103
+    21300208: Template - Copia_104
+    21300210: Template - Copia_105
+    21300212: Template - Copia_106
+    21300214: Template - Copia_107
+    21300216: Template - Copia_108
+    21300218: Template - Copia_109
+    21300220: Template - Copia_110
+    21300222: Template - Copia_111
+    21300224: Template - Copia_112
+    21300226: Template - Copia_113
+    21300228: Template - Copia_114
+    21300230: Template - Copia_115
+    21300232: Template - Copia_116
+    21300234: Template - Copia_117
+    21300236: Template - Copia_118
+    21300238: Template - Copia_119
+    21300240: Template - Copia_120
+    21300242: Template - Copia_121
+    21300244: Template - Copia_122
+    21300246: Template - Copia_123
+    21300248: Template - Copia_124
+    21300250: Template - Copia_125
+    21300252: Template - Copia_126
+    21300254: Template - Copia_127
+    21300256: Template - Copia_128
+    21300258: Template - Copia_129
+    21300260: Template - Copia_130
+    21300262: Template - Copia_131
+  externalObjects: {}
+  serializedVersion: 9
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Template - Copia_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e566958db59943044989e6ebad839bdc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b97c6af0240890d42a380207a1bc1b2d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c633dca1f3e33bd498c992b6d26c5ef6
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_3
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4aba343bc11eb3408e135281cbe40eb
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_4
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92a1a9947505461418b20249a64a0e61
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_5
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5ca8191d3f2c7a4798c8bfa9fcc8262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28d2aeef47619244b8b3b20709aa497c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_7
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e280462de2afe8f46b78045d3e4cd369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_8
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 376c020a66b12524e86a784d4fbad8db
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_9
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99954cdd13e95fc4db427112a58432aa
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_10
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90a921ca2b646a34fad1f0d01eecb435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_11
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c65aebb3317d00f4893ee9502278e064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_12
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f317047db3f970442ac08c1a406e95fb
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_13
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4c81ffdd379be54f8fc2a7153d2462e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_14
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 839616cd63262384e909bb5e3ec93a3d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_15
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 710
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf995552e6cb07a4ba209c418f50390e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95bb05918e5f96d47be4ce8fb5d97e9b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_17
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b1fcd06484cadc4abd9c1ad88e46243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_18
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c87951371b0df1643851d2e859b3a299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_19
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8a07e09d1ee5864ca55b1d635a28d33
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_20
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af8958d6066260d499e22b2870bc0fc2
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_21
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e9a484ce78d1d840a53ab9caf748a38
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_22
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78b3bf7d444693e4385bc556141cd758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_23
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30e6fc7eed8887e45aceeb88f0c98f9f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_24
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5e8067ad55a73845b413de7cafbf691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_25
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c91b64ea1e9204b4495d2db1170e1e57
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_26
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b4c6a45fa5698b439ec045f98b90adc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_27
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3804519f1faca2144b02bf7869b2a15d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_28
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66c1a3f4acc16724ebd8e81a07058d3e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_29
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b5cfe189007a3b41bf94c50fffcecf9
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_30
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afa8c63f58690f4488390a5e7e26bb62
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_31
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 582
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78ea6b39efdc9e44d8d9e9caf6bafead
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ed39745c3c9330428332cb6a1833c25
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_33
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67b6433815a144048b03d1348f413edc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_34
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6d51cb3634a34c449fbb9df0bb135b9
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_35
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19388798ecd1727418d2b26ccc9d1b4e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_36
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d98e6ce50404ef94193325008a79b736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_37
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cec6a06c7445af340b6526ada5c7e1ec
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_38
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 690d64ff98356d74ebec8ea1a385e807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_39
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62503ce9a4621b74d93b7bd8b62c080c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_40
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d6d4a4a207009b4c8491384eff8e76d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_41
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ecf2a409bbdc4dc4ea114d117c022e35
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_42
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f50cc3c6296ab2c4c9247ccab45e3c34
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_43
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf4587feaadec694594511025933cb7c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_44
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b080e7bc4b1f1f4f899aa51683652a5
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_45
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13f6841a50ba5424aa1d2ac40dafcc50
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_46
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6257b3ae470aed14aaee809c9964b70c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Template - Copia_47
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 454
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01131e299574c9740acc9f68e367b8a7
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 76f208982caf0994590a5733b3364def
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
