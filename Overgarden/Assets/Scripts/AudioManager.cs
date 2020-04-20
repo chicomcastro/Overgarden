@@ -28,9 +28,15 @@ public class AudioManager : MonoBehaviour
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
-        }
-        
+        }        
     }
+    
+    private void Start()
+    {
+        Play("Main Theme");
+        Play("Running Water");
+    }
+
     public void Stop (string name)
     {   
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -50,5 +56,30 @@ public class AudioManager : MonoBehaviour
         s.source.volume = 0.5f;
         s.source.loop = true;
         s.source.Play();
+    }
+
+    public void PlayOnce (string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if(s == null)
+        {
+            Debug.LogWarning("Sound " + name + " not found!");
+            return;
+        }
+        s.source.volume = 0.4f;
+        s.source.loop = false;
+        s.source.Play();
+    }
+
+    public void ModifieSound (string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.pitch = 3.0f;
+    }
+
+    public void NormalizeSound (string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.pitch = 2.5f;
     }
 }

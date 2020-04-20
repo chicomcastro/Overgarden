@@ -248,10 +248,10 @@ public class Player : MonoBehaviour
         if(isWalking() == false)
         {
           if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A)
-            || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
-            {
+          || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
+          {
                 FindObjectOfType<AudioManager>().Play("Walking Sound");
-            }
+          }
         }
         else 
         {

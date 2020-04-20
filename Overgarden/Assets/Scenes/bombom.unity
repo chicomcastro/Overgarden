@@ -736,6 +736,36 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: fb41ed09d7dd2634ebdeaa4c2352571f, type: 3}
     volume: 0.5
     loop: 0
+    pitch: 2.5
+    source: {fileID: 0}
+  - name: Diggind Sound
+    clip: {fileID: 0}
+    volume: 0.5
+    loop: 0
+    pitch: 1
+    source: {fileID: 0}
+  - name: Water a Plant Sound
+    clip: {fileID: 8300000, guid: 4d6c0f66f71f1514a9537e454e2ca715, type: 3}
+    volume: 0.5
+    loop: 0
+    pitch: 1
+    source: {fileID: 0}
+  - name: Taking an Object Sound
+    clip: {fileID: 8300000, guid: e45bf470c04b998498fc5fb31ef0982d, type: 3}
+    volume: 1
+    loop: 0
+    pitch: 1
+    source: {fileID: 0}
+  - name: Main Theme
+    clip: {fileID: 8300000, guid: 5552294a1d941a5499445c4e969bd712, type: 3}
+    volume: 0
+    loop: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Running Water
+    clip: {fileID: 8300000, guid: 918de99421d26eb4fa60f0c4d2c45d02, type: 3}
+    volume: 0
+    loop: 1
     pitch: 1
     source: {fileID: 0}
 --- !u!4 &1064176302
