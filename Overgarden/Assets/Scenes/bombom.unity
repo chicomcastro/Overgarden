@@ -702,6 +702,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948602667}
   m_CullTransparentMesh: 0
+--- !u!1 &1064176300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1064176302}
+  - component: {fileID: 1064176301}
+  m_Layer: 0
+  m_Name: Audio Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1064176301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064176300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdf5bb71d3fc3f4b8942d4182f96d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Walking Sound
+    clip: {fileID: 8300000, guid: fb41ed09d7dd2634ebdeaa4c2352571f, type: 3}
+    volume: 0.5
+    loop: 0
+    pitch: 1
+    source: {fileID: 0}
+--- !u!4 &1064176302
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064176300}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1446689953
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,7 +980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9ee4290d63aac34aa8bf4c4bab0b59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 2124588126}
   slider: {fileID: 274106578}
   maxLife: 100
 --- !u!212 &1758848127
@@ -1007,9 +1056,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 023e9181292f65f4d8ba2eeffcba8701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stage: 1
-  slider: {fileID: 1853787274}
+  virginGround: {fileID: 0}
+  plantStages: {fileID: 0}
+  plant: {fileID: 0}
+  lifeBar: {fileID: 0}
+  progressionBar: {fileID: 0}
   maxStage: 100
+  plantImage: {fileID: 0}
+  diedPlant: {fileID: 0}
 --- !u!1 &1768242179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1549,17 +1603,21 @@ MonoBehaviour:
   maxStamina: 100
   currentStamina: 0
   staminaBar: {fileID: 1768242181}
-  speed: 5
   runSpeed: 10
   normalSpeed: 5
-  regen: 20
+  walkRegen: 0
+  idleRegen: 0
   pressE: {fileID: 948602669}
   player: {fileID: 2124588133}
-  plant: {fileID: 1627519765}
+  water: {fileID: 0}
+  seed: {fileID: 0}
+  onHand: {fileID: 0}
   rigidbody: {fileID: 2124588130}
   animator: {fileID: 2124588129}
-  objectPosition: {fileID: 0}
-  pickUpAllowed: 0
+  spawnedSeedOther: {fileID: 0}
+  pickWater: 0
+  pickSeed: 0
+  pickSpawnedSeed: 0
 --- !u!212 &2124588132
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -83,9 +83,6 @@ public class Player : MonoBehaviour
 
         PickUp();
 
-
-        
-
     }
     
     public void GetInput()
@@ -109,10 +106,7 @@ public class Player : MonoBehaviour
             direction += Vector2.right;
         }
 
-        if(IsMoving)
-        {
-            FindObjectOfType<AudioManager>().Play("Walking Sound");
-        }
+
 
         if (Input.GetKey(KeyCode.LeftShift) && IsMoving)
         {
@@ -226,7 +220,4 @@ public class Player : MonoBehaviour
     {
         spawnedSeedOther = GameObject.FindGameObjectWithTag("Seed");
     }
-
-   
-
 }
