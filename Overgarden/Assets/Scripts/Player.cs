@@ -82,12 +82,9 @@ public class Player : MonoBehaviour
         }
 
         PickUp();
-
-
-        
-
     }
-    
+
+     
     public void GetInput()
     {
         direction = Vector2.zero;
@@ -129,6 +126,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Função que muda layer de animação
     public void ActivateLayer(string layerName)
     {
         for(int i=0; i < animator.layerCount; i++)
@@ -139,6 +137,7 @@ public class Player : MonoBehaviour
         animator.SetLayerWeight(animator.GetLayerIndex(layerName),1);
     }
 
+    //Colisão
     private void OnTriggerEnter2D(Collider2D other)
     {
        if (other.tag == "Water")
@@ -166,6 +165,7 @@ public class Player : MonoBehaviour
         
     }
 
+    //Interação com itens do cenário
     private void PickUp()
     {
         if (pickWater == true)
@@ -176,7 +176,12 @@ public class Player : MonoBehaviour
             {
                 water.transform.SetParent(this.gameObject.transform);
                 water.transform.position = onHand.transform.position; 
-                pressE.enabled = false;       
+                pressE.enabled = false; 
+
+                if (spawnedSeedOther != null)
+                {
+                    Destroy(spawnedSeedOther);
+                }      
             }
             if (Input.GetKey(KeyCode.Q))
             {
@@ -221,7 +226,7 @@ public class Player : MonoBehaviour
         
     }
 
-    //Button search seed
+    //Receber semente do script seedstall
     public void seedStallButton()
     {
         spawnedSeedOther = GameObject.FindGameObjectWithTag("Seed");
