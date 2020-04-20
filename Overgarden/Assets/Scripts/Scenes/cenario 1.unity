@@ -5568,11 +5568,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seedUI: {fileID: 1996392229}
   pressOpen: {fileID: 1369313340}
-  CarrotSeedPrefab: {fileID: 0}
-  DarkCarrotSeed: {fileID: 4959778843140560880, guid: 0575123ae92128740811ee3aa877644e,
-    type: 3}
-  PineappleSeed: {fileID: 4959778843140560880, guid: b693b5debcc173b47b09443391b89ac7,
-    type: 3}
   SpawnPoint: {fileID: 1580711969}
   Player: {fileID: 224260613}
   spawnedSeed: {fileID: 0}
@@ -5709,6 +5704,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1099899265}
   - component: {fileID: 1099899266}
+  - component: {fileID: 1099899267}
   m_Layer: 0
   m_Name: Slot1
   m_TagString: Untagged
@@ -5756,6 +5752,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.9, y: 1.8}
   m_EdgeRadius: 0
+--- !u!114 &1099899267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099899264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9de97137e8ddb8549a23cc301694bfe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemSprite: {fileID: 0}
 --- !u!1 &1146636143
 GameObject:
   m_ObjectHideFlags: 0
