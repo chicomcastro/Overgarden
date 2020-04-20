@@ -12,6 +12,8 @@ public class SalesManager : MonoBehaviour
         itemSprite.sprite = null;
         itemQuantity = 0;
         sellingPlantType = null;
+
+        StartCoroutine(SellItem());
     }
 
     IEnumerator SellItem()

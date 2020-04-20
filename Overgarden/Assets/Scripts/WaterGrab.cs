@@ -25,27 +25,19 @@ public class WaterGrab : MonoBehaviour
             pressGrab.enabled = true;
             if (Input.GetKeyDown(KeyCode.E) && spawnedWater == null)
             {
-                
                 GameObject spawnedWater = Instantiate(waterPrefab, SpawnLocal.transform.position, Quaternion.identity) as GameObject;
                 spawnedWater.transform.SetParent(Player.gameObject.transform);
                 
                 Player.gameObject.GetComponent<Player>().waterTrigger();
             }
-            
         }
         else
         {
             pressGrab.enabled = false;
         }
-
-
-        
-
-        
-        
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
        if (other.tag == "Player")
        {
@@ -58,8 +50,6 @@ public class WaterGrab : MonoBehaviour
        if (other.tag == "Player")
        {
            Proximity = false;
-           
-           
        }  
     }
 
