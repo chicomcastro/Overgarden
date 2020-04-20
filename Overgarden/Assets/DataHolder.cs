@@ -2,7 +2,7 @@
 
 public class DataHolder : MonoBehaviour
 {
-    private int score;
+    protected int score;
 
     public static DataHolder instance;
 
@@ -18,5 +18,10 @@ public class DataHolder : MonoBehaviour
 
     public void AddScore(int scoreToAdd) {
         score += scoreToAdd;
+    }
+
+    public int GetScore()
+    {
+        return score;
     }
 }
