@@ -82,6 +82,8 @@ public class Player : MonoBehaviour
         }
 
         PickUp();
+
+        teste();
     }
 
      
@@ -232,4 +234,33 @@ public class Player : MonoBehaviour
     {
         spawnedSeedOther = GameObject.FindGameObjectWithTag("Seed");
     }
+
+    public bool isWalking()
+    {
+        if(gameObject.GetComponent<Rigidbody2D>().velocity.magnitude != 0)
+        {
+            return true;
+        }
+        else return false;
+    }
+    public void teste()
+    {   
+        if(isWalking() == false)
+        {
+          if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A)
+            || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
+            {
+                FindObjectOfType<AudioManager>().Play("Walking Sound");
+            }
+        }
+        else 
+        {
+            if(Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A)
+            || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D))
+            {
+                FindObjectOfType<AudioManager>().Stop("Walking Sound");
+            }
+        }   
+    } 
+
 }
