@@ -209,12 +209,13 @@ public class Player : MonoBehaviour
             
             if (Input.GetKeyDown(KeyCode.E))
             {
+                GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
                 GameObject[] tools = GameObject.FindGameObjectsWithTag("Tool");
                 foreach (GameObject Tool in tools)
                 {
                     GameObject.Destroy(Tool);
                 }
-                GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
+                
             }
         }
         else

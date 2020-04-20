@@ -11,8 +11,8 @@ public class EventsManager : MonoBehaviour
     private void Start()
     {
         player = this.gameObject.GetComponent<Player>();
-        holdingItem = HoldingItem.NOTHING;
         holdingSeed = null;
+        holdingItem = HoldingItem.NOTHING;
         holdingPlant = null;
     }
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Corn
   m_EditorClassIdentifier: 
   plantName: Corn
-  plantRarity: 1
+  plantRarity: 2
   plantDescription: 
   main: {fileID: 21300028, guid: 34b2fb2c7e7ed0342b2c564dcf6265cb, type: 3}
   stageSprite:
