@@ -178,6 +178,7 @@ public class StageScript : MonoBehaviour
         if (playerItem == HoldingItem.NOTHING && readyToReap())
         {
             GetComponent<EventsManager>().holdingPlant = plant;
+            GetComponent<EventsManager>().holdingItem = HoldingItem.PLANT;
             loadInitialState();
         }
     }
