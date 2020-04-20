@@ -4,7 +4,7 @@ public class EventsManager : MonoBehaviour
 {
     private Player player;
 
-    [HideInInspector]
+    //[HideInInspector]
     public HoldingItem holdingItem;
 
     [HideInInspector]

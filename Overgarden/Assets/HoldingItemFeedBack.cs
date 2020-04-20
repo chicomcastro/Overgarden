@@ -28,7 +28,14 @@ public class HoldingItemFeedBack : MonoBehaviour
         if (feedbackDict.Keys.ToArray().Contains(currentHoldingItem))
         {
             feedbackCanvas.SetActive(true);
-            feedbackImage.sprite = feedbackDict[currentHoldingItem];
+            if (currentHoldingItem == HoldingItem.PLANT)
+            {
+                feedbackImage.sprite = GetComponent<EventsManager>().holdingPlant.main;
+            }
+            else
+            {
+                feedbackImage.sprite = feedbackDict[currentHoldingItem];
+            }
         }
         else
         {
