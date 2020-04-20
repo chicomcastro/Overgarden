@@ -9367,6 +9367,86 @@ TilemapCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+--- !u!1 &1750660465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1750660467}
+  - component: {fileID: 1750660466}
+  m_Layer: 0
+  m_Name: Audio Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1750660466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750660465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdf5bb71d3fc3f4b8942d4182f96d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Walking Sound
+    clip: {fileID: 8300000, guid: fb41ed09d7dd2634ebdeaa4c2352571f, type: 3}
+    volume: 0.5
+    loop: 1
+    pitch: 2
+    source: {fileID: 0}
+  - name: Main Theme
+    clip: {fileID: 8300000, guid: 5552294a1d941a5499445c4e969bd712, type: 3}
+    volume: 0.5
+    loop: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Taking an Object Sound
+    clip: {fileID: 8300000, guid: e45bf470c04b998498fc5fb31ef0982d, type: 3}
+    volume: 0.5
+    loop: 0
+    pitch: 1
+    source: {fileID: 0}
+  - name: Water the Plants Sound
+    clip: {fileID: 8300000, guid: 4d6c0f66f71f1514a9537e454e2ca715, type: 3}
+    volume: 0.5
+    loop: 0
+    pitch: 1
+    source: {fileID: 0}
+  - name: Running Water
+    clip: {fileID: 8300000, guid: 918de99421d26eb4fa60f0c4d2c45d02, type: 3}
+    volume: 0.5
+    loop: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: 
+    clip: {fileID: 0}
+    volume: 0
+    loop: 0
+    pitch: 0
+    source: {fileID: 0}
+--- !u!4 &1750660467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750660465}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1778286377
 GameObject:
   m_ObjectHideFlags: 0
