@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
 
         PickUp();
 
-        teste();
+        walkingSound();
     }
 
      
@@ -116,10 +116,12 @@ public class Player : MonoBehaviour
             speed = runSpeed;
             currentStamina -= 0.8f;
             staminaBar.SetStamina(currentStamina);
+            FindObjectOfType<AudioManager>().ModifieSound("Walking Sound");
 
             if (currentStamina <= 0)
             {
                 speed = normalSpeed;
+                FindObjectOfType<AudioManager>().NormalizeSound("Walking Sound");
             }
         }
         else
@@ -127,9 +129,9 @@ public class Player : MonoBehaviour
             speed = normalSpeed;
             currentStamina += regen * Time.deltaTime;
             staminaBar.SetStamina(currentStamina);
+            FindObjectOfType<AudioManager>().NormalizeSound("Walking Sound");
         }
     }
-
     //Função que muda layer de animação
     public void ActivateLayer(string layerName)
     {
@@ -241,25 +243,35 @@ public class Player : MonoBehaviour
         }
         else return false;
     }
-    public void teste()
+    public void walkingSound()
     {   
         if(isWalking() == false)
         {
           if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A)
           || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
           {
-                FindObjectOfType<AudioManager>().Play("Walking Sound");
+              FindObjectOfType<AudioManager>().Play("Walking Sound");
           }
         }
         else 
         {
-            if(Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A)
-            || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D))
+            if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
+            || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) == false)
             {
                 FindObjectOfType<AudioManager>().Stop("Walking Sound");
             }
         }   
-    } 
+    }
+
+    public void pickUpSound()
+    {
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            FindObjectOfType<AudioManager>().PlayOnce("Taking an Object Sound");
+        }
+    }
+
+ 
     public void waterTrigger()
     {
         spawnedWaterOther = GameObject.FindGameObjectWithTag("Water");
@@ -271,8 +283,7 @@ public class Player : MonoBehaviour
         spawnedToolOther = GameObject.FindGameObjectWithTag("Tool");
         GetComponent<EventsManager>().holdingItem = HoldingItem.TOOL;
     }
-
-    
+ 
 
 
    
