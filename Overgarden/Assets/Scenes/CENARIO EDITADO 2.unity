@@ -831,14 +831,15 @@ MonoBehaviour:
   idleRegen: 20
   pressE: {fileID: 899645483}
   player: {fileID: 224260620}
-  seed: {fileID: 8644073989953283336, guid: 7396fc085b1acee44b07ff23871d9d49, type: 3}
   onHand: {fileID: 1580711969}
   rigidbody: {fileID: 224260617}
   animator: {fileID: 224260616}
   spawnedSeedOther: {fileID: 0}
   spawnedWaterOther: {fileID: 0}
+  spawnedToolOther: {fileID: 0}
   pickWater: 0
   pickSeed: 0
+  pickTool: 0
   pickSpawnedSeed: 0
 --- !u!212 &224260619
 SpriteRenderer:
@@ -1132,7 +1133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressGrab: {fileID: 884202284}
   Player: {fileID: 224260613}
-  waterBucket: {fileID: 8651751407054044022, guid: 56570a6a1213f754aa5ab325fa3738e5,
+  waterPrefab: {fileID: 8651751407054044022, guid: 56570a6a1213f754aa5ab325fa3738e5,
     type: 3}
   spawnedWater: {fileID: 0}
   SpawnLocal: {fileID: 1580711969}
@@ -2733,7 +2734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 224260613}
-  shovelSprite: {fileID: 6145782435435668239, guid: c6e0fcc8594b6844ea0c9bf27d47b8f6,
+  shovelPrefab: {fileID: 6145782435435668239, guid: c6e0fcc8594b6844ea0c9bf27d47b8f6,
     type: 3}
   spawnedTool: {fileID: 0}
   position: {fileID: 1580711969}
@@ -5837,7 +5838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seedUI: {fileID: 1996392229}
   pressOpen: {fileID: 1369313340}
-  CarrotSeed: {fileID: 4959778843140560880, guid: f47c3dbeab2a9144da4a048a45775d79,
+  CarrotSeedPrefab: {fileID: 4959778843140560880, guid: f47c3dbeab2a9144da4a048a45775d79,
     type: 3}
   DarkCarrotSeed: {fileID: 4959778843140560880, guid: 0575123ae92128740811ee3aa877644e,
     type: 3}

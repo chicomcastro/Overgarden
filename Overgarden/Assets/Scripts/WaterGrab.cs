@@ -8,13 +8,13 @@ public class WaterGrab : MonoBehaviour
     private bool Proximity = false;
     public Text pressGrab;
     public GameObject Player;
-    public GameObject waterBucket;
+    public GameObject waterPrefab;
     public GameObject spawnedWater;
     public GameObject SpawnLocal;
     
     void Start()
     {
-        Debug.Log(spawnedWater);
+//        Debug.Log(spawnedWater);
     }
 
     // Update is called once per frame
@@ -26,20 +26,11 @@ public class WaterGrab : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E) && spawnedWater == null)
             {
                 
-                GameObject spawnedWater = Instantiate(waterBucket, SpawnLocal.transform.position, Quaternion.identity) as GameObject;
+                GameObject spawnedWater = Instantiate(waterPrefab, SpawnLocal.transform.position, Quaternion.identity) as GameObject;
                 spawnedWater.transform.SetParent(Player.gameObject.transform);
-
-                Player.gameObject.GetComponent<EventsManager>().holdingItem = HoldingItem.WATER;
-
-                Debug.Log(spawnedWater);
+                Player.gameObject.GetComponent<Player>().waterTrigger();
             }
             
-            
-        }
-        else if (spawnedWater != null && Input.GetKeyDown(KeyCode.E))
-        {
-            spawnedWater.transform.SetParent(null);
-            Destroy(spawnedWater);
         }
         else
         {

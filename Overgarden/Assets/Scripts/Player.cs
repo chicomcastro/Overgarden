@@ -18,12 +18,12 @@ public class Player : MonoBehaviour
     public Text pressE;
     
     public Transform player;
-    public GameObject seed;
     public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
     public GameObject spawnedSeedOther;
     public GameObject spawnedWaterOther; 
+    public GameObject spawnedToolOther;
 
     //public bool pickCondition;
     
@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
 
     public bool pickWater = false;
     public bool pickSeed = false;
+    public bool pickTool = false;
     public bool pickSpawnedSeed = false;
     
     // Start is called before the first frame update
@@ -149,6 +150,11 @@ public class Player : MonoBehaviour
        {
            pickSeed = true;
        }
+
+       if (other.tag == "Tool")
+       {
+           pickTool = true;
+       }
         
     }
     private void OnTriggerExit2D(Collider2D other)
@@ -162,7 +168,11 @@ public class Player : MonoBehaviour
        {
            pickSeed = false;
        }
-        
+
+       if (other.tag == "Tool")
+       {
+           pickTool = false;
+       }
     }
 
     //Interação com itens do cenário
@@ -170,50 +180,66 @@ public class Player : MonoBehaviour
     {
         if (pickSeed == true)
         {
-            pressE.enabled = true;
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-
-                spawnedSeedOther.transform.SetParent(this.gameObject.transform);
-                spawnedSeedOther.transform.position = onHand.transform.position;
-
-                GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
-
-                
                 if (spawnedSeedOther != null)
                 {
                     Destroy(spawnedSeedOther);
-                }
-                
-                     
+                    GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
+                } 
             }
             
         }
-        else
-        {
-            pressE.enabled = false;
-        }
-
-
         if (pickWater == true)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Destroy(spawnedWaterOther);
+                GameObject[] waters = GameObject.FindGameObjectsWithTag("Water");
+                foreach (GameObject Water in waters)
+                {
+                    GameObject.Destroy(Water);
+                } 
+                GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
                 
-                     
             }
         }
-        
+        if (pickTool == true)
+        {
+            
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                GameObject[] tools = GameObject.FindGameObjectsWithTag("Tool");
+                foreach (GameObject Tool in tools)
+                {
+                    GameObject.Destroy(Tool);
+                }
+                GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
+            }
+        }
+        else
+        {
+            pressE.enabled = false;
+        } 
     }
 
     //Receber item de outro script
     public void seedStallButton()
     {
         spawnedSeedOther = GameObject.FindGameObjectWithTag("Seed");
-        Debug.Log(spawnedSeedOther);
         GetComponent<EventsManager>().holdingItem = HoldingItem.SEED;
+    }
+
+    public void waterTrigger()
+    {
+        spawnedWaterOther = GameObject.FindGameObjectWithTag("Water");
+        GetComponent<EventsManager>().holdingItem = HoldingItem.WATER;
+    }
+
+    public void toolTrigger()
+    {
+        spawnedToolOther = GameObject.FindGameObjectWithTag("Tool");
+        GetComponent<EventsManager>().holdingItem = HoldingItem.TOOL;
     }
 
     

@@ -9,7 +9,7 @@ public class SeedStall : MonoBehaviour
     public GameObject seedUI;
     public Text pressOpen;
 
-    public GameObject CarrotSeed;
+    public GameObject CarrotSeedPrefab;
     public GameObject DarkCarrotSeed;
     public GameObject PineappleSeed;
     public GameObject SpawnPoint;
@@ -31,12 +31,7 @@ public class SeedStall : MonoBehaviour
         {
             pressOpen.enabled = false;
         }
-
-
-        if (spawnedSeed != null && Input.GetKey(KeyCode.Q))
-        {
-            spawnedSeed.transform.SetParent(null);        
-        }     
+  
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -67,7 +62,7 @@ public class SeedStall : MonoBehaviour
     {
 
         Debug.Log("Peguei a semente de cenoura");
-        GameObject spawnedSeed = Instantiate(CarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
+        GameObject spawnedSeed = Instantiate(CarrotSeedPrefab, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
         spawnedSeed.transform.SetParent(Player.gameObject.transform);
         Player.gameObject.GetComponent<Player>().seedStallButton();  
     }

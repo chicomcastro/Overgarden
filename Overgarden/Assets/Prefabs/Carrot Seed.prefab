@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4959778843140560892}
   - component: {fileID: 4959778843140560893}
+  - component: {fileID: 114015992845409948}
   - component: {fileID: 4959778843140560882}
   - component: {fileID: 4959778843140560883}
-  - component: {fileID: 4959778843140560895}
   m_Layer: 0
   m_Name: Carrot Seed
   m_TagString: Seed
@@ -82,6 +82,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &114015992845409948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4959778843140560880}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 023e9181292f65f4d8ba2eeffcba8701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  virginGround: {fileID: 0}
+  plantStages: {fileID: 0}
+  plant: {fileID: 11400000, guid: 86900a4aef50df04781461fd7dba3e0b, type: 2}
+  lifeBar: {fileID: 0}
+  progressionBar: {fileID: 0}
+  maxStage: 100
+  plantImage: {fileID: 0}
+  diedPlant: {fileID: 0}
 --- !u!50 &4959778843140560882
 Rigidbody2D:
   serializedVersion: 4
@@ -119,22 +139,3 @@ CapsuleCollider2D:
   m_Offset: {x: -0.50068927, y: -2.1391006}
   m_Size: {x: 8.1754265, y: 13.775971}
   m_Direction: 0
---- !u!114 &4959778843140560895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4959778843140560880}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2fc9a58355055e4187d65076f249eee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  seed: {fileID: 11400000, guid: f2fb388d2e6dbe84e82380645e6ed6c8, type: 2}
-  nameText: {fileID: 0}
-  descriptionText: {fileID: 0}
-  artworkImage: {fileID: 0}
-  pointsText: {fileID: 0}
-  growthTimeText: {fileID: 0}
-  deathTimeText: {fileID: 0}

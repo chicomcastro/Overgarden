@@ -7,7 +7,7 @@ public class ToolGrab : MonoBehaviour
 {
     private bool Interaction;
     public GameObject Player;
-    public GameObject shovelSprite;
+    public GameObject shovelPrefab;
     public GameObject spawnedTool;
     public GameObject position;
     public Text pressPick;
@@ -26,14 +26,9 @@ public class ToolGrab : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                GameObject spawnedTool = Instantiate(shovelSprite, position.transform.position, Quaternion.identity) as GameObject;
+                GameObject spawnedTool = Instantiate(shovelPrefab, position.transform.position, Quaternion.identity);
                 spawnedTool.transform.SetParent(Player.gameObject.transform);
-                Player.gameObject.GetComponent<EventsManager>().holdingItem = HoldingItem.TOOL;
-
-                /*if (spawnedTool != null)
-                {
-                    Destroy(spawnedTool);
-                }*/
+                Player.gameObject.GetComponent<Player>().toolTrigger();
             }
         }
         else
@@ -42,12 +37,13 @@ public class ToolGrab : MonoBehaviour
         }
     }
 
+
+
     private void OnTriggerEnter2D(Collider2D other)
     {
        if (other.tag == "Player")
        {
            Interaction = true;
-           
        }
         
     }
