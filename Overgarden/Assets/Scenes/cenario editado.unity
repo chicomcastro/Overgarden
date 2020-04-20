@@ -9014,9 +9014,9 @@ MonoBehaviour:
   pressOpen: {fileID: 1915069099}
   CarrotSeed: {fileID: 4959778843140560880, guid: f47c3dbeab2a9144da4a048a45775d79,
     type: 3}
-  DarkCarrotSeed: {fileID: 4959778843140560880, guid: 0575123ae92128740811ee3aa877644e,
+  DarkCarrotSeed: {fileID: 4959778843140560880, guid: 5f6a1643a2ed156418f9792d78be6da3,
     type: 3}
-  PineappleSeed: {fileID: 4959778843140560880, guid: b693b5debcc173b47b09443391b89ac7,
+  PineappleSeed: {fileID: 4959778843140560880, guid: ee08854a7d995fc4d8290ff4e3f843ff,
     type: 3}
   SpawnPoint: {fileID: 1580711969}
   Player: {fileID: 224260613}
