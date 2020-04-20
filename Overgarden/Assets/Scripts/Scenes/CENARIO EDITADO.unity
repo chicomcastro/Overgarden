@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12300,7 +12300,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 4d6c0f66f71f1514a9537e454e2ca715, type: 3}
     volume: 0.5
     loop: 0
-    pitch: 1
+    pitch: 3
     source: {fileID: 0}
   - name: Running Water
     clip: {fileID: 8300000, guid: 918de99421d26eb4fa60f0c4d2c45d02, type: 3}
