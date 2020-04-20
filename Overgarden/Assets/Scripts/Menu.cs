@@ -13,7 +13,7 @@ public class Menu : MonoBehaviour
     }
     public void PlayGame()
     {
-        SceneManager.LoadScene("matheus");
+        SceneManager.LoadScene("cenario");
     }
 
     public void QuitGame()

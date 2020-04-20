@@ -30,6 +30,11 @@ public class StageScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MenuManager.instance.isPaused)
+        {
+            return;
+        }
+
         HandleState();
 
         if (progressionBar.value >= progressionBar.maxValue)
@@ -43,7 +48,7 @@ public class StageScript : MonoBehaviour
 
         if (lifeBar.slider.value == lifeBar.slider.minValue)
         {
-            if (currentStage == (int)PlantStages.TREATED_GROUND)
+            if (currentStage == (int)PlantStages.TREATED_GROUND || currentStage == (int)PlantStages.PLANT_DIED)
             {
                 loadInitialState();
             }
@@ -68,7 +73,6 @@ public class StageScript : MonoBehaviour
             case (int)PlantStages.PLANT_SMALL:
             case (int)PlantStages.PLANT_MEDIUM:
             case (int)PlantStages.PLANT_GREAT:
-            case (int)PlantStages.PLANT_READY:
                 progressionBar.gameObject.SetActive(true);
                 plantStages.SetActive(true);
                 growing();
@@ -77,8 +81,8 @@ public class StageScript : MonoBehaviour
                     passStage();
                 }
                 break;
+            case (int)PlantStages.PLANT_READY:
             case (int)PlantStages.PLANT_DIED:
-                lifeBar.gameObject.SetActive(false);
                 progressionBar.gameObject.SetActive(false);
                 break;
         }
@@ -99,7 +103,7 @@ public class StageScript : MonoBehaviour
 
     public void growing()
     {
-        if (aux % plant.stageTime[getPlantRealState()] == 0)
+        if (aux % getGrowingTime() == 0)
         {
             progressionBar.value++;
         }
@@ -110,7 +114,13 @@ public class StageScript : MonoBehaviour
         }
     }
 
-    private int getPlantRealState() {
+    private int getGrowingTime()
+    {
+        return plant.plantRarity * 5;
+    }
+
+    private int getPlantRealState()
+    {
         // The firsts 2 stages are about ground, not plant
         // And plant stages starts from 0
         return currentStage - 3;
@@ -150,6 +160,11 @@ public class StageScript : MonoBehaviour
 
     public void interact(HoldingItem playerItem)
     {
+        if (currentStage == (int)PlantStages.PLANT_DIED)
+        {
+            return;
+        }
+
         if (isCorrectItem(playerItem))
         {
             passStage();
@@ -162,6 +177,8 @@ public class StageScript : MonoBehaviour
 
         if (playerItem == HoldingItem.NOTHING && readyToReap())
         {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<EventsManager>().holdingPlant = plant;
+            GameObject.FindGameObjectWithTag("Player").GetComponent<EventsManager>().holdingItem = HoldingItem.PLANT;
             loadInitialState();
         }
     }
