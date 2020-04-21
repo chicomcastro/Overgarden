@@ -74,6 +74,7 @@ public class StageScript : MonoBehaviour
             case (int)PlantStages.PLANT_MEDIUM:
             case (int)PlantStages.PLANT_GREAT:
                 progressionBar.gameObject.SetActive(true);
+                lifeBar.lifeTime = getLifeTime();
                 plantStages.SetActive(true);
                 growing();
                 if (progressionBar.value == maxStage)
@@ -114,9 +115,15 @@ public class StageScript : MonoBehaviour
         }
     }
 
+    // Time to die without correct interaction
+    private int getLifeTime() {
+        return plant.plantRarity * 5;
+    }
+
+    // Time do pass stage
     private int getGrowingTime()
     {
-        return plant.plantRarity * 5;
+        return plant.plantRarity * 6;
     }
 
     private int getPlantRealState()

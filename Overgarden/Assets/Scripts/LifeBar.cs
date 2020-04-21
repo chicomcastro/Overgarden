@@ -10,6 +10,7 @@ public class LifeBar : MonoBehaviour
     int aux = 0;
     public Slider slider;
     public int maxLife = 100;
+    public int lifeTime = 10;
 
     private void Start()
     {
@@ -53,7 +54,7 @@ public class LifeBar : MonoBehaviour
 
     public void damage()
     {
-        if(aux%10 == 0)
+        if(aux%lifeTime == 0)
         {
             slider.value--;
         }
