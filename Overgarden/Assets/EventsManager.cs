@@ -26,18 +26,24 @@ public class EventsManager : MonoBehaviour
             PlantScriptableObject plantSeedToInteract = holdingSeed;
             HoldingItem holdingItemToInteract = holdingItem;
 
-            // Clear references
-            holdingSeed = null;
-            holdingItem = HoldingItem.NOTHING;
+            bool shouldResetHoldingItem = false;
 
             // Send interactions
             if (holdingItemToInteract == HoldingItem.SEED && plantSeedToInteract != null)
             {
-                plantSlot.interact(plantSeedToInteract);
+                shouldResetHoldingItem = plantSlot.interact(plantSeedToInteract);
             }
             else
             {
-                plantSlot.interact(holdingItemToInteract);
+                shouldResetHoldingItem = plantSlot.interact(holdingItemToInteract);
+            }
+            print(shouldResetHoldingItem);
+
+            if (shouldResetHoldingItem)
+            {
+                // Clear references
+                holdingSeed = null;
+                holdingItem = HoldingItem.NOTHING;
             }
         }
     }

@@ -26,8 +26,8 @@ public class ToolGrab : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                GameObject spawnedTool = Instantiate(shovelPrefab, position.transform.position, Quaternion.identity);
-                spawnedTool.transform.SetParent(Player.gameObject.transform);
+                // GameObject spawnedTool = Instantiate(shovelPrefab, position.transform.position, Quaternion.identity);
+                // spawnedTool.transform.SetParent(Player.gameObject.transform);
                
                 Player.gameObject.GetComponent<Player>().toolTrigger();
             }

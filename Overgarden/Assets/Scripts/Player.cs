@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
             currentStamina = 0;
         }
 
-        PickUp();
+        // PickUp();
 
         walkingSound();
 
@@ -277,13 +277,13 @@ public class Player : MonoBehaviour
 
     public void waterTrigger()
     {
-        spawnedWaterOther = GameObject.FindGameObjectWithTag("Water");
+        // spawnedWaterOther = GameObject.FindGameObjectWithTag("Water");
         GetComponent<EventsManager>().holdingItem = HoldingItem.WATER;
     }
 
     public void toolTrigger()
     {
-        spawnedToolOther = GameObject.FindGameObjectWithTag("Tool");
+        // spawnedToolOther = GameObject.FindGameObjectWithTag("Tool");
         GetComponent<EventsManager>().holdingItem = HoldingItem.TOOL;
     }
 }
