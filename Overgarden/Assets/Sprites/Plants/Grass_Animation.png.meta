@@ -1,9 +1,11 @@
 fileFormatVersion: 2
-guid: 2afe187175ae0b042b64391f417ff3f0
+guid: ac5c0cbe09dbb6d459ac392f249c1967
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Up get_0
-    21300002: Up get_1
+    21300000: Grass_Animation_0
+    21300002: Grass_Animation_1
+    21300004: Grass_Animation_2
+    21300006: Grass_Animation_3
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -47,7 +49,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 48
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -86,13 +88,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Up get_0
+      name: Grass_Animation_0
       rect:
         serializedVersion: 2
-        x: 34
-        y: 10
-        width: 56
-        height: 97
+        x: 0
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -100,19 +102,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b3295da5780ee0a44ae1e268c5ff62b3
+      spriteID: a7feb85decf73404ba64a6ca7580d7d3
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Up get_1
+      name: Grass_Animation_1
       rect:
         serializedVersion: 2
-        x: 162
-        y: 10
-        width: 56
-        height: 97
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -120,7 +122,47 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dcb0e0e4b90e2f441954a57499735716
+      spriteID: 184d344d54d28c7459e7b78553bf8aa3
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grass_Animation_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 397c3745d61ed834295f41494b1e48a8
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grass_Animation_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74524df9a696fa443b53e2092ac9fa36
       vertices: []
       indices: 
       edges: []
@@ -128,7 +170,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 037ceccc87e63f842a80148dbdc154aa
+    spriteID: a0c12e567db34a94297fea9eebac3a7d
     vertices: []
     indices: 
     edges: []
