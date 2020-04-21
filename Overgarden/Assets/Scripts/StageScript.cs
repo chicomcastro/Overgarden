@@ -149,30 +149,39 @@ public class StageScript : MonoBehaviour
         else return false;
     }
 
-    public void interact(PlantScriptableObject seed)
+    public bool interact(PlantScriptableObject seed)
     {
         if (plant == null && currentStage == (int)PlantStages.TREATED_GROUND)
         {
             plant = seed;
-            interact(HoldingItem.SEED);
+            return interact(HoldingItem.SEED);
         }
+
+        return false;
     }
 
-    public void interact(HoldingItem playerItem)
+    private bool couldThrowWater() {
+        return currentStage >= (int)PlantStages.PLANT_SMALL && currentStage < (int)PlantStages.PLANT_READY;
+    }
+
+    public bool interact(HoldingItem playerItem)
     {
+        // Return is result of shouldResetHoldingItem();
         if (currentStage == (int)PlantStages.PLANT_DIED)
         {
-            return;
+            return false;
         }
 
         if (isCorrectItem(playerItem))
         {
             passStage();
+            return true;
         }
 
-        if (playerItem == HoldingItem.WATER)
+        if (playerItem == HoldingItem.WATER && couldThrowWater())
         {
             lifeBar.Reset();
+            return true;
         }
 
         if (playerItem == HoldingItem.NOTHING && readyToReap())
@@ -180,7 +189,10 @@ public class StageScript : MonoBehaviour
             GameObject.FindGameObjectWithTag("Player").GetComponent<EventsManager>().holdingPlant = plant;
             GameObject.FindGameObjectWithTag("Player").GetComponent<EventsManager>().holdingItem = HoldingItem.PLANT;
             loadInitialState();
+            return false;
         }
+
+        return false;
     }
 
     private bool isCorrectItem(HoldingItem playerItem)

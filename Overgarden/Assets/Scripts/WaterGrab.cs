@@ -25,8 +25,8 @@ public class WaterGrab : MonoBehaviour
             pressGrab.enabled = true;
             if (Input.GetKeyDown(KeyCode.E) && spawnedWater == null)
             {
-                GameObject spawnedWater = Instantiate(waterPrefab, SpawnLocal.transform.position, Quaternion.identity) as GameObject;
-                spawnedWater.transform.SetParent(Player.gameObject.transform);
+                // GameObject spawnedWater = Instantiate(waterPrefab, SpawnLocal.transform.position, Quaternion.identity) as GameObject;
+                // spawnedWater.transform.SetParent(Player.gameObject.transform);
                 
                 Player.gameObject.GetComponent<Player>().waterTrigger();
             }
