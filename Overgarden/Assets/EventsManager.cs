@@ -37,7 +37,6 @@ public class EventsManager : MonoBehaviour
             {
                 shouldResetHoldingItem = plantSlot.interact(holdingItemToInteract);
             }
-            print(shouldResetHoldingItem);
 
             if (shouldResetHoldingItem)
             {
