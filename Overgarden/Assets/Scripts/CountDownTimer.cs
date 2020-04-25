@@ -9,9 +9,10 @@ public class CountDownTimer : MonoBehaviour
     float currentTime;
     public float startingTime;
     
-    
+    public Text finalScore;
 
     public Text clockTime;
+    public GameObject endUI;
     
     void Start()
     {
@@ -32,7 +33,19 @@ public class CountDownTimer : MonoBehaviour
         if (currentTime <= 0)
         {
             clockTime.text = "00:00";
+            endUI.SetActive(true);
+            finalScore.text = "Your final score is : " + DataHolder.instance.GetComponent<DataHolder>().GetScore().ToString();
+
         }
         
+    }
+
+    public void buttonTryAgain()
+    {
+        SceneManager.LoadScene("JogoBase");
+    }
+    public void buttonEndGame()
+    {
+        SceneManager.LoadScene("Credits");
     }
 }
