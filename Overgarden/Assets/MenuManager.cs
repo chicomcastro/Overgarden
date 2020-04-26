@@ -11,7 +11,7 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
-        isPaused = true;
+        isPaused = false;
         instance = this;
         pauseMenu.SetActive(false);
     }
@@ -19,7 +19,7 @@ public class MenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P) && Camera.main.gameObject.GetComponent<Animator>().GetBool("startGame"))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             PauseGame();
         }
@@ -27,18 +27,12 @@ public class MenuManager : MonoBehaviour
 
     public void LoadMenu()
     {
-        Camera.main.gameObject.GetComponent<Animator>().SetBool("startGame", false);
-        Camera.main.gameObject.GetComponent<Animator>().Play("camera-menu");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 
     public void PauseGame()
     {
         isPaused = !isPaused;
         pauseMenu.SetActive(!pauseMenu.activeInHierarchy);
-    }
-
-    public void StartGame() {
-        isPaused = false;
-        Camera.main.gameObject.GetComponent<Animator>().SetBool("startGame", true);
     }
 }
