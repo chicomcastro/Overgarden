@@ -11,10 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scripts/Scenes/cenario.unity
     guid: 17a9c8b67ed2c4d4a89145a07c03b776
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scripts/Scenes/CENARIO EDITADO.unity
     guid: e5a74536834ac864aaae3920cb574757
   - enabled: 1
     path: Assets/Scripts/Scenes/Tutorial.unity
     guid: 1a31a9ebfae80bd428c2a687ee085d5d
+  - enabled: 1
+    path: Assets/Scripts/Scenes/Credits.unity
+    guid: a7373520e4a90b6439fefc1f4d1a2afa
   m_configObjects: {}
