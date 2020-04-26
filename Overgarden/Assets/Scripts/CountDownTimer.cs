@@ -34,7 +34,7 @@ public class CountDownTimer : MonoBehaviour
         {
             clockTime.text = "00:00";
             endUI.SetActive(true);
-            finalScore.text = "Your final score is : " + DataHolder.instance.GetComponent<DataHolder>().GetScore().ToString();
+            finalScore.text = DataHolder.instance.GetScore().ToString();
 
         }
         
