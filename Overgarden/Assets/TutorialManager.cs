@@ -12,19 +12,6 @@ public class TutorialManager : MonoBehaviour
     public GameObject part4;
     public GameObject part5;
     public GameObject part6;
-    public AudioSource introMusic;
-
-    
-    void Start()
-    {
-        introMusic.Play();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void Button1()
     {
@@ -53,7 +40,6 @@ public class TutorialManager : MonoBehaviour
     }
     public void Button6()
     {
-        SceneManager.LoadScene("CENARIO EDITADO");
-        
+        SceneManager.LoadScene("JogoBase");
     }
 }
