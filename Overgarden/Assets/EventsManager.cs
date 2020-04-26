@@ -52,7 +52,8 @@ public class EventsManager : MonoBehaviour
         return (
             obj != null &&
             Input.GetKeyDown(KeyCode.E) &&
-            holdingItem != HoldingItem.PLANT
+            holdingItem != HoldingItem.PLANT &&
+            !MenuManager.instance.isPaused
         );
     }
 

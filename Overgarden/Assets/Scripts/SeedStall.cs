@@ -12,10 +12,13 @@ public class SeedStall : MonoBehaviour
     public GameObject Player;
     public GameObject spawnedSeed;
     
-    
     void Update()
     {
-        if (Interaction == true)
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+        
+        if (Interaction == true && Player.GetComponent<EventsManager>().holdingItem != HoldingItem.PLANT)
         {
             pressOpen.enabled = true;    
             if (Input.GetKey(KeyCode.E))
@@ -27,7 +30,6 @@ public class SeedStall : MonoBehaviour
         {
             pressOpen.enabled = false;
         }
-  
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -35,9 +37,7 @@ public class SeedStall : MonoBehaviour
        if (other.tag == "Player")
        {
            Interaction = true;
-           
        }
-        
     }
     private void OnTriggerExit2D(Collider2D other)
     {
@@ -45,8 +45,7 @@ public class SeedStall : MonoBehaviour
        {
            Interaction = false;
            seedUI.SetActive(false);
-           
-       }  
+       }
     }
 
     //Buttons
@@ -54,26 +53,4 @@ public class SeedStall : MonoBehaviour
     {
         seedUI.SetActive(false);
     }
-  /*  public void Seed0()
-    {
-
-        Debug.Log("Peguei a semente de cenoura");
-        GameObject spawnedSeed = Instantiate(CarrotSeedPrefab, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
-        spawnedSeed.transform.SetParent(Player.gameObject.transform);
-        Player.gameObject.GetComponent<Player>().seedStallButton();  
-    }
-    public void Seed1()
-    {
-        Debug.Log("Peguei a semente de cenoura dark");
-        GameObject spawnedSeed = Instantiate(DarkCarrotSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
-        spawnedSeed.transform.SetParent(Player.gameObject.transform);
-        Player.gameObject.GetComponent<Player>().seedStallButton(); 
-    }
-    public void Seed2()
-    {
-        Debug.Log("Peguei a semente de abacaxi");
-        GameObject spawnedSeed = Instantiate(PineappleSeed, SpawnPoint.transform.position, Quaternion.identity) as GameObject;
-        spawnedSeed.transform.SetParent(Player.gameObject.transform);
-        Player.gameObject.GetComponent<Player>().seedStallButton(); 
-    }*/
 }

@@ -18,10 +18,13 @@ public class CountDownTimer : MonoBehaviour
     {
         currentTime = startingTime;
     }
-
     
     void Update()
     {
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+        
         currentTime -= 1*Time.deltaTime;
         int seconds = (int)(currentTime % 60);
         int minutes = (int)(currentTime / 60);
@@ -32,18 +35,18 @@ public class CountDownTimer : MonoBehaviour
         }
         if (currentTime <= 0)
         {
+            MenuManager.instance.isPaused = true;
             clockTime.text = "00:00";
             endUI.SetActive(true);
             finalScore.text = DataHolder.instance.GetScore().ToString();
-
         }
-        
     }
 
     public void buttonTryAgain()
     {
         SceneManager.LoadScene("JogoBase");
     }
+
     public void buttonEndGame()
     {
         SceneManager.LoadScene("Credits");

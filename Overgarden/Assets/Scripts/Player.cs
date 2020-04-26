@@ -52,6 +52,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+
         rigidbody.velocity = direction.normalized * speed;
         GetInput();
 

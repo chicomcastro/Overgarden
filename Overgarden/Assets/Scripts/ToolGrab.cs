@@ -20,7 +20,11 @@ public class ToolGrab : MonoBehaviour
     
     void Update()
     {
-        if (Interaction == true)
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+
+        if (Interaction == true && Player.GetComponent<EventsManager>().holdingItem != HoldingItem.PLANT)
         {
             pressPick.enabled = true;
 
@@ -37,8 +41,6 @@ public class ToolGrab : MonoBehaviour
             pressPick.enabled = false;
         }
     }
-
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {

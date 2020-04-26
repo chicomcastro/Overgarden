@@ -20,6 +20,9 @@ public class SalesManager : MonoBehaviour
     {
         while (true)
         {
+            if (MenuManager.instance && MenuManager.instance.isPaused) {
+                yield return new WaitUntil(() => MenuManager.instance.isPaused == false);
+            }
             if (itemQuantity > 0)
             {
                 itemQuantity -= 1;
@@ -65,9 +68,10 @@ public class SalesManager : MonoBehaviour
                     // Putting differente item on box
                     else
                     {
-                        eventsManager.holdingPlant = null;
-                        eventsManager.holdingItem = HoldingItem.NOTHING;
-                        DataHolder.instance.AddScore(-20);
+                        // We're not considering this case yet
+                        // eventsManager.holdingPlant = null;
+                        // eventsManager.holdingItem = HoldingItem.NOTHING;
+                        // DataHolder.instance.AddScore(-20);
                     }
                 }
             }

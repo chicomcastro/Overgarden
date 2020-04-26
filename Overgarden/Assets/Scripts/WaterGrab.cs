@@ -20,7 +20,11 @@ public class WaterGrab : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Proximity == true)
+        if (MenuManager.instance.isPaused) {
+            return;
+        }
+
+        if (Proximity == true && Player.GetComponent<EventsManager>().holdingItem != HoldingItem.PLANT)
         {
             pressGrab.enabled = true;
             if (Input.GetKeyDown(KeyCode.E) && spawnedWater == null)
@@ -43,8 +47,8 @@ public class WaterGrab : MonoBehaviour
        {
             Proximity = true;
        }
-        
     }
+
     private void OnTriggerExit2D(Collider2D other)
     {
        if (other.tag == "Player")
@@ -52,7 +56,4 @@ public class WaterGrab : MonoBehaviour
            Proximity = false;
        }  
     }
-
-    
-
 }
