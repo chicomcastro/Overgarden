@@ -25,7 +25,7 @@ public class SalesManager : MonoBehaviour
                 itemQuantity -= 1;
                 DataHolder.instance.AddScore(100);
             }
-            else
+            if (itemQuantity == 0)
             {
                 sellingPlantType = null;
                 itemSprite.sprite = null;
