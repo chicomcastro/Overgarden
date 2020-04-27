@@ -1106,7 +1106,7 @@ MonoBehaviour:
   pickSeed: 0
   pickTool: 0
   pickSpawnedSeed: 0
-  isChossingSeed: 0
+  isChoosingSeed: 0
 --- !u!212 &224260619
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1202,7 +1202,7 @@ MonoBehaviour:
   - itemLabel: 1
     itemSprite: {fileID: 21300000, guid: 1bed2df1d9d48554a80890c110a5e5ad, type: 3}
   - itemLabel: 2
-    itemSprite: {fileID: 21300000, guid: a084b694e85b1ca46aa30dfe551afde2, type: 3}
+    itemSprite: {fileID: 21300000, guid: 9e06ac8b13e9584439daab06a49b53b6, type: 3}
   - itemLabel: 3
     itemSprite: {fileID: 21300000, guid: 62c3a217892113843b2a40e1788eaade, type: 3}
   - itemLabel: 4
@@ -10468,7 +10468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1525950624
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16305,8 +16305,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.024999976}
-  m_SizeDelta: {x: 0.95, y: 0.95}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1971967339
 MonoBehaviour:
