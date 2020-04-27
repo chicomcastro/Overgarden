@@ -16,22 +16,22 @@ public class Player : MonoBehaviour
     public float walkRegen;
     public float idleRegen;
     public Text pressE;
-    
+
     public Transform player;
     public GameObject onHand;
     public Rigidbody2D rigidbody;
     public Animator animator;
     public GameObject spawnedSeedOther;
-    public GameObject spawnedWaterOther; 
+    public GameObject spawnedWaterOther;
     public GameObject spawnedToolOther;
 
     //public bool pickCondition;
-    
+
     public bool IsMoving
     {
         get
         {
-            return direction.x != 0 || direction.y !=0;
+            return (direction.x != 0 || direction.y != 0) && !isChoosingSeed;
         }
     }
 
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     public bool pickSeed = false;
     public bool pickTool = false;
     public bool pickSpawnedSeed = false;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,14 +49,17 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    public bool isChoosingSeed;
+
     // Update is called once per frame
     void Update()
     {
-        if (MenuManager.instance.isPaused) {
+        if (MenuManager.instance.isPaused)
+        {
             return;
         }
 
-        rigidbody.velocity = direction.normalized * speed;
+        rigidbody.velocity = isChoosingSeed ? Vector2.zero : direction.normalized * speed;
         GetInput();
 
         if (IsMoving)
@@ -64,7 +67,7 @@ public class Player : MonoBehaviour
             ActivateLayer("Walk Layer");
             animator.SetFloat("x", direction.x);
             animator.SetFloat("y", direction.y);
-            regen = walkRegen;    
+            regen = walkRegen;
         }
         else if (Input.GetKey(KeyCode.E))
         {
@@ -93,7 +96,7 @@ public class Player : MonoBehaviour
         pickUpSound();
     }
 
-     
+
     public void GetInput()
     {
         direction = Vector2.zero;
@@ -114,8 +117,11 @@ public class Player : MonoBehaviour
         {
             direction += Vector2.right;
         }
-
-
+        if (Input.GetKeyDown(KeyCode.Q) && GetComponent<EventsManager>().holdingItem != HoldingItem.PLANT)
+        {
+            GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
+            GetComponent<EventsManager>().holdingSeed = null;
+        }
 
         if (Input.GetKey(KeyCode.LeftShift) && IsMoving)
         {
@@ -141,49 +147,49 @@ public class Player : MonoBehaviour
     //Função que muda layer de animação
     public void ActivateLayer(string layerName)
     {
-        for(int i=0; i < animator.layerCount; i++)
+        for (int i = 0; i < animator.layerCount; i++)
         {
             animator.SetLayerWeight(i, 0);
         }
 
-        animator.SetLayerWeight(animator.GetLayerIndex(layerName),1);
+        animator.SetLayerWeight(animator.GetLayerIndex(layerName), 1);
     }
 
     //Colisão
     private void OnTriggerEnter2D(Collider2D other)
     {
-       if (other.tag == "Water")
-       {
-           pickWater = true;
-       }
+        if (other.tag == "Water")
+        {
+            pickWater = true;
+        }
 
-       if (other.tag == "Seed")
-       {
-           pickSeed = true;
-       }
+        if (other.tag == "Seed")
+        {
+            pickSeed = true;
+        }
 
-       if (other.tag == "Tool")
-       {
-           pickTool = true;
-       }
-        
+        if (other.tag == "Tool")
+        {
+            pickTool = true;
+        }
+
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-       if (other.tag == "Water")
-       {
-           pickWater = false;
-       }
+        if (other.tag == "Water")
+        {
+            pickWater = false;
+        }
 
-       if (other.tag == "Seed")
-       {
-           pickSeed = false;
-       }
+        if (other.tag == "Seed")
+        {
+            pickSeed = false;
+        }
 
-       if (other.tag == "Tool")
-       {
-           pickTool = false;
-       }
+        if (other.tag == "Tool")
+        {
+            pickTool = false;
+        }
     }
 
     //Interação com itens do cenário
@@ -198,27 +204,27 @@ public class Player : MonoBehaviour
                 {
                     Destroy(spawnedSeedOther);
                     GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
-                } 
+                }
             }
-            
+
         }
         if (pickWater == true)
-        {   
+        {
             if (Input.GetKeyDown(KeyCode.E))
-            {   
+            {
                 GameObject[] waters = GameObject.FindGameObjectsWithTag("Water");
                 foreach (GameObject Water in waters)
                 {
                     GameObject.Destroy(Water);
-                } 
+                }
                 FindObjectOfType<AudioManager>().PlayOnce("Water the Plants Sound");
                 GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
-                
+
             }
         }
         if (pickTool == true)
         {
-            
+
             if (Input.GetKeyDown(KeyCode.E))
             {
                 GetComponent<EventsManager>().holdingItem = HoldingItem.NOTHING;
@@ -227,13 +233,13 @@ public class Player : MonoBehaviour
                 {
                     GameObject.Destroy(Tool);
                 }
-                
+
             }
         }
         else
         {
             pressE.enabled = false;
-        } 
+        }
     }
 
     //Receber item de outro script
@@ -245,35 +251,35 @@ public class Player : MonoBehaviour
 
     public bool isWalking()
     {
-        if(gameObject.GetComponent<Rigidbody2D>().velocity.magnitude != 0)
+        if (gameObject.GetComponent<Rigidbody2D>().velocity.magnitude != 0)
         {
             return true;
         }
         else return false;
     }
     public void walkingSound()
-    {   
-        if(isWalking() == false)
+    {
+        if (isWalking() == false)
         {
-          if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A)
-          || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
-          {
-              FindObjectOfType<AudioManager>().Play("Walking Sound");
-          }
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A)
+            || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
+            {
+                FindObjectOfType<AudioManager>().Play("Walking Sound");
+            }
         }
-        else 
+        else
         {
-            if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
+            if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A)
             || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) == false)
             {
                 FindObjectOfType<AudioManager>().Stop("Walking Sound");
             }
-        }   
+        }
     }
 
     public void pickUpSound()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             FindObjectOfType<AudioManager>().PlayOnce("Taking an Object Sound");
         }

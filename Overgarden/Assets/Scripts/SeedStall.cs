@@ -5,12 +5,17 @@ using UnityEngine.UI;
 
 public class SeedStall : MonoBehaviour
 {
-    private bool Interaction = false;
+    public bool Interaction = false;
     public GameObject seedUI;
     public Text pressOpen;
     public GameObject SpawnPoint;
     public GameObject Player;
     public GameObject spawnedSeed;
+
+    private void Start()
+    {
+        seedUI.SetActive(false);
+    }
     
     void Update()
     {
@@ -18,13 +23,11 @@ public class SeedStall : MonoBehaviour
             return;
         }
         
-        if (Interaction == true && Player.GetComponent<EventsManager>().holdingItem != HoldingItem.PLANT)
+        if (Interaction == true && 
+            Player.GetComponent<EventsManager>().holdingItem != HoldingItem.PLANT && 
+            !Player.GetComponent<Player>().isChoosingSeed)
         {
-            pressOpen.enabled = true;    
-            if (Input.GetKey(KeyCode.E))
-            {
-                seedUI.SetActive(true);
-            }   
+            pressOpen.enabled = true;
         }
         else
         {

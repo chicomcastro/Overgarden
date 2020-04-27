@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class StallGridItem : MonoBehaviour
 {
-    [HideInInspector]
     public PlantScriptableObject plant;
     public Image cover;
 
