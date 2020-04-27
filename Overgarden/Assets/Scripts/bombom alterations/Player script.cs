@@ -108,9 +108,7 @@ public class Playerscriptteste : MonoBehaviour
             direction += Vector2.right;
         }
 
-
-
-        if (Input.GetKey(KeyCode.LeftShift) && IsMoving)
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && IsMoving)
         {
             speed = runSpeed;
             currentStamina -= 0.8f;
