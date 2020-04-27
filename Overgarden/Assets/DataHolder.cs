@@ -6,6 +6,9 @@ public class DataHolder : MonoBehaviour
 
     public static DataHolder instance;
 
+    [HideInInspector]
+    public int numberOfPlayers;
+
     private void Awake()
     {
         instance = this;
@@ -14,6 +17,7 @@ public class DataHolder : MonoBehaviour
     private void Start()
     {
         score = 0;
+        numberOfPlayers = 1;
     }
 
     public void AddScore(int scoreToAdd) {

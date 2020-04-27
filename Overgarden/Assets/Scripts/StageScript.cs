@@ -116,14 +116,21 @@ public class StageScript : MonoBehaviour
     }
 
     // Time to die without correct interaction
-    private int getLifeTime() {
-        return plant.plantRarity * 5;
+    private int getLifeTime()
+    {
+        return plant.plantRarity * 5 * DifficultyMultiplier();
     }
 
     // Time do pass stage
     private int getGrowingTime()
     {
-        return plant.plantRarity * 6;
+        return plant.plantRarity * 6 * DifficultyMultiplier();
+    }
+
+    private int DifficultyMultiplier()
+    {
+        int[] difficultyMultiplier = { 4, 3, 2, 1 };
+        return difficultyMultiplier[DataHolder.instance.numberOfPlayers - 1];
     }
 
     private int getPlantRealState()
@@ -167,7 +174,8 @@ public class StageScript : MonoBehaviour
         return false;
     }
 
-    private bool couldThrowWater() {
+    private bool couldThrowWater()
+    {
         return currentStage >= (int)PlantStages.PLANT_SMALL && currentStage < (int)PlantStages.PLANT_READY;
     }
 
