@@ -37,7 +37,7 @@ public class SeedStallManager : MonoBehaviour
     {
         if (!seedStallPanel.gameObject.activeInHierarchy)
         {
-            if (Input.GetKeyDown(KeyCode.E) && 
+            if (Input.GetKeyDown(KeyCode.E) &&
                 GameObject.FindObjectOfType<SeedStall>().Interaction)
             {
                 GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().isChoosingSeed = true;
@@ -110,7 +110,17 @@ public class SeedStallManager : MonoBehaviour
                 image.color.r,
                 image.color.g,
                 image.color.b,
-                (image.sprite == null) ? 0 : (i % 2 == 1 ? 200 : 100)
+                (image.sprite == null) ? 
+                0 : 
+                (
+                    i % 2 == 1 ? 
+                    200f / 255f : 
+                    (
+                        i == 2 ? 
+                        1f :
+                        100f / 255f
+                    )
+                )
             );
         }
     }
