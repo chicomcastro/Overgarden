@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Overgarden — Web</title>
 <link rel="stylesheet" href="style.css" />
 </head>
@@ -30,6 +30,8 @@
         <strong>Controles:</strong>
         WASD mover · SHIFT correr · E interagir · Q largar item · P pausar
         <br />
+        <span class="mobile-hint">No celular: use os botões na tela (gire para o modo paisagem para mais espaço).</span>
+        <br />
         <label class="mute-toggle"><input type="checkbox" id="mute-box" /> Silenciar áudio</label>
       </div>
     </div>
@@ -40,6 +42,22 @@
       <p class="desc">Pressione <strong>P</strong> para continuar.</p>
       <button id="resume-btn" class="big-btn">Continuar</button>
       <button id="quit-btn" class="big-btn secondary">Menu</button>
+    </div>
+  </div>
+
+  <!-- On-screen touch controls (shown on touch devices while playing) -->
+  <div id="touch-controls" aria-hidden="true">
+    <div class="dpad">
+      <button class="tbtn dpad-up" data-key="w" aria-label="Cima">▲</button>
+      <button class="tbtn dpad-left" data-key="a" aria-label="Esquerda">◀</button>
+      <button class="tbtn dpad-right" data-key="d" aria-label="Direita">▶</button>
+      <button class="tbtn dpad-down" data-key="s" aria-label="Baixo">▼</button>
+    </div>
+    <div class="abtns">
+      <button class="tbtn act-run" data-key="shift" aria-label="Correr">⚡</button>
+      <button class="tbtn act-p" data-key="p" aria-label="Pausar">❚❚</button>
+      <button class="tbtn act-q" data-key="q" aria-label="Largar">Q</button>
+      <button class="tbtn act-e" data-key="e" aria-label="Interagir">E</button>
     </div>
   </div>
 

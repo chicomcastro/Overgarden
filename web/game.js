@@ -743,11 +743,41 @@ document.getElementById("resume-btn").addEventListener("click", togglePause);
 document.getElementById("quit-btn").addEventListener("click", quitToMenu);
 muteBox.addEventListener("change", () => sound.setMuted(muteBox.checked));
 
+// On-screen touch controls: feed the same keys/justPressed state as the keyboard.
+const touchControls = document.getElementById("touch-controls");
+function bindTouch() {
+  if (!touchControls) return;
+  touchControls.querySelectorAll(".tbtn").forEach((btn) => {
+    const key = btn.dataset.key;
+    const press = (e) => {
+      e.preventDefault();
+      if (!keys[key]) justPressed[key] = true;
+      keys[key] = true;
+      btn.classList.add("pressed");
+      try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+    };
+    const release = (e) => {
+      e.preventDefault();
+      keys[key] = false;
+      btn.classList.remove("pressed");
+    };
+    btn.addEventListener("pointerdown", press);
+    btn.addEventListener("pointerup", release);
+    btn.addEventListener("pointercancel", release);
+    btn.addEventListener("contextmenu", (e) => e.preventDefault());
+  });
+}
+bindTouch();
+function showTouchControls(on) {
+  if (touchControls) touchControls.classList.toggle("active", on);
+}
+
 function startGame() {
   if (!ASSETS.atlas) return;
   game = createGame(selectedPlayers);
   startScreen.classList.add("hidden");
   pauseScreen.classList.add("hidden");
+  showTouchControls(true);
   sound.setMuted(muteBox.checked);
   if (!sound.muted) sound.theme();
   running = true;
@@ -759,6 +789,7 @@ function quitToMenu() {
   running = false;
   game = null;
   for (const k in ASSETS.audio) { ASSETS.audio[k].pause(); ASSETS.audio[k].currentTime = 0; }
+  showTouchControls(false);
   pauseScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");
 }
