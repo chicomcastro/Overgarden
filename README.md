@@ -4,10 +4,13 @@ This is my team submission for Ludum Dare 46 game jam. You can find more details
 ![Overgarden demo](Overgarden/Screenshots/demo.gif)
 
 ## Web version
-A lightweight, dependency-free HTML5 Canvas reimplementation of the core gameplay
-lives in [`web/`](web/). Open `web/index.html` (or serve the folder with any static
-server) to play directly in the browser — no Unity build required. See
-[`web/README.md`](web/README.md) for details.
+A dependency-free HTML5 Canvas reimplementation of the core gameplay lives in
+[`web/`](web/). It uses the **original sprites and audio** sliced straight from the
+Unity project. Open `web/index.html` (or serve the folder with any static server)
+to play directly in the browser — no Unity build required.
+
+- **Play online:** https://chicomcastro.github.io/Overgarden/ (auto-deployed via GitHub Actions on every push to `master`)
+- Details and controls: [`web/README.md`](web/README.md)
 
 ## Description
 You just found a farm in the middle of nowhere. What else could you do besides keeping it alive in an infinite loop? Choosing between the multiple seeds at your disposal, find out the most efficient way to earn points in this endless farming simulator!

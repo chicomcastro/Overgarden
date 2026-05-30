@@ -2,10 +2,16 @@
 
 Reimplementação em **HTML5 Canvas + JavaScript puro** (sem dependências, sem build)
 do loop de gameplay do Overgarden, originalmente feito em Unity para a Ludum Dare 46.
+Usa os **sprites e áudios originais** do projeto Unity.
 
 O projeto Unity original gera a versão web via build WebGL (disponível no
 [itch.io](https://chicomcastro.itch.io/overgarden)). Esta pasta é uma porta
 leve e autocontida que roda direto no navegador a partir de arquivos estáticos.
+
+## Jogar online
+
+Deploy automático no GitHub Pages a cada push na `master`:
+**https://chicomcastro.github.io/Overgarden/**
 
 ## Como rodar
 
@@ -57,5 +63,18 @@ Reproduzidas a partir dos scripts C# originais:
 - Caixa de vendas que vende ao longo do tempo — `SalesManager.cs`
 - Dados das plantas (nome/raridade) — `Assets/Plants/*.asset`
 
-> Os sprites originais estão empacotados em spritesheets do Unity referenciados por
-> GUID; esta porta usa emojis/formas desenhadas para se manter 100% autocontida.
+## Assets
+
+Os PNGs em `assets/img/` e os áudios em `assets/audio/` são extraídos do projeto
+Unity. As spritesheets (personagem, plantas) são recortadas em runtime usando os
+retângulos definidos em `assets/atlas.json`, gerado por
+[`extract_web_assets.py`](../extract_web_assets.py) (na raiz do repositório):
+
+```bash
+python3 extract_web_assets.py   # lê Overgarden/Assets/*, escreve web/assets/*
+```
+
+O script lê as dimensões dos PNGs direto do header IHDR e os rects de sprite dos
+arquivos `.meta` do Unity (origem bottom-left convertida para top-left), sem
+dependências externas. O áudio de ambiente do rio (`rio.wav`, 16 MB sem compressão)
+foi omitido de propósito por ser pesado demais para a web.

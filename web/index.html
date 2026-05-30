@@ -12,7 +12,7 @@
 
     <!-- Start / difficulty screen -->
     <div id="start-screen" class="overlay">
-      <h1>OVERGARDEN</h1>
+      <img id="logo" src="assets/img/ui_logo.png" alt="Overgarden" />
       <p class="tagline">Endless farming simulator</p>
       <p class="desc">
         Você achou uma fazenda no meio do nada. Mantenha-a viva num loop
@@ -25,10 +25,12 @@
         <button class="diff-btn" data-players="3">Difícil</button>
         <button class="diff-btn" data-players="4">Insano</button>
       </div>
-      <button id="start-btn" class="big-btn">Começar</button>
+      <button id="start-btn" class="big-btn" disabled>Carregando…</button>
       <div class="controls">
         <strong>Controles:</strong>
         WASD mover · SHIFT correr · E interagir · Q largar item · P pausar
+        <br />
+        <label class="mute-toggle"><input type="checkbox" id="mute-box" /> Silenciar áudio</label>
       </div>
     </div>
 
