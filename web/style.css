@@ -1,7 +1,9 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body {
-  height: 100%;
+html, body { height: 100%; }
+
+body {
+  min-height: 100dvh;
   background: #1a2417;
   color: #f3ecd8;
   font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
@@ -9,14 +11,19 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 12px;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
+/* Game area: fits within the viewport on both axes, letterboxed (16:10). */
 #game-wrapper {
   position: relative;
-  width: 960px;
-  max-width: 100%;
+  width: min(100vw, calc(100dvh * 1.6));
+  max-width: 960px;
   aspect-ratio: 960 / 600;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
   border-radius: 10px;
@@ -29,53 +36,46 @@ canvas#game {
   height: 100%;
   image-rendering: pixelated;
   background: #6ab04c;
+  touch-action: none;
 }
 
-/* Overlays */
+/* ---------------------------------------------------------------- Overlays */
 .overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(20, 30, 16, 0.92);
+  z-index: 10;
+  background: rgba(20, 30, 16, 0.96);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 16px;
-  padding: 32px;
+  gap: clamp(8px, 2vh, 16px);
+  padding: clamp(14px, 4vw, 32px);
+  overflow-y: auto;
 }
 
 .overlay.hidden { display: none; }
 
 .overlay h1 {
-  font-size: 54px;
+  font-size: clamp(34px, 7vw, 54px);
   letter-spacing: 6px;
   color: #f7d774;
   text-shadow: 0 3px 0 #7a5b18;
 }
 
 #logo {
-  width: 360px;
-  max-width: 70%;
+  width: clamp(150px, 42%, 340px);
   height: auto;
   image-rendering: auto;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
 
-.tagline { font-size: 18px; color: #b7d49a; font-style: italic; }
-
-.mute-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  cursor: pointer;
-}
-
-.big-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+.tagline { font-size: clamp(14px, 3.4vw, 18px); color: #b7d49a; font-style: italic; }
 
 .desc {
   max-width: 560px;
+  font-size: clamp(12px, 3vw, 16px);
   line-height: 1.5;
   color: #e7e0cd;
 }
@@ -97,7 +97,7 @@ canvas#game {
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: clamp(13px, 3.2vw, 15px);
   transition: all 0.12s;
 }
 
@@ -113,9 +113,9 @@ canvas#game {
   background: #f7d774;
   color: #2a3a1f;
   border: none;
-  padding: 14px 44px;
+  padding: clamp(10px, 2.2vh, 14px) clamp(28px, 8vw, 44px);
   border-radius: 8px;
-  font-size: 22px;
+  font-size: clamp(18px, 4.5vw, 22px);
   font-weight: bold;
   cursor: pointer;
   letter-spacing: 1px;
@@ -123,24 +123,112 @@ canvas#game {
 }
 
 .big-btn:hover { background: #ffe48a; transform: translateY(-2px); }
+.big-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
 .big-btn.secondary {
   background: #3c5230;
   color: #e7e0cd;
-  font-size: 16px;
+  font-size: clamp(14px, 3.5vw, 16px);
   padding: 10px 28px;
 }
 .big-btn.secondary:hover { background: #4d6a3c; }
 
 .controls {
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: clamp(11px, 3vw, 14px);
   color: #b7d49a;
   max-width: 560px;
   line-height: 1.6;
 }
 
-.footnote {
-  font-size: 13px;
-  color: #8ba377;
+.mobile-hint { color: #f7d774; }
+
+.mute-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  cursor: pointer;
 }
+
+.footnote { font-size: 13px; color: #8ba377; text-align: center; }
 .footnote a { color: #f7d774; }
+
+/* ----------------------------------------------------------- Touch controls */
+#touch-controls {
+  display: none;
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 8;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 16px max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  pointer-events: none;
+}
+
+#touch-controls.active { display: flex; }
+
+.dpad {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  pointer-events: none;
+}
+
+.tbtn {
+  pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  border: 2px solid rgba(247, 215, 116, 0.55);
+  background: rgba(20, 30, 16, 0.5);
+  color: #f7d774;
+  font-family: inherit;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tbtn.pressed { background: rgba(247, 215, 116, 0.85); color: #2a3a1f; }
+
+.dpad .tbtn {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+  border-radius: 12px;
+}
+.dpad-up    { top: 0;    left: 56px; }
+.dpad-left  { top: 56px; left: 0; }
+.dpad-right { top: 56px; left: 112px; }
+.dpad-down  { top: 112px; left: 56px; }
+
+.abtns {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 12px;
+  align-items: end;
+  pointer-events: none;
+}
+
+.abtns .tbtn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  font-size: 22px;
+}
+.abtns .act-e { width: 78px; height: 78px; font-size: 28px; border-color: rgba(95, 211, 95, 0.7); }
+.abtns .act-run { font-size: 26px; }
+
+/* Show touch controls on touch-primary devices. */
+@media (pointer: coarse) {
+  #touch-controls.active { display: flex; }
+  .footnote { display: none; }
+}
+
+/* Hide footnote on short screens to maximise play area. */
+@media (max-height: 520px) {
+  .footnote { display: none; }
+}
