@@ -1,0 +1,128 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: #1a2417;
+  color: #f3ecd8;
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+#game-wrapper {
+  position: relative;
+  width: 960px;
+  max-width: 100%;
+  aspect-ratio: 960 / 600;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+canvas#game {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  background: #6ab04c;
+}
+
+/* Overlays */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 30, 16, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+  padding: 32px;
+}
+
+.overlay.hidden { display: none; }
+
+.overlay h1 {
+  font-size: 54px;
+  letter-spacing: 6px;
+  color: #f7d774;
+  text-shadow: 0 3px 0 #7a5b18;
+}
+
+.tagline { font-size: 18px; color: #b7d49a; font-style: italic; }
+
+.desc {
+  max-width: 560px;
+  line-height: 1.5;
+  color: #e7e0cd;
+}
+
+.difficulty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.difficulty span { font-weight: bold; margin-right: 4px; }
+
+.diff-btn {
+  background: #3c5230;
+  color: #e7e0cd;
+  border: 2px solid #5b7a45;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.12s;
+}
+
+.diff-btn:hover { background: #4d6a3c; }
+.diff-btn.selected {
+  background: #f7d774;
+  color: #2a3a1f;
+  border-color: #f7d774;
+  font-weight: bold;
+}
+
+.big-btn {
+  background: #f7d774;
+  color: #2a3a1f;
+  border: none;
+  padding: 14px 44px;
+  border-radius: 8px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: transform 0.1s, background 0.1s;
+}
+
+.big-btn:hover { background: #ffe48a; transform: translateY(-2px); }
+.big-btn.secondary {
+  background: #3c5230;
+  color: #e7e0cd;
+  font-size: 16px;
+  padding: 10px 28px;
+}
+.big-btn.secondary:hover { background: #4d6a3c; }
+
+.controls {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #b7d49a;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.footnote {
+  font-size: 13px;
+  color: #8ba377;
+}
+.footnote a { color: #f7d774; }

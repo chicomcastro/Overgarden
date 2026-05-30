@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Overgarden — Web</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-wrapper">
+    <canvas id="game" width="960" height="600"></canvas>
+
+    <!-- Start / difficulty screen -->
+    <div id="start-screen" class="overlay">
+      <h1>OVERGARDEN</h1>
+      <p class="tagline">Endless farming simulator</p>
+      <p class="desc">
+        Você achou uma fazenda no meio do nada. Mantenha-a viva num loop
+        infinito: prepare a terra, plante, regue, colha e venda para somar pontos.
+      </p>
+      <div class="difficulty">
+        <span>Dificuldade:</span>
+        <button class="diff-btn selected" data-players="1">Fácil</button>
+        <button class="diff-btn" data-players="2">Médio</button>
+        <button class="diff-btn" data-players="3">Difícil</button>
+        <button class="diff-btn" data-players="4">Insano</button>
+      </div>
+      <button id="start-btn" class="big-btn">Começar</button>
+      <div class="controls">
+        <strong>Controles:</strong>
+        WASD mover · SHIFT correr · E interagir · Q largar item · P pausar
+      </div>
+    </div>
+
+    <!-- Pause screen -->
+    <div id="pause-screen" class="overlay hidden">
+      <h1>PAUSA</h1>
+      <p class="desc">Pressione <strong>P</strong> para continuar.</p>
+      <button id="resume-btn" class="big-btn">Continuar</button>
+      <button id="quit-btn" class="big-btn secondary">Menu</button>
+    </div>
+  </div>
+
+  <p class="footnote">
+    Reimplementação web (HTML5 Canvas) de
+    <a href="https://chicomcastro.itch.io/overgarden" target="_blank" rel="noopener">Overgarden</a>,
+    submissão da Ludum Dare 46.
+  </p>
+
+  <script src="game.js"></script>
+</body>
+</html>
