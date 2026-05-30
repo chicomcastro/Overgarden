@@ -153,6 +153,16 @@ canvas#game {
 .footnote { font-size: 13px; color: #8ba377; text-align: center; }
 .footnote a { color: #f7d774; }
 
+/* Result screen */
+#result-stars {
+  font-size: clamp(48px, 12vw, 84px);
+  letter-spacing: 8px;
+  line-height: 1;
+}
+#result-stars .on { color: #f7d774; text-shadow: 0 3px 0 #7a5b18; }
+#result-stars .off { color: #3c5230; }
+#result-score { font-size: clamp(18px, 4.5vw, 26px); font-weight: bold; color: #f7d774; }
+
 /* ----------------------------------------------------------- Touch controls */
 #touch-controls {
   display: none;
