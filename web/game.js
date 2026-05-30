@@ -36,8 +36,10 @@ const TUNE = {
 };
 
 const ROUND = {
-  duration: 150,            // seconds
-  stars: [500, 1200, 2200], // score thresholds for 1/2/3 stars
+  duration: 150,          // seconds
+  // Calibrated to the achievable ceiling measured by the e2e bot at the shipped
+  // pacing (~50/80/105% of a competent solo run's best). See tests/e2e/.
+  stars: [100, 150, 200], // score thresholds for 1/2/3 stars
 };
 
 const ORDER = {
