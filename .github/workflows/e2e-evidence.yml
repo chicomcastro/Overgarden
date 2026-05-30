@@ -1,0 +1,84 @@
+name: e2e — evidência visual + dados de balanceamento
+
+# Joga o jogo com um bot autoplayer em rounds determinísticos e gera, a cada PR:
+#   - screenshots (começo/meio/fim + resultado)  -> artifact
+#   - gráfico de score no tempo + metrics.json   -> artifact
+#   - tabela-resumo de balanceamento             -> comentário no PR
+
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - "tests/e2e/**"
+      - "package.json"
+      - ".github/workflows/e2e-evidence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  play:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Play rounds (Fácil + Insano)
+        run: |
+          node tests/e2e/run.mjs --players 1 --seeds 1,2,3,4,5 --out tests/e2e/out/facil
+          node tests/e2e/run.mjs --players 4 --seeds 1,2,3,4,5 --out tests/e2e/out/insano
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: overgarden-e2e
+          path: tests/e2e/out
+          if-no-files-found: error
+
+      - name: Comment balancing summary on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const read = (p) => fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
+            const facil = read('tests/e2e/out/facil/summary.md');
+            const insano = read('tests/e2e/out/insano/summary.md');
+            const marker = '<!-- overgarden-e2e -->';
+            const body = [
+              marker,
+              facil,
+              '',
+              '<details><summary>Insano (5 seeds)</summary>',
+              '',
+              insano,
+              '',
+              '</details>',
+              '',
+              `_Atualizado pelo run [${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}). Screenshots e \`metrics.json\` no artifact **overgarden-e2e**._`,
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
+            }

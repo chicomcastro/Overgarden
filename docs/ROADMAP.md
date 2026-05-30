@@ -51,7 +51,7 @@ sozinho ou em co-op, com caos crescente.
 - [ ] Níveis **data-driven** (JSON: estações, canteiros, pedidos, meta, tempo).
 - [ ] **Colisão real** com estações/obstáculos.
 - [ ] Tick determinístico + separação de sistemas (prep p/ co-op/replay).
-- [ ] **CI no PR**: lint + testes de lógica headless (já há harness Playwright).
+- [x] **CI no PR**: harness e2e (bot autoplayer headless) que gera evidência visual + dados de balanceamento por seed (`tests/e2e/`).
 - [ ] Pipeline de assets (poço/água animados, decorações, tilemap da cena Unity).
 
 **Marketing**
