@@ -59,7 +59,7 @@ def copy_png(src_rel, dst_name):
     return png_size(src)
 
 
-atlas = {"character": {}, "items": {}, "plants": {}, "plantData": {}, "ui": {}}
+atlas = {"character": {}, "items": {}, "plants": {}, "plantData": {}, "ui": {}, "tiles": {}}
 
 # ---- Character: walking (4 frames), idle (2), holding (2) per direction ----
 CHAR = {
@@ -142,6 +142,16 @@ for key, src_rel in {
     dst = f"item_{key}.png"
     w, h = copy_png(src_rel, dst)
     atlas["items"][key] = {"sheet": dst, "w": w, "h": h}
+
+# ---- Scenario tilesets (32px grid; sliced at runtime by grid coords) ----
+for key, src_rel in {
+    "grass": "Sprites/Imported/tilesets/tallgrass.png",
+    "soil": "Sprites/Imported/tilesets/plowed_soil.png",
+    "fence": "Sprites/Imported/tilesets/fence.png",
+}.items():
+    dst = f"tile_{key}.png"
+    w, h = copy_png(src_rel, dst)
+    atlas["tiles"][key] = {"sheet": dst, "w": w, "h": h, "tile": 32}
 
 # ---- UI / misc ----
 for key, src_rel in {
