@@ -1,0 +1,889 @@
+{
+ "character": {
+  "walk_down": {
+   "sheet": "char_walk_down.png",
+   "w": 256,
+   "h": 256,
+   "frames": [
+    {
+     "x": 37,
+     "y": 21,
+     "w": 57,
+     "h": 97
+    },
+    {
+     "x": 165,
+     "y": 21,
+     "w": 57,
+     "h": 97
+    },
+    {
+     "x": 37,
+     "y": 151,
+     "w": 57,
+     "h": 95
+    },
+    {
+     "x": 165,
+     "y": 150,
+     "w": 57,
+     "h": 96
+    }
+   ]
+  },
+  "walk_up": {
+   "sheet": "char_walk_up.png",
+   "w": 256,
+   "h": 256,
+   "frames": [
+    {
+     "x": 34,
+     "y": 21,
+     "w": 56,
+     "h": 97
+    },
+    {
+     "x": 162,
+     "y": 21,
+     "w": 56,
+     "h": 97
+    },
+    {
+     "x": 34,
+     "y": 150,
+     "w": 56,
+     "h": 96
+    },
+    {
+     "x": 162,
+     "y": 149,
+     "w": 56,
+     "h": 97
+    }
+   ]
+  },
+  "walk_left": {
+   "sheet": "char_walk_left.png",
+   "w": 256,
+   "h": 256,
+   "frames": [
+    {
+     "x": 37,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 165,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 36,
+     "y": 151,
+     "w": 51,
+     "h": 95
+    },
+    {
+     "x": 165,
+     "y": 150,
+     "w": 51,
+     "h": 96
+    }
+   ]
+  },
+  "walk_right": {
+   "sheet": "char_walk_right.png",
+   "w": 256,
+   "h": 256,
+   "frames": [
+    {
+     "x": 40,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 168,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 41,
+     "y": 151,
+     "w": 51,
+     "h": 95
+    },
+    {
+     "x": 168,
+     "y": 150,
+     "w": 51,
+     "h": 96
+    }
+   ]
+  },
+  "idle_down": {
+   "sheet": "char_idle_down.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 37,
+     "y": 21,
+     "w": 57,
+     "h": 97
+    },
+    {
+     "x": 165,
+     "y": 21,
+     "w": 57,
+     "h": 97
+    }
+   ]
+  },
+  "idle_up": {
+   "sheet": "char_idle_up.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 34,
+     "y": 21,
+     "w": 56,
+     "h": 97
+    },
+    {
+     "x": 162,
+     "y": 21,
+     "w": 56,
+     "h": 97
+    }
+   ]
+  },
+  "idle_left": {
+   "sheet": "char_idle_left.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 37,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 165,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    }
+   ]
+  },
+  "idle_right": {
+   "sheet": "char_idle_right.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 40,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 168,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    }
+   ]
+  },
+  "hold_down": {
+   "sheet": "char_hold_down.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 37,
+     "y": 21,
+     "w": 57,
+     "h": 97
+    },
+    {
+     "x": 165,
+     "y": 21,
+     "w": 57,
+     "h": 97
+    }
+   ]
+  },
+  "hold_up": {
+   "sheet": "char_hold_up.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 34,
+     "y": 21,
+     "w": 56,
+     "h": 97
+    },
+    {
+     "x": 162,
+     "y": 21,
+     "w": 56,
+     "h": 97
+    }
+   ]
+  },
+  "hold_left": {
+   "sheet": "char_hold_left.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 37,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 166,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    }
+   ]
+  },
+  "hold_right": {
+   "sheet": "char_hold_right.png",
+   "w": 256,
+   "h": 128,
+   "frames": [
+    {
+     "x": 40,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    },
+    {
+     "x": 167,
+     "y": 22,
+     "w": 51,
+     "h": 96
+    }
+   ]
+  }
+ },
+ "items": {
+  "shovel": {
+   "sheet": "item_shovel.png",
+   "w": 64,
+   "h": 64
+  },
+  "water": {
+   "sheet": "item_water.png",
+   "w": 66,
+   "h": 64
+  },
+  "seed": {
+   "sheet": "item_seed.png",
+   "w": 64,
+   "h": 64
+  },
+  "bag": {
+   "sheet": "item_bag.png",
+   "w": 82,
+   "h": 82
+  }
+ },
+ "plants": {
+  "Plants_1": {
+   "sheet": "Plants_1.png",
+   "w": 512,
+   "h": 384
+  },
+  "Plants_2": {
+   "sheet": "Plants_2.png",
+   "w": 512,
+   "h": 128
+  }
+ },
+ "plantData": {
+  "Aubergine": {
+   "rarity": 3,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 384,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 384,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 384,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 384,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 384,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "Carrot": {
+   "rarity": 1,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 160,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 160,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 160,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 160,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 160,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "Corn": {
+   "rarity": 2,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 448,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 448,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 448,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 448,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 448,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "DarkCarrot": {
+   "rarity": 3,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 192,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 192,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 192,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 192,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 192,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "GoldPotato": {
+   "rarity": 4,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 128,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 128,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 128,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 128,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 128,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "GrapeTomato": {
+   "rarity": 3,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 32,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 32,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 32,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 32,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 32,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "LeafAubergine": {
+   "rarity": 4,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 352,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 352,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 352,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 352,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 352,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "SuspeciousLemon": {
+   "rarity": 2,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 256,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 256,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 256,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 256,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 256,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "LemonTomato": {
+   "rarity": 4,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 64,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 64,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 64,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 64,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 64,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "Pepper": {
+   "rarity": 3,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 288,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 288,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 288,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 288,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 288,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "PepperCorn": {
+   "rarity": 4,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 480,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 480,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 480,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 480,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 480,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "Potato": {
+   "rarity": 1,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 96,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 96,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 96,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 96,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 96,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "Sweetsop": {
+   "rarity": 3,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 224,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 224,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 224,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 224,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 224,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  },
+  "Tomato": {
+   "rarity": 1,
+   "main": {
+    "sheet": "Plants_2.png",
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "stages": [
+    {
+     "sheet": "Plants_1.png",
+     "x": 0,
+     "y": 0,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 0,
+     "y": 64,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 0,
+     "y": 128,
+     "w": 32,
+     "h": 64
+    },
+    {
+     "sheet": "Plants_1.png",
+     "x": 0,
+     "y": 192,
+     "w": 32,
+     "h": 64
+    }
+   ]
+  }
+ },
+ "ui": {
+  "logo": {
+   "sheet": "ui_logo.png",
+   "w": 3464,
+   "h": 3464
+  }
+ },
+ "audio": {
+  "theme": "theme.mp3",
+  "footsteps": "footsteps.mp3",
+  "watering": "watering.wav",
+  "pickup": "pickup.wav"
+ }
+}

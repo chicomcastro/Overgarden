@@ -54,7 +54,25 @@ canvas#game {
   text-shadow: 0 3px 0 #7a5b18;
 }
 
+#logo {
+  width: 360px;
+  max-width: 70%;
+  height: auto;
+  image-rendering: auto;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
 .tagline { font-size: 18px; color: #b7d49a; font-style: italic; }
+
+.mute-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.big-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
 
 .desc {
   max-width: 560px;
