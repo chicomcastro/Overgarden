@@ -1,0 +1,40 @@
+name: tuning sweep (manual)
+
+# Roda sob demanda: varre combinações dos knobs de balanceamento e sobe um
+# relatório ranqueando quais levam o bot à faixa-alvo de estrelas.
+
+on:
+  workflow_dispatch:
+    inputs:
+      players:
+        description: "Dificuldade (1=Fácil … 4=Insano)"
+        default: "1"
+      seeds:
+        description: "Seeds por combo (ex.: 1,2,3)"
+        default: "1,2,3"
+      target:
+        description: "Estrelas-alvo (centro da faixa divertida)"
+        default: "1.5"
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Sweep
+        run: node tests/e2e/sweep.mjs --players ${{ inputs.players }} --seeds ${{ inputs.seeds }} --target ${{ inputs.target }}
+      - name: Print report
+        run: cat tests/e2e/out/sweep/sweep.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: overgarden-tuning-sweep
+          path: tests/e2e/out/sweep
+          if-no-files-found: error

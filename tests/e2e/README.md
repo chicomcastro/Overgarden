@@ -40,6 +40,29 @@ compare aggregates. Rules of thumb (also printed in `report.md`):
 The bot is intentionally **consistent, not optimal** — so score deltas between
 runs are attributable to tuning changes, not bot variance.
 
+## Tuning sweep
+
+Instead of eyeballing one tuning at a time, sweep a grid of the throughput
+knobs and let the bot tell you which combo lands a competent player in the
+"fun" star band:
+
+```bash
+npm run sweep                                  # Fácil, 18 combos × 3 seeds
+node tests/e2e/sweep.mjs --players 4 --target 1.5
+open tests/e2e/out/sweep/sweep.md
+```
+
+Swept axes (in `sweep.mjs`, all relative to the shipped baseline):
+`spawnScale` (order spawn rate), `ORDER.timeBase` (deadline), `ORDER.expirePenalty`.
+It mutates the live `__OG__.ORDER` object before each round — no rebuild needed.
+
+The report ranks combos, flags those in the band, and — crucially — reports the
+**achievable score ceiling**: if the lowest `ROUND.stars` threshold sits above
+it, no order-knob tuning alone can earn a star, and it suggests star thresholds
+aligned to the ceiling (or points to speeding up production / co-op).
+
+Can also be run on demand from the **Actions → tuning-sweep** workflow.
+
 ## Reproducibility
 
 Only gameplay-affecting randomness (the order stream) is seeded via a mulberry32
