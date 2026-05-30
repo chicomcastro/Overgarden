@@ -34,8 +34,11 @@ const TUNE = {
   runDrain: 48,
   walkRegen: 14,
   idleRegen: 26,
-  growthBase: 0.9,   // * rarity * mult => seconds per growth stage
-  lifeBase: 1.1,     // * rarity * mult => seconds of life before dying
+  // Life must run out BEFORE a growth stage completes, so the plant needs
+  // watering mid-stage to survive (matches the original rarity*5 life vs
+  // rarity*6 growth ratio in StageScript/LifeBar).
+  growthBase: 1.8,   // * rarity * mult => seconds to complete a growth stage
+  lifeBase: 1.5,     // * rarity * mult => seconds of life before dying (< growth)
   interactRadius: 70,
   sellInterval: 5,
 };
@@ -83,7 +86,7 @@ async function loadAssets() {
 
   // Unique image sheets
   const sheets = new Set();
-  for (const g of [atlas.character, atlas.items, atlas.plants, atlas.ui]) {
+  for (const g of [atlas.character, atlas.items, atlas.plants, atlas.ui, atlas.tiles]) {
     for (const k in g) sheets.add(g[k].sheet);
   }
   await Promise.all([...sheets].map(async (s) => { ASSETS.img[s] = await loadImage(s); }));
@@ -146,6 +149,10 @@ window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
 
 function pressed(k) { return justPressed[k] === true; }
 function clearJustPressed() { for (const k in justPressed) justPressed[k] = false; }
+
+// Analog joystick state (mobile). x,y in [-1,1].
+const touchMove = { x: 0, y: 0, active: false };
+let seedNavLatch = false;
 
 // ---------------------------------------------------------------------------
 // Game state
@@ -312,6 +319,14 @@ function update(dt) {
   if (game.seedMenu.open) {
     if (pressed("a")) game.seedMenu.index = Math.max(0, game.seedMenu.index - 1);
     if (pressed("d")) game.seedMenu.index = Math.min(PLANTS.length - 1, game.seedMenu.index + 1);
+    // Joystick: tilt left/right to step through seeds (one step per tilt).
+    if (touchMove.active && Math.abs(touchMove.x) > 0.55 && !seedNavLatch) {
+      const dir = touchMove.x > 0 ? 1 : -1;
+      game.seedMenu.index = Math.max(0, Math.min(PLANTS.length - 1, game.seedMenu.index + dir));
+      seedNavLatch = true;
+    } else if (Math.abs(touchMove.x) < 0.3) {
+      seedNavLatch = false;
+    }
     handleInteract();
     game.player.moving = false;
     sound.footstepsOff();
@@ -327,10 +342,19 @@ function update(dt) {
 function updatePlayer(dt) {
   const p = game.player;
   let dx = 0, dy = 0;
-  if (keys["w"] || keys["arrowup"]) dy -= 1;
-  if (keys["s"] || keys["arrowdown"]) dy += 1;
-  if (keys["a"] || keys["arrowleft"]) dx -= 1;
-  if (keys["d"] || keys["arrowright"]) dx += 1;
+  let analogMag = 1;
+
+  const joyMag = Math.hypot(touchMove.x, touchMove.y);
+  if (touchMove.active && joyMag > 0.22) {
+    // Analog joystick: variable speed by tilt magnitude.
+    dx = touchMove.x; dy = touchMove.y;
+    analogMag = Math.min(1, joyMag);
+  } else {
+    if (keys["w"] || keys["arrowup"]) dy -= 1;
+    if (keys["s"] || keys["arrowdown"]) dy += 1;
+    if (keys["a"] || keys["arrowleft"]) dx -= 1;
+    if (keys["d"] || keys["arrowright"]) dx += 1;
+  }
 
   const wasMoving = p.moving;
   p.moving = dx !== 0 || dy !== 0;
@@ -352,8 +376,9 @@ function updatePlayer(dt) {
     // Facing: dominant axis
     if (Math.abs(dx) > Math.abs(dy)) p.facing = dx < 0 ? "left" : "right";
     else p.facing = dy < 0 ? "up" : "down";
-    p.x += dx * p.speed * dt;
-    p.y += dy * p.speed * dt;
+    const sp = p.speed * analogMag;
+    p.x += dx * sp * dt;
+    p.y += dy * sp * dt;
     p.anim += dt * (running ? 12 : 8);
     if (!wasMoving) sound.footstepsOn();
   } else {
@@ -433,18 +458,43 @@ function render() {
   if (game.seedMenu.open) drawSeedMenu();
 }
 
+// Draw one 32px cell (col,row) of a tileset sheet, scaled to dw×dh.
+function drawTile(sheetKey, col, row, dx, dy, dw, dh) {
+  const t = ASSETS.atlas.tiles[sheetKey];
+  if (!t) return;
+  ctx.drawImage(ASSETS.img[t.sheet], col * 32, row * 32, 32, 32, dx, dy, dw, dh);
+}
+
+const TILE_PX = 48; // display size of a ground tile
+
 function drawBackground() {
+  // Grass ground (tallgrass solid-grass cell 1,1), tiled across the world.
   ctx.fillStyle = "#6ab04c";
   ctx.fillRect(0, 0, WORLD.w, WORLD.h);
-  ctx.fillStyle = "rgba(255,255,255,0.045)";
-  for (let y = 0; y < WORLD.h; y += 48) {
-    for (let x = 0; x < WORLD.w; x += 48) {
-      if (((x + y) / 48) % 2 === 0) ctx.fillRect(x, y, 48, 48);
+  if (ASSETS.atlas.tiles.grass) {
+    for (let y = 0; y < WORLD.h; y += TILE_PX) {
+      for (let x = 0; x < WORLD.w; x += TILE_PX) {
+        drawTile("grass", 1, 3, x, y, TILE_PX, TILE_PX); // solid grass field cell
+      }
     }
   }
-  ctx.strokeStyle = "#8a6d3b";
-  ctx.lineWidth = 8;
-  ctx.strokeRect(4, 4, WORLD.w - 8, WORLD.h - 8);
+  drawFence();
+}
+
+// Fence border using fence.png tiles (horizontal run top/bottom, posts on sides).
+function drawFence() {
+  if (!ASSETS.atlas.tiles.fence) return;
+  const F = 40;
+  // top & bottom horizontal rails (cell 1,0)
+  for (let x = 0; x < WORLD.w; x += F) {
+    drawTile("fence", 1, 0, x, -4, F, F);
+    drawTile("fence", 1, 0, x, WORLD.h - F + 4, F, F);
+  }
+  // left & right vertical posts (cell 1,1)
+  for (let y = F - 8; y < WORLD.h - F; y += F) {
+    drawTile("fence", 1, 1, -4, y, F, F);
+    drawTile("fence", 1, 1, WORLD.w - F + 4, y, F, F);
+  }
 }
 
 function drawPlot(plot) {
@@ -452,15 +502,23 @@ function drawPlot(plot) {
   const x = plot.x - size / 2, y = plot.y - size / 2;
 
   if (plot.stage === STAGE.VIRGIN) {
-    ctx.fillStyle = "#5a8a3c";
-    roundRect(x, y, size, size, 8, true, false);
-    ctx.strokeStyle = "#4a7330"; ctx.lineWidth = 2;
-    roundRect(x, y, size, size, 8, false, true);
+    // Untilled: just grass with a subtle marker so the plot is findable.
+    ctx.fillStyle = "rgba(255,255,255,0.07)";
+    roundRect(x + 6, y + 6, size - 12, size - 12, 10, true, false);
+    ctx.strokeStyle = "rgba(60,45,25,0.35)"; ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    roundRect(x + 6, y + 6, size - 12, size - 12, 10, false, true);
+    ctx.setLineDash([]);
+  } else if (ASSETS.atlas.tiles.soil) {
+    // Tilled: 3x3 nine-slice from plowed_soil (rows 2-4 = grass-edged soil field).
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        drawTile("soil", c, r + 2, x + c * 32, y + r * 32, 32, 32);
+      }
+    }
   } else {
     ctx.fillStyle = "#7a5230";
     roundRect(x, y, size, size, 8, true, false);
-    ctx.fillStyle = "#623f23";
-    for (let i = 0; i < 4; i++) ctx.fillRect(x + 8, y + 14 + i * 19, size - 16, 7);
   }
 
   // Plant sprite (stages from Plants_1 sheet; stage index = stage-3)
@@ -768,6 +826,44 @@ function bindTouch() {
   });
 }
 bindTouch();
+
+// Analog joystick: drag the knob; feeds the touchMove vector.
+function bindJoystick() {
+  const js = document.getElementById("joystick");
+  const knob = document.getElementById("knob");
+  if (!js || !knob) return;
+  const R = 46; // max knob travel (px)
+  let cx = 0, cy = 0;
+  const start = (e) => {
+    e.preventDefault();
+    const r = js.getBoundingClientRect();
+    cx = r.left + r.width / 2; cy = r.top + r.height / 2;
+    touchMove.active = true;
+    try { js.setPointerCapture(e.pointerId); } catch (_) {}
+    move(e);
+  };
+  const move = (e) => {
+    if (!touchMove.active) return;
+    e.preventDefault();
+    let dx = e.clientX - cx, dy = e.clientY - cy;
+    const len = Math.hypot(dx, dy) || 1;
+    const m = Math.min(1, len / R);
+    const ux = dx / len, uy = dy / len;
+    touchMove.x = ux * m; touchMove.y = uy * m;
+    knob.style.transform = `translate(${ux * m * R}px, ${uy * m * R}px)`;
+  };
+  const end = (e) => {
+    e.preventDefault();
+    touchMove.active = false; touchMove.x = 0; touchMove.y = 0;
+    knob.style.transform = "translate(0,0)";
+  };
+  js.addEventListener("pointerdown", start);
+  js.addEventListener("pointermove", move);
+  js.addEventListener("pointerup", end);
+  js.addEventListener("pointercancel", end);
+}
+bindJoystick();
+
 function showTouchControls(on) {
   if (touchControls) touchControls.classList.toggle("active", on);
 }

@@ -165,13 +165,32 @@ canvas#game {
   pointer-events: none;
 }
 
-#touch-controls.active { display: flex; }
-
-.dpad {
+.joystick {
   position: relative;
-  width: 168px;
-  height: 168px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(20, 30, 16, 0.45);
+  border: 3px solid rgba(247, 215, 116, 0.5);
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-radius: 50%;
+  background: rgba(247, 215, 116, 0.75);
+  border: 3px solid rgba(247, 215, 116, 0.95);
   pointer-events: none;
+  transition: transform 0.04s linear;
 }
 
 .tbtn {
@@ -193,18 +212,6 @@ canvas#game {
 
 .tbtn.pressed { background: rgba(247, 215, 116, 0.85); color: #2a3a1f; }
 
-.dpad .tbtn {
-  position: absolute;
-  width: 56px;
-  height: 56px;
-  font-size: 22px;
-  border-radius: 12px;
-}
-.dpad-up    { top: 0;    left: 56px; }
-.dpad-left  { top: 56px; left: 0; }
-.dpad-right { top: 56px; left: 112px; }
-.dpad-down  { top: 112px; left: 56px; }
-
 .abtns {
   display: grid;
   grid-template-columns: repeat(2, auto);
@@ -222,7 +229,7 @@ canvas#game {
 .abtns .act-e { width: 78px; height: 78px; font-size: 28px; border-color: rgba(95, 211, 95, 0.7); }
 .abtns .act-run { font-size: 26px; }
 
-/* Show touch controls on touch-primary devices. */
+/* Show touch controls only on touch-primary devices (keeps desktop clean). */
 @media (pointer: coarse) {
   #touch-controls.active { display: flex; }
   .footnote { display: none; }

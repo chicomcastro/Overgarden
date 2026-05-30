@@ -880,6 +880,26 @@
    "h": 3464
   }
  },
+ "tiles": {
+  "grass": {
+   "sheet": "tile_grass.png",
+   "w": 96,
+   "h": 192,
+   "tile": 32
+  },
+  "soil": {
+   "sheet": "tile_soil.png",
+   "w": 96,
+   "h": 192,
+   "tile": 32
+  },
+  "fence": {
+   "sheet": "tile_fence.png",
+   "w": 96,
+   "h": 192,
+   "tile": 32
+  }
+ },
  "audio": {
   "theme": "theme.mp3",
   "footsteps": "footsteps.mp3",
