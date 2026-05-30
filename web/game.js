@@ -52,6 +52,22 @@ const ORDER = {
   comboWindow: 12,          // seconds before an idle combo resets
 };
 
+// Seedable RNG — only gameplay-affecting randomness (order stream) routes
+// through rng() so headless runs with ?seed=N are reproducible. Visual-only
+// randomness (particles) stays on Math.random and never affects metrics.
+let _seedRng = null;
+function rng() { return _seedRng ? _seedRng() : Math.random(); }
+function seedRng(seed) {
+  // mulberry32 — tiny, deterministic PRNG.
+  let a = (seed >>> 0) || 1;
+  _seedRng = function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 // Built once assets load: PLANTS list sorted by rarity (SeedStallManager order).
 let PLANTS = [];
 
@@ -272,11 +288,11 @@ function spawnOrder() {
   if (game.orders.length >= ORDER.maxConcurrent) return;
   const maxR = orderableRarity();
   const pool = PLANTS.filter((p) => p.rarity <= maxR);
-  const plant = pool[Math.floor(Math.random() * pool.length)];
+  const plant = pool[Math.floor(rng() * pool.length)];
   const p = roundProgress();
   let qty = 1;
-  if (p > 0.3 && Math.random() < 0.5) qty++;
-  if (p > 0.6 && Math.random() < 0.4) qty++;
+  if (p > 0.3 && rng() < 0.5) qty++;
+  if (p > 0.6 && rng() < 0.4) qty++;
   const time = (ORDER.timeBase + ORDER.timePerRarity * plant.rarity) * ORDER.diffTime[game.numberOfPlayers - 1];
   game.orders.push({ plant, need: qty, qty, timeLeft: time, maxTime: time, id: game.orderId++ });
 }
@@ -1134,16 +1150,49 @@ ctx.fillStyle = "#6ab04c";
 ctx.fillRect(0, 0, WORLD.w, WORLD.h);
 
 if (location.search.includes("debug")) {
+  const params = new URLSearchParams(location.search);
+  if (params.has("seed")) seedRng(parseInt(params.get("seed"), 10));
+
   window.__OG__ = {
     get game() { return game; },
     get gameState() { return gameState; },
     get PLANTS() { return PLANTS; },
+    // Constants exposed so the harness reports against live tuning values.
+    TUNE, ROUND, ORDER, WORLD, HOLD, STAGE,
+    // Raw input maps so an external bot can drive via the same input path the
+    // human uses (movement runs at real game speed — realistic for balancing).
+    keys, justPressed,
     teleport(x, y) { game.player.x = x; game.player.y = y; },
     openSeedMenu(i = 0) { game.seedMenu.open = true; game.seedMenu.index = i; },
     setPlot(i, patch) { Object.assign(game.plots[i], patch); },
     setTime(t) { game.time = t; },
     spawnOrder,
     addScore(n) { game.score += n; },
+    seedRng,
+    assetsReady() { return !!ASSETS.atlas && PLANTS.length > 0; },
+    // Start a round without the rAF loop or audio; the harness drives time via
+    // tick(dt) so a 150s round runs deterministically in a fraction of a second.
+    startHeadless({ players = 1, seed = null } = {}) {
+      if (seed != null) seedRng(seed);
+      selectedPlayers = players;
+      sound.setMuted(true);
+      game = createGame(players);
+      gameState = "playing";
+      running = false;
+      startScreen.classList.add("hidden");
+      pauseScreen.classList.add("hidden");
+      resultScreen.classList.add("hidden");
+      return true;
+    },
+    // One deterministic frame. Mirrors loop() but with a caller-supplied dt and
+    // optional rendering (skip it for fast data-only runs).
+    tick(dt, doRender = false) {
+      if (pressed("p") && gameState === "playing") togglePause();
+      update(dt);
+      if (doRender && game) render();
+      clearJustPressed();
+      return gameState;
+    },
   };
 }
 
