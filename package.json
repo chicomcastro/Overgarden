@@ -9,6 +9,7 @@
     "e2e:easy": "node tests/e2e/run.mjs --players 1",
     "e2e:insane": "node tests/e2e/run.mjs --players 4",
     "sweep": "node tests/e2e/sweep.mjs",
+    "sweep:prod": "node tests/e2e/sweep.mjs --mode production",
     "sweep:insane": "node tests/e2e/sweep.mjs --players 4"
   },
   "devDependencies": {
