@@ -47,14 +47,18 @@ knobs and let the bot tell you which combo lands a competent player in the
 "fun" star band:
 
 ```bash
-npm run sweep                                  # Fácil, 18 combos × 3 seeds
-node tests/e2e/sweep.mjs --players 4 --target 1.5
-open tests/e2e/out/sweep/sweep.md
+npm run sweep                                  # modo order (pacing de pedidos)
+npm run sweep:prod                             # modo production (crescimento + vida)
+node tests/e2e/sweep.mjs --mode production --players 4 --target 1.5
+open tests/e2e/out/sweep-production/sweep.md
 ```
 
-Swept axes (in `sweep.mjs`, all relative to the shipped baseline):
-`spawnScale` (order spawn rate), `ORDER.timeBase` (deadline), `ORDER.expirePenalty`.
-It mutates the live `__OG__.ORDER` object before each round — no rebuild needed.
+Two modes (`--mode`), all axes relative to the shipped baseline:
+
+- **order** (default): `spawnScale` (spawn rate), `ORDER.timeBase` (deadline), `ORDER.expirePenalty`.
+- **production**: `growthScale` (`TUNE.growthBase`, <1 = matures faster), `lifeScale` (`TUNE.lifeBase`, >1 = wilts slower → fewer well trips).
+
+It mutates the live `__OG__.ORDER` / `__OG__.TUNE` objects before each round — no rebuild needed.
 
 The report ranks combos, flags those in the band, and — crucially — reports the
 **achievable score ceiling**: if the lowest `ROUND.stars` threshold sits above

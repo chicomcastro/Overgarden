@@ -6,6 +6,11 @@ name: tuning sweep (manual)
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: "Modo de varredura"
+        type: choice
+        options: ["order", "production"]
+        default: "order"
       players:
         description: "Dificuldade (1=Fácil … 4=Insano)"
         default: "1"
@@ -30,11 +35,11 @@ jobs:
       - run: npm install
       - run: npx playwright install --with-deps chromium
       - name: Sweep
-        run: node tests/e2e/sweep.mjs --players ${{ inputs.players }} --seeds ${{ inputs.seeds }} --target ${{ inputs.target }}
+        run: node tests/e2e/sweep.mjs --mode ${{ inputs.mode }} --players ${{ inputs.players }} --seeds ${{ inputs.seeds }} --target ${{ inputs.target }}
       - name: Print report
-        run: cat tests/e2e/out/sweep/sweep.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat tests/e2e/out/sweep-${{ inputs.mode }}/sweep.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
-          name: overgarden-tuning-sweep
-          path: tests/e2e/out/sweep
+          name: overgarden-tuning-sweep-${{ inputs.mode }}
+          path: tests/e2e/out/sweep-${{ inputs.mode }}
           if-no-files-found: error
