@@ -28,7 +28,7 @@ const TUNE = {
   idleRegen: 26,
   // Life runs out before a growth stage completes, so plants need watering.
   growthBase: 1.1,   // * rarity * mult => seconds to complete a growth stage
-  lifeBase: 0.85,    // * rarity * mult => seconds of life (< growth => must water)
+  lifeBase: 1.3,     // * rarity * mult => seconds of life (< growth => must water)
   wiltGrace: 3.0,    // seconds a plant can wilt (life 0) before dying — reversible
   decayRampMin: 0.6, // life-decay multiplier at round start (forgiving)
   decayRampMax: 1.3, // ...and at round end (harsher)
