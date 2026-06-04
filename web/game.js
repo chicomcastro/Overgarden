@@ -23,7 +23,9 @@ const DIFFICULTY_MULT = [4, 3, 2, 1];
 const COOP = {
   spawnScale: [1, 0.72, 0.58, 0.5],
   concurrentBonus: [0, 2, 3, 4],
-  starScale: [1, 1.8, 2.5, 3.2],
+  // Star goals scale ~with measured team throughput (sublinear: shared plots +
+  // one well). Ratios from the co-op harness (teto_N / teto_solo). See tests/e2e/.
+  starScale: [1, 1.8, 2.1, 2.6],
 };
 const PLAYER_COLORS = ["#ffd24a", "#4ea8ff", "#ff6b6b", "#74e36b"];
 const PLAYER_SPAWN = [[0, 30], [-70, 30], [70, 30], [0, 96]];
@@ -254,7 +256,11 @@ function gatherIntents() {
   for (let i = 0; i < game.players.length; i++) {
     const dev = game.players[i].device;
     let it;
-    if (dev.type === "gamepad") {
+    if (dev.type === "bot") {
+      // Headless co-op: intents injected by the balancing harness.
+      it = (game._botIntents && game._botIntents[i]) ||
+        { mx: 0, my: 0, run: false, interact: false, drop: false, navL: false, navR: false, confirm: false };
+    } else if (dev.type === "gamepad") {
       it = gamepadIntent(dev.index) || { mx: 0, my: 0, run: false, interact: false, drop: false, navL: false, navR: false, confirm: false };
     } else {
       const km = dev.keymap;
@@ -1295,7 +1301,8 @@ if (location.search.includes("debug")) {
     get gameState() { return gameState; },
     get PLANTS() { return PLANTS; },
     // Constants exposed so the harness reports against live tuning values.
-    TUNE, ROUND, ORDER, WORLD, HOLD, STAGE,
+    TUNE, ROUND, ORDER, WORLD, HOLD, STAGE, COOP,
+    starGoals,
     // Raw input maps so an external bot can drive via the same input path the
     // human uses (movement runs at real game speed — realistic for balancing).
     keys, justPressed,
@@ -1323,6 +1330,23 @@ if (location.search.includes("debug")) {
       resultScreen.classList.add("hidden");
       return true;
     },
+    // Headless co-op: N bot-driven slots. The balancing harness injects one
+    // intent per player each tick via setBotIntents before calling tick().
+    startHeadlessCoop({ count = 2, difficulty = 1, seed = null } = {}) {
+      if (seed != null) seedRng(seed);
+      selectedPlayers = count; selectedDifficulty = difficulty;
+      sound.setMuted(true);
+      game = createGame(count, difficulty);
+      for (const p of game.players) p.device = { type: "bot" };
+      game._botIntents = [];
+      gameState = "playing";
+      running = false;
+      startScreen.classList.add("hidden");
+      pauseScreen.classList.add("hidden");
+      resultScreen.classList.add("hidden");
+      return true;
+    },
+    setBotIntents(arr) { game._botIntents = arr; },
     // One deterministic frame. Mirrors loop() but with a caller-supplied dt and
     // optional rendering (skip it for fast data-only runs).
     tick(dt, doRender = false) {
