@@ -80,17 +80,18 @@ canvas#game {
   color: #e7e0cd;
 }
 
-.difficulty {
+.choices {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
+  margin: 2px 0;
 }
 
-.difficulty span { font-weight: bold; margin-right: 4px; }
+.choices span { font-weight: bold; margin-right: 4px; min-width: 92px; text-align: right; }
 
-.diff-btn {
+.diff-btn, .count-btn {
   background: #3c5230;
   color: #e7e0cd;
   border: 2px solid #5b7a45;
@@ -101,8 +102,9 @@ canvas#game {
   transition: all 0.12s;
 }
 
-.diff-btn:hover { background: #4d6a3c; }
-.diff-btn.selected {
+.count-btn { min-width: 44px; }
+.diff-btn:hover, .count-btn:hover { background: #4d6a3c; }
+.diff-btn.selected, .count-btn.selected {
   background: #f7d774;
   color: #2a3a1f;
   border-color: #f7d774;
