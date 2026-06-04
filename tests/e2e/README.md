@@ -67,6 +67,29 @@ aligned to the ceiling (or points to speeding up production / co-op).
 
 Can also be run on demand from the **Actions → tuning-sweep** workflow.
 
+## Co-op balancing
+
+Drives N bot players (1–4) on the shared farm and reports team score, star
+distribution and load per player count, so the `COOP` scaling in `game.js`
+(spawn rate, concurrent orders, star goals) can be tuned to real multi-player
+throughput:
+
+```bash
+npm run coop                                   # difficulty Fácil, counts 1–4
+node tests/e2e/coop.mjs --difficulty 2 --counts 2,4
+open tests/e2e/out/coop/coop.md
+```
+
+The co-op bot (`coop-bot.js`) is intent-based and claims plots so players divide
+labour. It's a *stronger* proxy than the solo bot, so it's used for **relative**
+throughput ratios across counts (`starScale = teto_N / teto_solo`), not absolute
+goals. Throughput scales **sublinearly** (shared plots + one well), which is why
+`COOP.starScale` is ~`[1, 1.8, 2.1, 2.6]` rather than `[1, 2, 3, 4]`.
+
+> Headless co-op runs via `__OG__.startHeadlessCoop({count,difficulty,seed})` +
+> `setBotIntents()` — a separate path from the solo harness, so the per-PR e2e
+> is untouched.
+
 ## Reproducibility
 
 Only gameplay-affecting randomness (the order stream) is seeded via a mulberry32
