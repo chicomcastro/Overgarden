@@ -99,11 +99,10 @@ wss.on("connection", (ws) => {
     } else if (m.t === "join") {
       const r = rooms.get((m.room || "").toUpperCase());
       if (!r) return send(ws, { t: "error", msg: "Sala não encontrada" });
-      if (r.started) return send(ws, { t: "error", msg: "Partida já começou" });
-      const slot = freeSlot(r);
+      const slot = freeSlot(r); // mid-game join allowed (drop-in / reconnect)
       if (slot < 0) return send(ws, { t: "error", msg: "Sala cheia" });
       r.clients.set(slot, ws); ws._room = r.room; ws._slot = slot;
-      send(ws, { t: "joined", room: r.room, slot, count: r.count, difficulty: r.difficulty, host: false });
+      send(ws, { t: "joined", room: r.room, slot, count: r.count, difficulty: r.difficulty, host: false, started: r.started });
       lobby(r);
     } else if (m.t === "setup") {
       const r = rooms.get(ws._room);

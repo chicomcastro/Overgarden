@@ -50,7 +50,7 @@ sozinho ou em co-op, com caos crescente.
 **Engenharia**
 - [ ] Níveis **data-driven** (JSON: estações, canteiros, pedidos, meta, tempo).
 - [ ] **Colisão real** com estações/obstáculos.
-- [ ] Tick determinístico + separação de sistemas (prep p/ co-op/replay).
+- [x] Tick determinístico + separação de sistemas — núcleo puro `web/sim.js` (sim ≠ render/IO), compartilhado browser/servidor.
 - [x] **CI no PR**: harness e2e (bot autoplayer headless) que gera evidência visual + dados de balanceamento por seed (`tests/e2e/`).
 - [ ] Pipeline de assets (poço/água animados, decorações, tilemap da cena Unity).
 
@@ -67,7 +67,7 @@ sozinho ou em co-op, com caos crescente.
 - [ ] Acessibilidade (remapeamento, daltonismo, modo assistido) + localização (PT/EN/ES).
 
 **Jogabilidade**
-- [ ] **Co-op online** (netcode) — avaliar custo/benefício vs. local.
+- [x] **Co-op online** (netcode) — servidor WebSocket autoritativo + interpolação + drop-in/reconexão (`server/`, `web/net.js`; ver `docs/COOP_DESIGN.md`).
 - [ ] Loja entre fases (upgrades de estação) e economia.
 - [ ] Chefes/eventos de fim de fase; fases temáticas (estações do ano, clima).
 

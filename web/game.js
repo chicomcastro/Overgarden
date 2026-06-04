@@ -102,15 +102,14 @@ const sound = {
   },
 };
 
-// Drain the sim's event queue into audio one-shots.
-function playEvents() {
-  for (const e of game.events) {
+// Play a list of sim sound events as one-shots.
+function playEvents(arr) {
+  for (const e of arr) {
     if (e === "pickup") sound.pickup();
     else if (e === "watering") sound.watering();
     else if (e === "ding") sound.ding();
     else if (e === "fail") sound.fail();
   }
-  game.events.length = 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -229,10 +228,11 @@ function stepGame(dt, doRender, withAudio) {
     const intents = gatherIntents();
     Sim.step(game, intents, dt);
     if (withAudio) {
-      playEvents();
+      playEvents(game.events);
       if (game.anyMoving && !footActive) { sound.footstepsOn(); footActive = true; }
       else if (!game.anyMoving && footActive) { sound.footstepsOff(); footActive = false; }
-    } else { game.events.length = 0; }
+    }
+    game.events.length = 0;
     if (game.over) finishRound();
   }
   if (doRender && game) render();
@@ -722,13 +722,15 @@ function onlineLoop() {
     const s = Net.renderState();
     if (s) {
       game = s;
-      if (!sound.muted) playEvents();
-      else game.events.length = 0;
       gameState = "playing";
+      // Footsteps from whether anyone is moving in the latest snapshot.
+      const moving = Net.lastSnapshot && Net.lastSnapshot.players.some((p) => p.moving);
+      if (moving && !footActive) { sound.footstepsOn(); footActive = true; }
+      else if (!moving && footActive) { sound.footstepsOff(); footActive = false; }
       render();
       if (Net.phase === "playing") Net.sendIntent(localIntent());
     }
-    if (Net.phase === "result" && !_onlineEnded) { _onlineEnded = true; showOnlineResult(); }
+    if (Net.phase === "result" && !_onlineEnded) { _onlineEnded = true; footActive = false; sound.footstepsOff(); showOnlineResult(); }
     clearJustPressed();
   }
   requestAnimationFrame(onlineLoop);
@@ -742,6 +744,13 @@ function showOnlineResult() {
   document.getElementById("result-stats").textContent = `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}`;
   document.getElementById("again-btn").classList.add("hidden"); // server rooms don't restart
   resultScreen.classList.remove("hidden");
+}
+
+// Fires once per snapshot: enter online play on the first one, and play the
+// sim's sound events (here, not per render frame, so they don't repeat).
+function onSnapshot(s) {
+  if (!online) beginOnline();
+  if (!sound.muted) playEvents(s.events || []);
 }
 
 function beginOnline() {
@@ -765,8 +774,8 @@ function serverUrl() {
 
 window.__OG_NET__ = {
   Net,
-  async connectCreate(url, count, difficulty) { await Net.connect(url || serverUrl()); Net.on.snapshot = () => { if (!online) beginOnline(); }; Net.create(count, difficulty); },
-  async connectJoin(url, room) { await Net.connect(url || serverUrl()); Net.on.snapshot = () => { if (!online) beginOnline(); }; Net.join(room); },
+  async connectCreate(url, count, difficulty) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.create(count, difficulty); },
+  async connectJoin(url, room) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.join(room); },
   start() { Net.start(); },
   state() { return { room: Net.room, slot: Net.slot, host: Net.host, phase: Net.phase, count: Net.count, error: Net.error, snapshot: Net.lastSnapshot }; },
 };
@@ -798,13 +807,26 @@ function closeOnline() {
 Net.on.joined = () => showLobbyView();
 Net.on.lobby = () => { if (Net.phase === "lobby") showLobbyView(); };
 Net.on.error = (msg) => { onlineError.textContent = msg; };
+Net.on.close = (info) => {
+  if (!info || info.intentional || !info.wasInGame) return;
+  // Lost connection mid-game: drop back to the online screen with the code
+  // prefilled so the player can rejoin (the server keeps the room running and
+  // allows drop-in into the freed slot).
+  online = false;
+  pauseScreen.classList.add("hidden"); resultScreen.classList.add("hidden");
+  document.getElementById("again-btn").classList.remove("hidden");
+  startScreen.classList.add("hidden");
+  showOnlineScreen(true);
+  if (info.room) document.getElementById("join-code").value = info.room;
+  onlineError.textContent = "conexão perdida — reentre na sala";
+};
 
 async function connectThen(action) {
   onlineError.textContent = "conectando…";
   try {
     await Net.connect(serverUrl());
     onlineError.textContent = "";
-    Net.on.snapshot = () => { if (!online) beginOnline(); };
+    Net.on.snapshot = onSnapshot;
     action();
   } catch (_) { onlineError.textContent = "não foi possível conectar ao servidor"; }
 }
