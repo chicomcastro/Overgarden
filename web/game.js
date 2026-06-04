@@ -8,6 +8,7 @@
  * doesn't: canvas drawing, the input->intent layer, audio, and the DOM screens.
  */
 import * as Sim from "./sim.js";
+import { Net } from "./net.js";
 
 const { HOLD, STAGE, WORLD, TUNE, ROUND, ORDER, COOP } = Sim;
 
@@ -691,6 +692,80 @@ function quitToMenu() {
   resultScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");
 }
+
+// ---------------------------------------------------------------------------
+// Online (authoritative server: send this device's intent, render snapshots)
+// ---------------------------------------------------------------------------
+let online = false;
+
+// One intent from the local device (keyboard WASD/arrows + touch + gamepad 0).
+function localIntent() {
+  const gp = gamepadIntent(0);
+  if (gp && (gp.mx || gp.my || gp.interact || gp.drop || gp.run || gp.navL || gp.navR)) return gp;
+  const km = keymapForSlot(0, 1);
+  const it = {
+    mx: (anyDown(km.right) ? 1 : 0) - (anyDown(km.left) ? 1 : 0),
+    my: (anyDown(km.down) ? 1 : 0) - (anyDown(km.up) ? 1 : 0),
+    run: anyDown(km.run), interact: anyPressed(km.interact), drop: anyPressed(km.drop),
+    navL: anyPressed(km.navL), navR: anyPressed(km.navR), confirm: anyPressed(km.confirm),
+  };
+  if (touchMove.active && Math.hypot(touchMove.x, touchMove.y) > 0.22) { it.mx = touchMove.x; it.my = touchMove.y; }
+  return it;
+}
+
+let _onlineEnded = false;
+function onlineLoop() {
+  if (!online) return;
+  if (Net.phase === "playing" || Net.phase === "result") {
+    const s = Net.renderState();
+    if (s) {
+      game = s;
+      if (!sound.muted) playEvents();
+      else game.events.length = 0;
+      gameState = "playing";
+      render();
+      if (Net.phase === "playing") Net.sendIntent(localIntent());
+    }
+    if (Net.phase === "result" && !_onlineEnded) { _onlineEnded = true; showOnlineResult(); }
+    clearJustPressed();
+  }
+  requestAnimationFrame(onlineLoop);
+}
+
+function showOnlineResult() {
+  const r = (game && game.result) || Net.result;
+  if (!r) return;
+  document.getElementById("result-stars").innerHTML = [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
+  document.getElementById("result-score").textContent = "Score: " + r.score;
+  document.getElementById("result-stats").textContent = `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}`;
+  resultScreen.classList.remove("hidden");
+}
+
+function beginOnline() {
+  online = true; _onlineEnded = false; running = false; // stop any offline rAF
+  startScreen.classList.add("hidden"); pauseScreen.classList.add("hidden"); resultScreen.classList.add("hidden");
+  if (actx && actx.state === "suspended") actx.resume().catch(() => {});
+  sound.setMuted(muteBox.checked);
+  showTouchControls(true);
+  requestAnimationFrame(onlineLoop);
+}
+
+// Default server URL: ?server=... overrides; else same host on :8787 (dev) or a
+// configured prod endpoint. Lobby UI (O-2) wires this to buttons.
+function serverUrl() {
+  const p = new URLSearchParams(location.search).get("server");
+  if (p) return p;
+  const proto = location.protocol === "https:" ? "wss:" : "ws:";
+  return `${proto}//${location.hostname}:8787`;
+}
+
+window.__OG_NET__ = {
+  Net,
+  async connectCreate(url, count, difficulty) { await Net.connect(url || serverUrl()); Net.on.snapshot = () => { if (!online) beginOnline(); }; Net.create(count, difficulty); },
+  async connectJoin(url, room) { await Net.connect(url || serverUrl()); Net.on.snapshot = () => { if (!online) beginOnline(); }; Net.join(room); },
+  start() { Net.start(); },
+  state() { return { room: Net.room, slot: Net.slot, host: Net.host, phase: Net.phase, count: Net.count, error: Net.error, snapshot: Net.lastSnapshot }; },
+};
 
 // ---------------------------------------------------------------------------
 // Boot

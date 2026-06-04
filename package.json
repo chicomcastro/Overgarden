@@ -11,7 +11,11 @@
     "sweep": "node tests/e2e/sweep.mjs",
     "sweep:prod": "node tests/e2e/sweep.mjs --mode production",
     "sweep:insane": "node tests/e2e/sweep.mjs --players 4",
-    "coop": "node tests/e2e/coop.mjs"
+    "coop": "node tests/e2e/coop.mjs",
+    "server": "node server/server.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "playwright": "^1.49.0"
