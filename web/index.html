@@ -32,7 +32,8 @@
         <button class="diff-btn" data-diff="3">Difícil</button>
         <button class="diff-btn" data-diff="4">Insano</button>
       </div>
-      <button id="start-btn" class="big-btn" disabled>Carregando…</button>
+      <button id="campaign-btn" class="big-btn" disabled>🗺️ Campanha</button>
+      <button id="start-btn" class="big-btn secondary" disabled>Jogo rápido</button>
       <button id="online-btn" class="big-btn secondary">🌐 Jogar online</button>
       <div class="controls">
         <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
@@ -63,6 +64,14 @@
       <p id="result-stats" class="controls"></p>
       <button id="again-btn" class="big-btn">Jogar de novo</button>
       <button id="menu-btn" class="big-btn secondary">Menu</button>
+    </div>
+
+    <!-- Campaign level select -->
+    <div id="campaign-screen" class="overlay hidden">
+      <h1>Campanha</h1>
+      <p class="desc">Ganhe ★ pra desbloquear as próximas fases. Jogue sozinho ou com até 4 no mesmo teclado/controle (escolha no menu).</p>
+      <div id="level-grid"></div>
+      <button id="campaign-back" class="big-btn secondary">Voltar</button>
     </div>
 
     <!-- Online lobby -->
