@@ -74,7 +74,8 @@ export function defaultLevel() {
   const cols = 3, rows = 2, startX = 300, startY = 215, gapX = 130, gapY = 150;
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) plots.push({ x: startX + c * gapX, y: startY + r * gapY });
   return {
-    id: "default", name: "Fazenda", difficulty: 1, duration: ROUND.duration, stars: ROUND.stars.slice(),
+    // difficulty null => use the difficulty argument (quick play / harness pick it).
+    id: "default", name: "Fazenda", difficulty: null, duration: ROUND.duration, stars: ROUND.stars.slice(),
     plots,
     stations: [{ type: "tool", x: 92, y: 250 }, { type: "seed", x: 92, y: 420 }, { type: "water", x: 868, y: 320 }, { type: "sales", x: 480, y: 548 }],
     plantPool: null, // null => all plants
