@@ -608,7 +608,7 @@ function bindChoiceGroup(selector, attr, setter) {
     });
   });
 }
-bindChoiceGroup(".count-btn", "count", (v) => { selectedPlayers = v; });
+bindChoiceGroup(".count-btn", "count", (v) => { selectedPlayers = v; const cc = document.getElementById("create-count"); if (cc) cc.textContent = v; });
 bindChoiceGroup(".diff-btn", "diff", (v) => { selectedDifficulty = v; });
 
 startBtn.addEventListener("click", startGame);
@@ -665,7 +665,7 @@ function bindJoystick() {
 }
 bindJoystick();
 
-function showTouchControls(on) { if (touchControls) touchControls.classList.toggle("active", on && selectedPlayers === 1); }
+function showTouchControls(on) { if (touchControls) touchControls.classList.toggle("active", on && (online || selectedPlayers === 1)); }
 
 function startGame() {
   if (!ASSETS.atlas) return;
@@ -685,9 +685,11 @@ function startGame() {
 }
 
 function quitToMenu() {
+  if (online) { try { Net.leave(); if (Net.ws) Net.ws.close(); } catch (_) {} online = false; }
   running = false; game = null; gameState = "menu";
   for (const k in ASSETS.audio) { ASSETS.audio[k].pause(); ASSETS.audio[k].currentTime = 0; }
   showTouchControls(false);
+  document.getElementById("again-btn").classList.remove("hidden");
   pauseScreen.classList.add("hidden");
   resultScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");
@@ -738,12 +740,14 @@ function showOnlineResult() {
   document.getElementById("result-stars").innerHTML = [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
   document.getElementById("result-score").textContent = "Score: " + r.score;
   document.getElementById("result-stats").textContent = `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}`;
+  document.getElementById("again-btn").classList.add("hidden"); // server rooms don't restart
   resultScreen.classList.remove("hidden");
 }
 
 function beginOnline() {
   online = true; _onlineEnded = false; running = false; // stop any offline rAF
   startScreen.classList.add("hidden"); pauseScreen.classList.add("hidden"); resultScreen.classList.add("hidden");
+  const os = document.getElementById("online-screen"); if (os) os.classList.add("hidden");
   if (actx && actx.state === "suspended") actx.resume().catch(() => {});
   sound.setMuted(muteBox.checked);
   showTouchControls(true);
@@ -766,6 +770,55 @@ window.__OG_NET__ = {
   start() { Net.start(); },
   state() { return { room: Net.room, slot: Net.slot, host: Net.host, phase: Net.phase, count: Net.count, error: Net.error, snapshot: Net.lastSnapshot }; },
 };
+
+// ---------------------------------------------------------------------------
+// Lobby UI
+// ---------------------------------------------------------------------------
+const onlineScreen = document.getElementById("online-screen");
+const onlineSetup = document.getElementById("online-setup");
+const onlineLobby = document.getElementById("online-lobby");
+const onlineError = document.getElementById("online-error");
+
+function showOnlineScreen(show) {
+  onlineScreen.classList.toggle("hidden", !show);
+  if (show) { onlineSetup.classList.remove("hidden"); onlineLobby.classList.add("hidden"); onlineError.textContent = ""; }
+}
+function showLobbyView() {
+  onlineSetup.classList.add("hidden"); onlineLobby.classList.remove("hidden");
+  document.getElementById("room-code").textContent = Net.room || "----";
+  document.getElementById("lobby-start").classList.toggle("hidden", !Net.host);
+  document.getElementById("lobby-wait").classList.toggle("hidden", Net.host);
+  document.getElementById("lobby-players").textContent = `Jogadores na sala: ${Net.slots ? Net.slots.length : 1} / ${Net.count}`;
+}
+function closeOnline() {
+  online = false;
+  try { Net.leave(); if (Net.ws) Net.ws.close(); } catch (_) {}
+}
+
+Net.on.joined = () => showLobbyView();
+Net.on.lobby = () => { if (Net.phase === "lobby") showLobbyView(); };
+Net.on.error = (msg) => { onlineError.textContent = msg; };
+
+async function connectThen(action) {
+  onlineError.textContent = "conectando…";
+  try {
+    await Net.connect(serverUrl());
+    onlineError.textContent = "";
+    Net.on.snapshot = () => { if (!online) beginOnline(); };
+    action();
+  } catch (_) { onlineError.textContent = "não foi possível conectar ao servidor"; }
+}
+
+document.getElementById("online-btn").addEventListener("click", () => { startScreen.classList.add("hidden"); showOnlineScreen(true); });
+document.getElementById("online-back").addEventListener("click", () => { try { if (Net.ws) Net.ws.close(); } catch (_) {} showOnlineScreen(false); startScreen.classList.remove("hidden"); });
+document.getElementById("create-room").addEventListener("click", () => connectThen(() => Net.create(selectedPlayers, selectedDifficulty)));
+document.getElementById("join-room").addEventListener("click", () => {
+  const code = document.getElementById("join-code").value.trim().toUpperCase();
+  if (code.length < 4) { onlineError.textContent = "digite o código (4 letras)"; return; }
+  connectThen(() => Net.join(code));
+});
+document.getElementById("lobby-start").addEventListener("click", () => Net.start());
+document.getElementById("lobby-leave").addEventListener("click", () => { closeOnline(); showOnlineScreen(false); startScreen.classList.remove("hidden"); });
 
 // ---------------------------------------------------------------------------
 // Boot

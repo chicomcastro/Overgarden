@@ -33,6 +33,7 @@
         <button class="diff-btn" data-diff="4">Insano</button>
       </div>
       <button id="start-btn" class="big-btn" disabled>Carregando…</button>
+      <button id="online-btn" class="big-btn secondary">🌐 Jogar online</button>
       <div class="controls">
         <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
         <br />
@@ -62,6 +63,29 @@
       <p id="result-stats" class="controls"></p>
       <button id="again-btn" class="big-btn">Jogar de novo</button>
       <button id="menu-btn" class="big-btn secondary">Menu</button>
+    </div>
+
+    <!-- Online lobby -->
+    <div id="online-screen" class="overlay hidden">
+      <h1>Online</h1>
+      <div id="online-setup">
+        <p class="desc">Joguem juntos na mesma fazenda. O host cria a sala e compartilha o código; os outros entram (celular funciona).</p>
+        <button id="create-room" class="big-btn">Criar sala (<span id="create-count">1</span> jog.)</button>
+        <div class="choices">
+          <input id="join-code" maxlength="4" placeholder="CÓDIGO" autocapitalize="characters" autocomplete="off" />
+          <button id="join-room" class="big-btn secondary">Entrar</button>
+        </div>
+        <p id="online-error" class="online-error"></p>
+        <button id="online-back" class="big-btn secondary">Voltar</button>
+      </div>
+      <div id="online-lobby" class="hidden">
+        <p class="desc">Compartilhe o código:</p>
+        <div id="room-code">----</div>
+        <p id="lobby-players" class="controls">Jogadores: 1</p>
+        <button id="lobby-start" class="big-btn">Começar</button>
+        <p id="lobby-wait" class="controls hidden">Aguardando o host começar…</p>
+        <button id="lobby-leave" class="big-btn secondary">Sair da sala</button>
+      </div>
     </div>
   </div>
 
