@@ -1,7 +1,17 @@
-# Co-op — Design (local 1–4 + gamepad, online depois)
+# Co-op — Design (local 1–4 + gamepad + online)
 
-> Status: **Fase 0+1+2 em implementação** (refactor de input + co-op local até 4 +
-> gamepad). Online (Fase 3) é **projetado aqui, construído depois**.
+> Status: **local (Fase 0–2) e online (O-0–O-3) implementados.** Servidor
+> WebSocket autoritativo em `server/`, núcleo de simulação compartilhado em
+> `web/sim.js`, cliente em `web/net.js`. Ver `server/README.md`.
+
+## Online — como ficou (WebSocket autoritativo)
+
+- **`web/sim.js`** — núcleo puro (sem DOM/áudio/canvas), roda igual no browser e no Node.
+- **`server/server.mjs`** — salas, cada uma com 1 estado autoritativo, passo fixo 30Hz a partir dos intents; snapshots ~15Hz. Host-agnóstico (portável p/ Fly/Render/Railway/Cloudflare DO).
+- **`web/net.js`** — envia o intent do dispositivo local por frame, **interpola** snapshots (delay ~120ms) e reconstrói um estado que o `render()` desenha sem mudança.
+- **Drop-in / reconexão:** como o servidor é a autoridade, host sair não encerra; jogador reentra num slot livre no meio do round.
+- **Lobby:** criar sala → código de 4 letras; entrar pelo código (celular via touch).
+- Teste de integração: `npm run test:net` (e no CI).
 
 ## Ideia-âncora
 
