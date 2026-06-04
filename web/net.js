@@ -95,9 +95,10 @@ export const Net = {
     const pp = prev && prev.players, qp = prev && prev.plots, qo = prev && prev.orders;
     return {
       time: s.time, score: s.score, combo: s.combo, playerCount: s.playerCount,
-      over: s.over, result: s.result,
+      over: s.over, result: s.result, levelName: s.levelName,
+      plantPool: s.plantPool ? s.plantPool.map(plant).filter(Boolean) : null,
       particles: [], floaters: [], shake: 0, anyMoving: false,
-      stations: stations(),
+      stations: s.stations || stations(),
       players: s.players.map((p, i) => {
         const q = pp && pp[i];
         return { ...p, x: q ? lerp(q.x, p.x, alpha) : p.x, y: q ? lerp(q.y, p.y, alpha) : p.y, anim: q ? lerp(q.anim, p.anim, alpha) : p.anim, heldSeed: plant(p.heldSeed), heldPlant: plant(p.heldPlant) };

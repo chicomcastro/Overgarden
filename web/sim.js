@@ -59,20 +59,35 @@ function rng(s) { return s._rng ? s._rng() : (_seedRng ? _seedRng() : Math.rando
 // ---------------------------------------------------------------------------
 function ev(s, snd) { s.events.push(snd); }
 
-export function createState({ playerCount = 1, difficulty = 1, seed = null } = {}) {
-  playerCount = Math.max(1, Math.min(4, playerCount));
-  difficulty = Math.max(1, Math.min(4, difficulty));
+// Station presentation by type (levels.json only carries type + position).
+export const STATION_META = {
+  tool: { label: "Ferramentas", icon: "shovel" },
+  seed: { label: "Sementes", icon: "seed" },
+  water: { label: "Poço", icon: "water" },
+  sales: { label: "Entrega", icon: "bag" },
+};
+
+// The original single-stage layout — used when no level is provided so the
+// harness/co-op/online-without-level behave exactly as before.
+export function defaultLevel() {
   const plots = [];
   const cols = 3, rows = 2, startX = 300, startY = 215, gapX = 130, gapY = 150;
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    plots.push({ x: startX + c * gapX, y: startY + r * gapY, stage: STAGE.VIRGIN, plant: null, progress: 0, life: 1, wilt: 0 });
-  }
-  const stations = [
-    { type: "tool", x: 92, y: 250, label: "Ferramentas", icon: "shovel" },
-    { type: "seed", x: 92, y: 420, label: "Sementes", icon: "seed" },
-    { type: "water", x: 868, y: 320, label: "Poço", icon: "water" },
-    { type: "sales", x: 480, y: 548, label: "Entrega", icon: "bag" },
-  ];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) plots.push({ x: startX + c * gapX, y: startY + r * gapY });
+  return {
+    id: "default", name: "Fazenda", difficulty: 1, duration: ROUND.duration, stars: ROUND.stars.slice(),
+    plots,
+    stations: [{ type: "tool", x: 92, y: 250 }, { type: "seed", x: 92, y: 420 }, { type: "water", x: 868, y: 320 }, { type: "sales", x: 480, y: 548 }],
+    plantPool: null, // null => all plants
+  };
+}
+
+export function createState({ playerCount = 1, difficulty = 1, seed = null, level = null } = {}) {
+  const L = level || defaultLevel();
+  playerCount = Math.max(1, Math.min(4, playerCount));
+  difficulty = Math.max(1, Math.min(4, L.difficulty != null ? L.difficulty : difficulty));
+  const plots = L.plots.map((p) => ({ x: p.x, y: p.y, stage: STAGE.VIRGIN, plant: null, progress: 0, life: 1, wilt: 0 }));
+  const stations = L.stations.map((s) => ({ type: s.type, x: s.x, y: s.y, label: (STATION_META[s.type] || {}).label || s.type, icon: (STATION_META[s.type] || {}).icon }));
+  const pool = L.plantPool && L.plantPool.length ? PLANTS.filter((p) => L.plantPool.includes(p.name)) : PLANTS.slice();
   const players = [];
   for (let i = 0; i < playerCount; i++) {
     const [ox, oy] = PLAYER_SPAWN[i];
@@ -87,8 +102,10 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null } = {
   return {
     _rng: seed != null ? makeRng(seed) : null,
     mult: DIFFICULTY_MULT[difficulty - 1], difficulty, playerCount,
+    levelId: L.id, levelName: L.name, duration: L.duration, starsBase: L.stars.slice(),
+    plantPool: pool.length ? pool : PLANTS.slice(),
     score: 0, paused: false, over: false, result: null,
-    time: ROUND.duration,
+    time: L.duration,
     orders: [], orderId: 1, orderSpawnTimer: 3,
     combo: 0, comboTimer: 0,
     stats: { delivered: 0, expired: 0 },
@@ -102,9 +119,9 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null } = {
 export function dist(ax, ay, bx, by) { return Math.hypot(ax - bx, ay - by); }
 function lerp(a, b, t) { return a + (b - a) * t; }
 function clamp01(t) { return Math.max(0, Math.min(1, t)); }
-export function roundProgress(s) { return clamp01(1 - s.time / ROUND.duration); }
+export function roundProgress(s) { return clamp01(1 - s.time / (s.duration || ROUND.duration)); }
 export function maxConcurrentOrders(s) { return ORDER.maxConcurrent + COOP.concurrentBonus[s.playerCount - 1]; }
-export function starGoals(s) { const k = COOP.starScale[s.playerCount - 1]; return ROUND.stars.map((v) => Math.round(v * k)); }
+export function starGoals(s) { const k = COOP.starScale[s.playerCount - 1]; return (s.starsBase || ROUND.stars).map((v) => Math.round(v * k)); }
 export function stationOf(s, type) { return s.stations.find((x) => x.type === type); }
 export function ordersNeeding(s, name) { return s.orders.filter((o) => o.plant.name === name && o.need > 0); }
 
@@ -129,7 +146,9 @@ function orderInterval(s) {
 }
 export function spawnOrder(s) {
   if (s.orders.length >= maxConcurrentOrders(s)) return;
-  const pool = PLANTS.filter((p) => p.rarity <= orderableRarity(s));
+  const src = s.plantPool && s.plantPool.length ? s.plantPool : PLANTS;
+  let pool = src.filter((p) => p.rarity <= orderableRarity(s));
+  if (pool.length === 0) pool = src; // pool may be all-high-rarity early on
   const plant = pool[Math.floor(rng(s) * pool.length)];
   const p = roundProgress(s);
   let qty = 1;
@@ -228,7 +247,7 @@ function interactPlot(s, p, plot) {
   }
 }
 function resetPlot(plot) { plot.stage = STAGE.VIRGIN; plot.plant = null; plot.progress = 0; plot.life = 1; plot.wilt = 0; }
-function selectSeed(s, p) { p.holding = HOLD.SEED; p.heldSeed = PLANTS[p.seedMenu.index]; p.seedMenu.open = false; ev(s, "pickup"); }
+function selectSeed(s, p) { p.holding = HOLD.SEED; p.heldSeed = (s.plantPool || PLANTS)[p.seedMenu.index]; p.seedMenu.open = false; ev(s, "pickup"); }
 
 // ---- FX (pure math; renderer reads particles/floaters/shake) ---------------
 function spawnParticles(s, x, y, { n = 8, color = "#fff", speed = 100, gravity = 220 } = {}) {
@@ -252,10 +271,11 @@ function updateFX(s, dt) {
 
 // ---- per-player update -----------------------------------------------------
 function updateSeedMenu(s, p, intent) {
+  const n = (s.plantPool || PLANTS).length;
   if (intent.navL) p.seedMenu.index = Math.max(0, p.seedMenu.index - 1);
-  if (intent.navR) p.seedMenu.index = Math.min(PLANTS.length - 1, p.seedMenu.index + 1);
+  if (intent.navR) p.seedMenu.index = Math.min(n - 1, p.seedMenu.index + 1);
   if (Math.abs(intent.mx) > 0.55 && !p.navLatch) {
-    p.seedMenu.index = Math.max(0, Math.min(PLANTS.length - 1, p.seedMenu.index + (intent.mx > 0 ? 1 : -1)));
+    p.seedMenu.index = Math.max(0, Math.min(n - 1, p.seedMenu.index + (intent.mx > 0 ? 1 : -1)));
     p.navLatch = true;
   } else if (Math.abs(intent.mx) < 0.3) { p.navLatch = false; }
   if (intent.confirm) selectSeed(s, p);

@@ -526,7 +526,7 @@ function drawInteractHint(p) {
 }
 
 function drawSeedMenu(p) {
-  const PLANTS = Sim.PLANTS;
+  const PLANTS = game.plantPool || Sim.PLANTS;
   const idx = p.seedMenu.index;
   const spacing = 58, panelW = 260, panelH = 96;
   let cx = Math.max(panelW / 2 + 8, Math.min(WORLD.w - panelW / 2 - 8, p.x));
