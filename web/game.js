@@ -845,7 +845,7 @@ function serverUrl() {
 
 window.__OG_NET__ = {
   Net,
-  async connectCreate(url, count, difficulty) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.create(count, difficulty); },
+  async connectCreate(url, count, difficulty, levelId) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.create(count, difficulty, levelId); },
   async connectJoin(url, room) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.join(room); },
   start() { Net.start(); },
   state() { return { room: Net.room, slot: Net.slot, host: Net.host, phase: Net.phase, count: Net.count, error: Net.error, snapshot: Net.lastSnapshot }; },
@@ -859,16 +859,22 @@ const onlineSetup = document.getElementById("online-setup");
 const onlineLobby = document.getElementById("online-lobby");
 const onlineError = document.getElementById("online-error");
 
+function populateLevelSelect() {
+  const sel = document.getElementById("online-level");
+  if (!sel || sel.options.length) return;
+  for (const lv of LEVELS) { const o = document.createElement("option"); o.value = lv.id; o.textContent = lv.name; sel.appendChild(o); }
+}
 function showOnlineScreen(show) {
   onlineScreen.classList.toggle("hidden", !show);
-  if (show) { onlineSetup.classList.remove("hidden"); onlineLobby.classList.add("hidden"); onlineError.textContent = ""; }
+  if (show) { populateLevelSelect(); onlineSetup.classList.remove("hidden"); onlineLobby.classList.add("hidden"); onlineError.textContent = ""; }
 }
 function showLobbyView() {
   onlineSetup.classList.add("hidden"); onlineLobby.classList.remove("hidden");
   document.getElementById("room-code").textContent = Net.room || "----";
   document.getElementById("lobby-start").classList.toggle("hidden", !Net.host);
   document.getElementById("lobby-wait").classList.toggle("hidden", Net.host);
-  document.getElementById("lobby-players").textContent = `Jogadores na sala: ${Net.slots ? Net.slots.length : 1} / ${Net.count}`;
+  document.getElementById("lobby-players").textContent =
+    `${Net.levelName ? "Fase: " + Net.levelName + " · " : ""}Jogadores na sala: ${Net.slots ? Net.slots.length : 1} / ${Net.count}`;
 }
 function closeOnline() {
   online = false;
@@ -904,7 +910,11 @@ async function connectThen(action) {
 
 document.getElementById("online-btn").addEventListener("click", () => { startScreen.classList.add("hidden"); showOnlineScreen(true); });
 document.getElementById("online-back").addEventListener("click", () => { try { if (Net.ws) Net.ws.close(); } catch (_) {} showOnlineScreen(false); startScreen.classList.remove("hidden"); });
-document.getElementById("create-room").addEventListener("click", () => connectThen(() => Net.create(selectedPlayers, selectedDifficulty)));
+document.getElementById("create-room").addEventListener("click", () => {
+  const lvl = document.getElementById("online-level");
+  const levelId = lvl && lvl.value ? lvl.value : undefined;
+  connectThen(() => Net.create(selectedPlayers, selectedDifficulty, levelId));
+});
 document.getElementById("join-room").addEventListener("click", () => {
   const code = document.getElementById("join-code").value.trim().toUpperCase();
   if (code.length < 4) { onlineError.textContent = "digite o código (4 letras)"; return; }
