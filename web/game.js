@@ -14,8 +14,19 @@ const HOLD = { NOTHING: 0, SEED: 1, WATER: 2, TOOL: 3, PLANT: 4 };
 // Plant stages (StageScript.PlantStages, 1-indexed in original)
 const STAGE = { VIRGIN: 1, TREATED: 2, SMALL: 3, MEDIUM: 4, GREAT: 5, READY: 6, DIED: 7 };
 
-// Difficulty multiplier indexed by numberOfPlayers-1 (StageScript.DifficultyMultiplier)
+// Difficulty multiplier indexed by difficulty-1 (StageScript.DifficultyMultiplier)
 const DIFFICULTY_MULT = [4, 3, 2, 1];
+
+// Co-op scaling by playerCount-1: more players => faster orders, more can be
+// active at once, higher star goals. First-pass values — tune with the e2e
+// multi-player harness (see docs/COOP_DESIGN.md). Solo keeps factor 1.
+const COOP = {
+  spawnScale: [1, 0.72, 0.58, 0.5],
+  concurrentBonus: [0, 2, 3, 4],
+  starScale: [1, 1.8, 2.5, 3.2],
+};
+const PLAYER_COLORS = ["#ffd24a", "#4ea8ff", "#ff6b6b", "#74e36b"];
+const PLAYER_SPAWN = [[0, 30], [-70, 30], [70, 30], [0, 96]];
 
 const WORLD = { w: 960, h: 600 };
 
@@ -177,19 +188,93 @@ const sound = {
 // ---------------------------------------------------------------------------
 const keys = {};
 const justPressed = {};
+// We index keys by BOTH e.key (e.g. "w", "shift", "arrowup") and e.code
+// (e.g. "shiftleft", "shiftright", "slash", "period", "enter") so a second
+// keyboard player can have distinct binds (left vs right shift, etc.).
+function setKey(name, down) {
+  if (down) { if (!keys[name]) justPressed[name] = true; keys[name] = true; }
+  else keys[name] = false;
+}
 window.addEventListener("keydown", (e) => {
-  const k = e.key.toLowerCase();
-  if (!keys[k]) justPressed[k] = true;
-  keys[k] = true;
-  if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(k)) e.preventDefault();
+  setKey(e.key.toLowerCase(), true);
+  setKey(e.code.toLowerCase(), true);
+  if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "/"].includes(e.key.toLowerCase())) e.preventDefault();
 });
-window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
+window.addEventListener("keyup", (e) => { setKey(e.key.toLowerCase(), false); setKey(e.code.toLowerCase(), false); });
 
 function pressed(k) { return justPressed[k] === true; }
+function anyDown(list) { return list.some((k) => keys[k]); }
+function anyPressed(list) { return list.some((k) => justPressed[k] === true); }
 function clearJustPressed() { for (const k in justPressed) justPressed[k] = false; }
 
 const touchMove = { x: 0, y: 0, active: false };
-let seedNavLatch = false;
+
+// Per-slot keyboard binds. Slot 0 in solo also accepts arrows (preserves the
+// original feel + the headless bot, which drives WASD). In co-op slot 0 is
+// WASD-only so the arrows belong to slot 1.
+function keymapForSlot(slot, playerCount) {
+  if (slot === 0) {
+    return playerCount === 1
+      ? { up: ["w", "arrowup"], down: ["s", "arrowdown"], left: ["a", "arrowleft"], right: ["d", "arrowright"], run: ["shift"], interact: ["e"], drop: ["q"], navL: ["a", "arrowleft"], navR: ["d", "arrowright"], confirm: ["e"] }
+      : { up: ["w"], down: ["s"], left: ["a"], right: ["d"], run: ["shiftleft"], interact: ["e"], drop: ["q"], navL: ["a"], navR: ["d"], confirm: ["e"] };
+  }
+  if (slot === 1) {
+    return { up: ["arrowup"], down: ["arrowdown"], left: ["arrowleft"], right: ["arrowright"], run: ["shiftright"], interact: ["slash", "enter"], drop: ["period"], navL: ["arrowleft"], navR: ["arrowright"], confirm: ["slash", "enter"] };
+  }
+  return null; // slots 2+ are gamepad-only
+}
+
+// Gamepad previous-button state per pad index, for edge detection.
+const gpPrev = {};
+function gamepadIntent(gpIndex) {
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  const gp = pads[gpIndex];
+  if (!gp) return null;
+  const dz = 0.28;
+  let mx = gp.axes[0] || 0, my = gp.axes[1] || 0;
+  if (Math.hypot(mx, my) < dz) { mx = 0; my = 0; }
+  const b = (i) => !!(gp.buttons[i] && gp.buttons[i].pressed);
+  const dpadL = b(14), dpadR = b(15), dpadU = b(12), dpadD = b(13);
+  if (mx === 0 && my === 0) { mx = (dpadR ? 1 : 0) - (dpadL ? 1 : 0); my = (dpadD ? 1 : 0) - (dpadU ? 1 : 0); }
+  const cur = { interact: b(0), drop: b(1), navL: dpadL, navR: dpadR, run: b(5) || b(7) || b(2), pause: b(9) };
+  const prev = gpPrev[gpIndex] || {};
+  const edge = (k) => cur[k] && !prev[k];
+  gpPrev[gpIndex] = cur;
+  if (edge("pause")) justPressed["p"] = true; // route gamepad Start to pause
+  return {
+    mx, my, run: cur.run,
+    interact: edge("interact"), drop: edge("drop"),
+    navL: edge("navL"), navR: edge("navR"), confirm: edge("interact"),
+  };
+}
+
+// Build one intent per player slot for this frame. Slot 0 also folds in touch.
+function gatherIntents() {
+  const out = [];
+  for (let i = 0; i < game.players.length; i++) {
+    const dev = game.players[i].device;
+    let it;
+    if (dev.type === "gamepad") {
+      it = gamepadIntent(dev.index) || { mx: 0, my: 0, run: false, interact: false, drop: false, navL: false, navR: false, confirm: false };
+    } else {
+      const km = dev.keymap;
+      let mx = (anyDown(km.right) ? 1 : 0) - (anyDown(km.left) ? 1 : 0);
+      let my = (anyDown(km.down) ? 1 : 0) - (anyDown(km.up) ? 1 : 0);
+      it = {
+        mx, my, run: anyDown(km.run),
+        interact: anyPressed(km.interact), drop: anyPressed(km.drop),
+        navL: anyPressed(km.navL), navR: anyPressed(km.navR), confirm: anyPressed(km.confirm),
+      };
+      // Touch (mobile, slot 0 only): analog joystick + on-screen buttons (which
+      // set the slot-0 keys via bindTouch).
+      if (i === 0 && touchMove.active && Math.hypot(touchMove.x, touchMove.y) > 0.22) {
+        it.mx = touchMove.x; it.my = touchMove.y;
+      }
+    }
+    out.push(it);
+  }
+  return out;
+}
 
 // ---------------------------------------------------------------------------
 // Game state
@@ -197,8 +282,25 @@ let seedNavLatch = false;
 let gameState = "menu"; // menu | playing | result
 let game = null;
 
-function createGame(numberOfPlayers) {
-  const mult = DIFFICULTY_MULT[numberOfPlayers - 1];
+// Decide which input device drives each slot: keyboards first (0,1), then any
+// connected gamepads fill the rest.
+function assignDevices(playerCount) {
+  const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : [];
+  const devices = [];
+  let padCursor = 0;
+  for (let slot = 0; slot < playerCount; slot++) {
+    const km = keymapForSlot(slot, playerCount);
+    if (km) devices.push({ type: "keyboard", keymap: km });
+    else if (pads[padCursor]) devices.push({ type: "gamepad", index: pads[padCursor++].index });
+    else devices.push({ type: "keyboard", keymap: keymapForSlot(0, playerCount) }); // fallback
+  }
+  return devices;
+}
+
+function createGame(playerCount, difficulty) {
+  playerCount = Math.max(1, Math.min(4, playerCount || 1));
+  difficulty = Math.max(1, Math.min(4, difficulty || 1));
+  const mult = DIFFICULTY_MULT[difficulty - 1];
 
   const plots = [];
   const cols = 3, rows = 2;
@@ -220,25 +322,39 @@ function createGame(numberOfPlayers) {
     { type: "sales", x: 480, y: 548, label: "Entrega",     icon: "bag" },
   ];
 
-  return {
-    mult, numberOfPlayers,
+  const devices = assignDevices(playerCount);
+  const players = [];
+  for (let i = 0; i < playerCount; i++) {
+    const [ox, oy] = PLAYER_SPAWN[i];
+    players.push({
+      index: i, color: PLAYER_COLORS[i], device: devices[i],
+      x: WORLD.w / 2 + ox, y: WORLD.h / 2 + oy,
+      speed: 0, stamina: TUNE.maxStamina,
+      facing: "down", moving: false,
+      holding: HOLD.NOTHING, heldSeed: null, heldPlant: null,
+      anim: 0, navLatch: false,
+      seedMenu: { open: false, index: 0 },
+    });
+  }
+
+  const g = {
+    mult, difficulty, playerCount,
     score: 0, paused: false,
     time: ROUND.duration,
     orders: [], orderId: 1, orderSpawnTimer: 3,
     combo: 0, comboTimer: 0,
     stats: { delivered: 0, expired: 0 },
-    particles: [], floaters: [], shake: 0,
-    player: {
-      x: WORLD.w / 2, y: WORLD.h / 2 + 30,
-      speed: 0, stamina: TUNE.maxStamina,
-      facing: "down", moving: false,
-      holding: HOLD.NOTHING, heldSeed: null, heldPlant: null,
-      anim: 0,
-    },
-    plots, stations,
-    seedMenu: { open: false, index: 0 },
+    particles: [], floaters: [], shake: 0, anyMoving: false,
+    players, plots, stations,
   };
+  // Back-compat aliases for the headless harness / debug API (single player).
+  g.player = players[0];
+  g.seedMenu = players[0].seedMenu;
+  return g;
 }
+
+function maxConcurrentOrders() { return ORDER.maxConcurrent + COOP.concurrentBonus[game.playerCount - 1]; }
+function starGoals() { const s = COOP.starScale[game.playerCount - 1]; return ROUND.stars.map((v) => Math.round(v * s)); }
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -248,8 +364,7 @@ function lerp(a, b, t) { return a + (b - a) * t; }
 function clamp01(t) { return Math.max(0, Math.min(1, t)); }
 function roundProgress() { return clamp01(1 - game.time / ROUND.duration); }
 
-function nearestStation() {
-  const p = game.player;
+function nearestStation(p) {
   let best = null, bestD = TUNE.interactRadius;
   for (const s of game.stations) {
     const d = dist(p.x, p.y, s.x, s.y);
@@ -258,8 +373,7 @@ function nearestStation() {
   return best;
 }
 
-function nearestPlot() {
-  const p = game.player;
+function nearestPlot(p) {
   let best = null, bestD = TUNE.interactRadius;
   for (const plot of game.plots) {
     const d = dist(p.x, p.y, plot.x, plot.y);
@@ -284,10 +398,11 @@ function orderableRarity() {
   return 3;
 }
 function orderInterval() {
-  return lerp(ORDER.spawnStart, ORDER.spawnEnd, roundProgress()) * ORDER.diffSpawn[game.numberOfPlayers - 1];
+  return lerp(ORDER.spawnStart, ORDER.spawnEnd, roundProgress())
+    * ORDER.diffSpawn[game.difficulty - 1] * COOP.spawnScale[game.playerCount - 1];
 }
 function spawnOrder() {
-  if (game.orders.length >= ORDER.maxConcurrent) return;
+  if (game.orders.length >= maxConcurrentOrders()) return;
   const maxR = orderableRarity();
   const pool = PLANTS.filter((p) => p.rarity <= maxR);
   const plant = pool[Math.floor(rng() * pool.length)];
@@ -295,7 +410,7 @@ function spawnOrder() {
   let qty = 1;
   if (p > 0.3 && rng() < 0.5) qty++;
   if (p > 0.6 && rng() < 0.4) qty++;
-  const time = (ORDER.timeBase + ORDER.timePerRarity * plant.rarity) * ORDER.diffTime[game.numberOfPlayers - 1];
+  const time = (ORDER.timeBase + ORDER.timePerRarity * plant.rarity) * ORDER.diffTime[game.difficulty - 1];
   game.orders.push({ plant, need: qty, qty, timeLeft: time, maxTime: time, id: game.orderId++ });
 }
 
@@ -329,8 +444,7 @@ function updateOrders(dt) {
   }
 }
 
-function deliverPlant() {
-  const p = game.player;
+function deliverPlant(p) {
   if (p.holding !== HOLD.PLANT || !p.heldPlant) return;
   const st = stationOf("sales");
   const matches = ordersNeeding(p.heldPlant.name);
@@ -370,21 +484,17 @@ function completeOrder(o) {
 // ---------------------------------------------------------------------------
 // Interactions
 // ---------------------------------------------------------------------------
-function handleInteract() {
-  const p = game.player;
-  if (game.seedMenu.open) { if (pressed("e")) selectSeed(); return; }
+function handleInteract(p, intent) {
+  if (intent.drop && p.holding !== HOLD.PLANT) { p.holding = HOLD.NOTHING; p.heldSeed = null; }
+  if (!intent.interact) return;
 
-  if (pressed("q") && p.holding !== HOLD.PLANT) { p.holding = HOLD.NOTHING; p.heldSeed = null; }
-  if (!pressed("e")) return;
-
-  const station = nearestStation();
-  if (station) { interactStation(station); return; }
-  const plot = nearestPlot();
-  if (plot) interactPlot(plot);
+  const station = nearestStation(p);
+  if (station) { interactStation(p, station); return; }
+  const plot = nearestPlot(p);
+  if (plot) interactPlot(p, plot);
 }
 
-function interactStation(s) {
-  const p = game.player;
+function interactStation(p, s) {
   switch (s.type) {
     case "tool":
       if (p.holding !== HOLD.PLANT) { p.holding = HOLD.TOOL; p.heldSeed = null; sound.pickup(); }
@@ -393,16 +503,15 @@ function interactStation(s) {
       if (p.holding !== HOLD.PLANT) { p.holding = HOLD.WATER; p.heldSeed = null; sound.pickup(); }
       break;
     case "seed":
-      if (p.holding !== HOLD.PLANT) { game.seedMenu.open = true; }
+      if (p.holding !== HOLD.PLANT) { p.seedMenu.open = true; }
       break;
     case "sales":
-      deliverPlant();
+      deliverPlant(p);
       break;
   }
 }
 
-function interactPlot(plot) {
-  const p = game.player;
+function interactPlot(p, plot) {
   if (plot.stage === STAGE.DIED) {
     if (p.holding === HOLD.TOOL) { resetPlot(plot); p.holding = HOLD.NOTHING; sound.pickup(); }
     return;
@@ -435,10 +544,9 @@ function resetPlot(plot) {
   plot.stage = STAGE.VIRGIN; plot.plant = null; plot.progress = 0; plot.life = 1; plot.wilt = 0;
 }
 
-function selectSeed() {
-  const p = game.player;
-  p.holding = HOLD.SEED; p.heldSeed = PLANTS[game.seedMenu.index];
-  game.seedMenu.open = false; sound.pickup();
+function selectSeed(p) {
+  p.holding = HOLD.SEED; p.heldSeed = PLANTS[p.seedMenu.index];
+  p.seedMenu.open = false; sound.pickup();
 }
 
 // ---------------------------------------------------------------------------
@@ -488,45 +596,45 @@ function update(dt) {
   updateFX(dt);
   updateOrders(dt);
 
-  if (game.seedMenu.open) {
-    if (pressed("a")) game.seedMenu.index = Math.max(0, game.seedMenu.index - 1);
-    if (pressed("d")) game.seedMenu.index = Math.min(PLANTS.length - 1, game.seedMenu.index + 1);
-    if (touchMove.active && Math.abs(touchMove.x) > 0.55 && !seedNavLatch) {
-      const dir = touchMove.x > 0 ? 1 : -1;
-      game.seedMenu.index = Math.max(0, Math.min(PLANTS.length - 1, game.seedMenu.index + dir));
-      seedNavLatch = true;
-    } else if (Math.abs(touchMove.x) < 0.3) {
-      seedNavLatch = false;
-    }
-    handleInteract();
-    game.player.moving = false;
-    sound.footstepsOff();
-    return;
+  const intents = gatherIntents();
+  let anyMoving = false;
+  for (let i = 0; i < game.players.length; i++) {
+    const p = game.players[i], intent = intents[i];
+    if (p.seedMenu.open) { updateSeedMenu(p, intent); p.moving = false; continue; }
+    updatePlayer(p, intent, dt);
+    handleInteract(p, intent);
+    if (p.moving) anyMoving = true;
   }
-
-  updatePlayer(dt);
-  handleInteract();
   updatePlots(dt);
+
+  // Footsteps loop on while anyone walks.
+  if (anyMoving && !game.anyMoving) sound.footstepsOn();
+  else if (!anyMoving && game.anyMoving) sound.footstepsOff();
+  game.anyMoving = anyMoving;
 }
 
-function updatePlayer(dt) {
-  const p = game.player;
-  let dx = 0, dy = 0, analogMag = 1;
-  const joyMag = Math.hypot(touchMove.x, touchMove.y);
-  if (touchMove.active && joyMag > 0.22) {
-    dx = touchMove.x; dy = touchMove.y;
-    analogMag = Math.min(1, joyMag);
-  } else {
-    if (keys["w"] || keys["arrowup"]) dy -= 1;
-    if (keys["s"] || keys["arrowdown"]) dy += 1;
-    if (keys["a"] || keys["arrowleft"]) dx -= 1;
-    if (keys["d"] || keys["arrowright"]) dx += 1;
+function updateSeedMenu(p, intent) {
+  if (intent.navL) p.seedMenu.index = Math.max(0, p.seedMenu.index - 1);
+  if (intent.navR) p.seedMenu.index = Math.min(PLANTS.length - 1, p.seedMenu.index + 1);
+  // Analog stick navigation with a per-player latch.
+  if (Math.abs(intent.mx) > 0.55 && !p.navLatch) {
+    p.seedMenu.index = Math.max(0, Math.min(PLANTS.length - 1, p.seedMenu.index + (intent.mx > 0 ? 1 : -1)));
+    p.navLatch = true;
+  } else if (Math.abs(intent.mx) < 0.3) {
+    p.navLatch = false;
   }
+  if (intent.confirm) selectSeed(p);
+}
+
+function updatePlayer(p, intent, dt) {
+  let dx = intent.mx, dy = intent.my;
+  const inMag = Math.hypot(dx, dy);
+  const analogMag = inMag > 0 ? Math.min(1, inMag) : 1;
 
   const wasMoving = p.moving;
   p.moving = dx !== 0 || dy !== 0;
 
-  const running = keys["shift"] && p.moving && p.stamina > 0;
+  const running = intent.run && p.moving && p.stamina > 0;
   if (running) {
     p.speed = TUNE.runSpeed;
     p.stamina -= TUNE.runDrain * dt;
@@ -546,10 +654,8 @@ function updatePlayer(dt) {
     p.x += dx * sp * dt;
     p.y += dy * sp * dt;
     p.anim += dt * (running ? 12 : 8);
-    if (!wasMoving) sound.footstepsOn();
   } else {
     p.anim += dt * 3;
-    if (wasMoving) sound.footstepsOff();
   }
 
   p.x = Math.max(28, Math.min(WORLD.w - 28, p.x));
@@ -589,13 +695,14 @@ function endRound() {
   showTouchControls(false);
 
   const s = game.score;
-  const stars = (s >= ROUND.stars[2]) ? 3 : (s >= ROUND.stars[1]) ? 2 : (s >= ROUND.stars[0]) ? 1 : 0;
+  const goals = starGoals();
+  const stars = (s >= goals[2]) ? 3 : (s >= goals[1]) ? 2 : (s >= goals[0]) ? 1 : 0;
   document.getElementById("result-stars").innerHTML =
     [0, 1, 2].map((i) => `<span class="${i < stars ? "on" : "off"}">★</span>`).join("");
   document.getElementById("result-score").textContent = "Score: " + s;
   document.getElementById("result-stats").textContent =
     `Pedidos entregues: ${game.stats.delivered} · perdidos: ${game.stats.expired}` +
-    (stars < 3 ? ` · próxima estrela em ${ROUND.stars[Math.min(stars, 2)]}` : " · máximo!");
+    (stars < 3 ? ` · próxima estrela em ${goals[Math.min(stars, 2)]}` : " · máximo!");
   resultScreen.classList.remove("hidden");
 }
 
@@ -612,8 +719,7 @@ function drawSpriteAnchored(sheetName, rect, ax, ay, targetH) {
   const w = rect.w * scale;
   drawFrame(sheetName, rect, ax - w / 2, ay - targetH, w, targetH);
 }
-function charFrame() {
-  const p = game.player;
+function charFrame(p) {
   let set;
   if (p.moving) set = "walk_" + p.facing;
   else if (p.holding !== HOLD.NOTHING) set = "hold_" + p.facing;
@@ -641,15 +747,15 @@ function render() {
   drawBackground();
   for (const plot of game.plots) drawPlot(plot);
   for (const s of game.stations) drawStation(s);
-  drawPlayer();
+  drawPlayers();
   drawParticles();
   drawFloaters();
   ctx.restore();
 
   drawHUD();
   drawOrders();
-  drawInteractHint();
-  if (game.seedMenu.open) drawSeedMenu();
+  for (const p of game.players) drawInteractHint(p);
+  for (const p of game.players) if (p.seedMenu.open) drawSeedMenu(p);
 }
 
 function drawBackground() {
@@ -780,19 +886,41 @@ function drawStation(s) {
   ctx.fillText(s.label, s.x, y + h + 14);
 }
 
-function drawPlayer() {
-  const p = game.player;
-  ctx.fillStyle = "rgba(0,0,0,0.22)";
-  ctx.beginPath();
-  ctx.ellipse(p.x, p.y + 16, 18, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
-  const f = charFrame();
-  drawSpriteAnchored(f.sheet, f.rect, p.x, p.y + 18, 76);
-  drawHeldIcon(p.x, p.y - 56);
+function drawPlayers() {
+  const coop = game.playerCount > 1;
+  const order = [...game.players].sort((a, b) => a.y - b.y);
+  for (const p of order) {
+    // Shadow — tinted with the player colour in co-op to tell them apart.
+    ctx.fillStyle = coop ? hexAlpha(p.color, 0.5) : "rgba(0,0,0,0.22)";
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y + 16, 18, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    if (coop) {
+      ctx.strokeStyle = p.color; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y + 16, 19, 7, 0, 0, Math.PI * 2); ctx.stroke();
+    }
+    const f = charFrame(p);
+    drawSpriteAnchored(f.sheet, f.rect, p.x, p.y + 18, 76);
+    drawHeldIcon(p.x, p.y - 56, p);
+    if (coop) {
+      // Player number tag + stamina pip under the feet.
+      ctx.fillStyle = p.color;
+      ctx.font = "bold 12px Trebuchet MS, sans-serif";
+      ctx.textAlign = "center";
+      ctx.strokeStyle = "rgba(0,0,0,0.6)"; ctx.lineWidth = 3;
+      ctx.strokeText("P" + (p.index + 1), p.x, p.y - 64);
+      ctx.fillText("P" + (p.index + 1), p.x, p.y - 64);
+      bar(p.x - 18, p.y + 24, 36, 4, p.stamina / TUNE.maxStamina, p.color, "#3a1f1f");
+    }
+  }
 }
 
-function drawHeldIcon(cx, cy) {
-  const p = game.player;
+function hexAlpha(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+function drawHeldIcon(cx, cy, p) {
   const items = ASSETS.atlas.items;
   let item = null, rect = null, sheet = null, h = 26;
   if (p.holding === HOLD.TOOL) item = items.shovel;
@@ -844,8 +972,9 @@ function drawHUD() {
   ctx.fillText("Score " + game.score, 22, 33);
   ctx.font = "12px Trebuchet MS, sans-serif";
   ctx.fillStyle = "#b7d49a";
-  const reached = ROUND.stars.filter((t) => game.score >= t).length;
-  ctx.fillText("★".repeat(reached) + "☆".repeat(3 - reached) + "  meta " + ROUND.stars[2], 22, 48);
+  const goals = starGoals();
+  const reached = goals.filter((t) => game.score >= t).length;
+  ctx.fillText("★".repeat(reached) + "☆".repeat(3 - reached) + "  meta " + goals[2], 22, 48);
 
   // Combo (under score, when active)
   if (game.combo > 1) {
@@ -863,24 +992,27 @@ function drawHUD() {
   ctx.textAlign = "center";
   ctx.fillText("⏱ " + fmtTime(game.time), WORLD.w / 2, 35);
 
-  // Stamina (top-right)
-  const sx = WORLD.w - 232, sy = 14, sw = 220, sh = 16;
-  ctx.fillStyle = "rgba(20,30,16,0.75)";
-  roundRect(sx - 8, sy - 4, sw + 16, sh + 22, 8, true, false);
-  ctx.fillStyle = "#3a1f1f"; roundRect(sx, sy, sw, sh, 5, true, false);
-  ctx.fillStyle = "#5fd35f"; roundRect(sx, sy, sw * (game.player.stamina / TUNE.maxStamina), sh, 5, true, false);
-  ctx.fillStyle = "#fff"; ctx.font = "11px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
-  ctx.fillText("STAMINA", sx + sw / 2, sy + sh + 12);
+  // Stamina (top-right) — single player only; in co-op each player has a pip
+  // under their feet (drawn in drawPlayers).
+  if (game.playerCount === 1) {
+    const sx = WORLD.w - 232, sy = 14, sw = 220, sh = 16;
+    ctx.fillStyle = "rgba(20,30,16,0.75)";
+    roundRect(sx - 8, sy - 4, sw + 16, sh + 22, 8, true, false);
+    ctx.fillStyle = "#3a1f1f"; roundRect(sx, sy, sw, sh, 5, true, false);
+    ctx.fillStyle = "#5fd35f"; roundRect(sx, sy, sw * (game.players[0].stamina / TUNE.maxStamina), sh, 5, true, false);
+    ctx.fillStyle = "#fff"; ctx.font = "11px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("STAMINA", sx + sw / 2, sy + sh + 12);
 
-  // Held item label (bottom-left)
-  const label = heldLabel();
-  if (label) {
-    ctx.fillStyle = "rgba(20,30,16,0.7)";
-    roundRect(12, WORLD.h - 44, 300, 32, 8, true, false);
-    ctx.fillStyle = "#e7e0cd";
-    ctx.font = "bold 15px Trebuchet MS, sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText("Segurando: " + label, 22, WORLD.h - 23);
+    // Held item label (bottom-left)
+    const label = heldLabel(game.players[0]);
+    if (label) {
+      ctx.fillStyle = "rgba(20,30,16,0.7)";
+      roundRect(12, WORLD.h - 44, 300, 32, 8, true, false);
+      ctx.fillStyle = "#e7e0cd";
+      ctx.font = "bold 15px Trebuchet MS, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("Segurando: " + label, 22, WORLD.h - 23);
+    }
   }
 }
 
@@ -907,8 +1039,7 @@ function drawOrders() {
   }
 }
 
-function heldLabel() {
-  const p = game.player;
+function heldLabel(p) {
   switch (p.holding) {
     case HOLD.TOOL: return "Enxada";
     case HOLD.WATER: return "Água";
@@ -918,11 +1049,10 @@ function heldLabel() {
   }
 }
 
-function drawInteractHint() {
-  if (game.seedMenu.open) return;
-  const p = game.player;
-  const station = nearestStation();
-  const plot = !station ? nearestPlot() : null;
+function drawInteractHint(p) {
+  if (p.seedMenu.open) return;
+  const station = nearestStation(p);
+  const plot = !station ? nearestPlot(p) : null;
   let hint = null;
 
   if (station) {
@@ -949,49 +1079,49 @@ function drawInteractHint() {
   ctx.fillText(hint, p.x, p.y - 71);
 }
 
-function drawSeedMenu() {
-  ctx.fillStyle = "rgba(20,30,16,0.88)";
-  ctx.fillRect(0, 0, WORLD.w, WORLD.h);
-  ctx.fillStyle = "#f7d774";
-  ctx.font = "bold 30px Trebuchet MS, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("Escolha a semente", WORLD.w / 2, 110);
-  ctx.fillStyle = "#b7d49a";
-  ctx.font = "16px Trebuchet MS, sans-serif";
-  ctx.fillText("A / D (ou joystick) navega · E escolhe · 📋 = tem pedido", WORLD.w / 2, 140);
+// Compact, non-blocking seed picker floating above the player's head, so other
+// players keep playing while one chooses (Overcooked-style).
+function drawSeedMenu(p) {
+  const idx = p.seedMenu.index;
+  const spacing = 58;
+  const panelW = 260, panelH = 96;
+  let cx = p.x;
+  cx = Math.max(panelW / 2 + 8, Math.min(WORLD.w - panelW / 2 - 8, cx));
+  let cy = p.y - 120;
+  if (cy < panelH + 10) cy = p.y + 130; // flip below if too high
+  const top = cy - panelH / 2;
 
-  const idx = game.seedMenu.index;
-  const spacing = 135;
-  const cy = WORLD.h / 2 + 10;
+  ctx.fillStyle = "rgba(20,30,16,0.92)";
+  roundRect(cx - panelW / 2, top, panelW, panelH, 10, true, false);
+  ctx.strokeStyle = p.color; ctx.lineWidth = 3;
+  roundRect(cx - panelW / 2, top, panelW, panelH, 10, false, true);
+
+  const row = top + 38;
   for (let off = -2; off <= 2; off++) {
     const i = idx + off;
     if (i < 0 || i >= PLANTS.length) continue;
     const plant = PLANTS[i];
-    const cx = WORLD.w / 2 + off * spacing;
+    const x = cx + off * spacing;
     const selected = off === 0;
-    const r = selected ? 62 : 46;
-    ctx.fillStyle = selected ? "rgba(247,215,116,0.18)" : "rgba(255,255,255,0.06)";
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-    if (selected) { ctx.strokeStyle = "#f7d774"; ctx.lineWidth = 4; ctx.stroke(); }
+    const r = selected ? 26 : 18;
+    ctx.fillStyle = selected ? hexAlpha(p.color, 0.22) : "rgba(255,255,255,0.06)";
+    ctx.beginPath(); ctx.arc(x, row, r, 0, Math.PI * 2); ctx.fill();
+    if (selected) { ctx.strokeStyle = p.color; ctx.lineWidth = 3; ctx.stroke(); }
     if (plant.main) {
-      const h = selected ? 64 : 44, w = h * (plant.main.w / plant.main.h);
-      drawFrame(plant.main.sheet, plant.main, cx - w / 2, cy - h / 2, w, h);
+      const h = selected ? 30 : 20, w = h * (plant.main.w / plant.main.h);
+      drawFrame(plant.main.sheet, plant.main, x - w / 2, row - h / 2, w, h);
     }
-    // order badge
     const demand = ordersNeeding(plant.name).reduce((a, o) => a + o.need, 0);
     if (demand > 0) {
       ctx.fillStyle = "#e74c3c";
-      ctx.beginPath(); ctx.arc(cx + r * 0.7, cy - r * 0.7, 13, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#fff"; ctx.font = "bold 13px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
-      ctx.fillText(demand, cx + r * 0.7, cy - r * 0.7 + 5);
-    }
-    if (selected) {
-      ctx.fillStyle = "#fff"; ctx.font = "bold 20px Trebuchet MS, sans-serif";
-      ctx.fillText(plant.name, cx, cy + 100);
-      ctx.fillStyle = "#f7d774"; ctx.font = "14px Trebuchet MS, sans-serif";
-      ctx.fillText("Raridade " + "★".repeat(plant.rarity), cx, cy + 124);
+      ctx.beginPath(); ctx.arc(x + r * 0.8, row - r * 0.8, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.font = "bold 10px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
+      ctx.fillText(demand, x + r * 0.8, row - r * 0.8 + 4);
     }
   }
+  const sel = PLANTS[idx];
+  ctx.fillStyle = "#fff"; ctx.font = "bold 14px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
+  ctx.fillText(sel.name + "  " + "★".repeat(sel.rarity), cx, top + panelH - 12);
 }
 
 // ---------------------------------------------------------------------------
@@ -1031,7 +1161,7 @@ function loop(now) {
 }
 
 function togglePause() {
-  if (!game || game.seedMenu.open || gameState !== "playing") return;
+  if (!game || gameState !== "playing") return;
   game.paused = !game.paused;
   pauseScreen.classList.toggle("hidden", !game.paused);
   if (game.paused) { sound.footstepsOff(); for (const k in ASSETS.audio) ASSETS.audio[k].pause(); }
@@ -1041,14 +1171,19 @@ function togglePause() {
 // ---------------------------------------------------------------------------
 // Menu wiring
 // ---------------------------------------------------------------------------
-let selectedPlayers = 1;
-document.querySelectorAll(".diff-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".diff-btn").forEach((b) => b.classList.remove("selected"));
-    btn.classList.add("selected");
-    selectedPlayers = parseInt(btn.dataset.players, 10);
+let selectedPlayers = 1;   // player count (co-op)
+let selectedDifficulty = 1; // difficulty (mult / order pacing)
+function bindChoiceGroup(selector, attr, setter) {
+  document.querySelectorAll(selector).forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(selector).forEach((b) => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      setter(parseInt(btn.dataset[attr], 10));
+    });
   });
-});
+}
+bindChoiceGroup(".count-btn", "count", (v) => { selectedPlayers = v; });
+bindChoiceGroup(".diff-btn", "diff", (v) => { selectedDifficulty = v; });
 
 startBtn.addEventListener("click", startGame);
 document.getElementById("resume-btn").addEventListener("click", togglePause);
@@ -1120,7 +1255,7 @@ function showTouchControls(on) {
 
 function startGame() {
   if (!ASSETS.atlas) return;
-  game = createGame(selectedPlayers);
+  game = createGame(selectedPlayers, selectedDifficulty);
   gameState = "playing";
   startScreen.classList.add("hidden");
   pauseScreen.classList.add("hidden");
@@ -1165,7 +1300,7 @@ if (location.search.includes("debug")) {
     // human uses (movement runs at real game speed — realistic for balancing).
     keys, justPressed,
     teleport(x, y) { game.player.x = x; game.player.y = y; },
-    openSeedMenu(i = 0) { game.seedMenu.open = true; game.seedMenu.index = i; },
+    openSeedMenu(i = 0) { game.player.seedMenu.open = true; game.player.seedMenu.index = i; },
     setPlot(i, patch) { Object.assign(game.plots[i], patch); },
     setTime(t) { game.time = t; },
     spawnOrder,
@@ -1174,11 +1309,13 @@ if (location.search.includes("debug")) {
     assetsReady() { return !!ASSETS.atlas && PLANTS.length > 0; },
     // Start a round without the rAF loop or audio; the harness drives time via
     // tick(dt) so a 150s round runs deterministically in a fraction of a second.
+    // `players` here means DIFFICULTY (back-compat with the harness); the bot
+    // drives a single co-op slot.
     startHeadless({ players = 1, seed = null } = {}) {
       if (seed != null) seedRng(seed);
-      selectedPlayers = players;
+      selectedDifficulty = players;
       sound.setMuted(true);
-      game = createGame(players);
+      game = createGame(1, players);
       gameState = "playing";
       running = false;
       startScreen.classList.add("hidden");

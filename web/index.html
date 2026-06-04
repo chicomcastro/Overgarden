@@ -18,19 +18,29 @@
         Você achou uma fazenda no meio do nada. Mantenha-a viva num loop
         infinito: prepare a terra, plante, regue, colha e venda para somar pontos.
       </p>
-      <div class="difficulty">
+      <div class="choices">
+        <span>Jogadores:</span>
+        <button class="count-btn selected" data-count="1">1</button>
+        <button class="count-btn" data-count="2">2</button>
+        <button class="count-btn" data-count="3">3</button>
+        <button class="count-btn" data-count="4">4</button>
+      </div>
+      <div class="choices">
         <span>Dificuldade:</span>
-        <button class="diff-btn selected" data-players="1">Fácil</button>
-        <button class="diff-btn" data-players="2">Médio</button>
-        <button class="diff-btn" data-players="3">Difícil</button>
-        <button class="diff-btn" data-players="4">Insano</button>
+        <button class="diff-btn selected" data-diff="1">Fácil</button>
+        <button class="diff-btn" data-diff="2">Médio</button>
+        <button class="diff-btn" data-diff="3">Difícil</button>
+        <button class="diff-btn" data-diff="4">Insano</button>
       </div>
       <button id="start-btn" class="big-btn" disabled>Carregando…</button>
       <div class="controls">
-        <strong>Controles:</strong>
-        WASD mover · SHIFT correr · E interagir · Q largar item · P pausar
+        <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
         <br />
-        <span class="mobile-hint">No celular: use os botões na tela (gire para o modo paisagem para mais espaço).</span>
+        <strong>P2:</strong> setas · Shift-direito correr · <kbd>/</kbd> interagir · <kbd>.</kbd> largar
+        <br />
+        <strong>P3–P4:</strong> gamepad (stick mover · A interagir · B largar · RB correr)
+        <br />
+        <span class="mobile-hint">No celular (1 jogador): use os botões na tela (gire para paisagem para mais espaço).</span>
         <br />
         <label class="mute-toggle"><input type="checkbox" id="mute-box" /> Silenciar áudio</label>
       </div>

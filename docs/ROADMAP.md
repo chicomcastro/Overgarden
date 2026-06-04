@@ -41,8 +41,8 @@ sozinho ou em co-op, com caos crescente.
 - [ ] Curva de dificuldade desenhada (cada fase introduz 1 mecânica).
 
 **Jogabilidade**
-- [ ] **Co-op local** (2 jogadores: teclado dividido / 2 gamepads) — feature definidora do gênero.
-- [ ] **Suporte a gamepad** (Gamepad API).
+- [x] **Co-op local** (até 4 jogadores: teclado dividido + gamepads, fazenda compartilhada) — feature definidora do gênero. *(online projetado em `docs/COOP_DESIGN.md`, a construir)*
+- [x] **Suporte a gamepad** (Gamepad API).
 - [ ] Cadeias de preparo mais ricas (colher → lavar/empacotar → entregar; logística de carregar 1 item).
 - [ ] Hazards/eventos dinâmicos (corvos, pragas, seca, mudança de layout no meio do round).
 - [ ] Variedade de pedidos (cestas com múltiplos itens, pedidos premium).
