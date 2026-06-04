@@ -28,7 +28,7 @@ const TUNE = {
   idleRegen: 26,
   // Life runs out before a growth stage completes, so plants need watering.
   growthBase: 1.1,   // * rarity * mult => seconds to complete a growth stage
-  lifeBase: 0.85,    // * rarity * mult => seconds of life (< growth => must water)
+  lifeBase: 1.3,     // * rarity * mult => seconds of life (< growth => must water)
   wiltGrace: 3.0,    // seconds a plant can wilt (life 0) before dying — reversible
   decayRampMin: 0.6, // life-decay multiplier at round start (forgiving)
   decayRampMax: 1.3, // ...and at round end (harsher)
@@ -38,8 +38,8 @@ const TUNE = {
 const ROUND = {
   duration: 150,          // seconds
   // Calibrated to the achievable ceiling measured by the e2e bot at the shipped
-  // pacing (~50/80/105% of a competent solo run's best). See tests/e2e/.
-  stars: [100, 150, 200], // score thresholds for 1/2/3 stars
+  // pacing: 1★ ≈ a median solo run, 3★ ≈ a strong one. See tests/e2e/.
+  stars: [90, 200, 380], // score thresholds for 1/2/3 stars
 };
 
 const ORDER = {
