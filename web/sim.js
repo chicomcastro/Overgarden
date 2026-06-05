@@ -170,7 +170,7 @@ function updateBoss(s) {
   s.orders.push({ plant, need: qty, qty, timeLeft: time, maxTime: time, id: s.orderId++, boss: true, rewardMult: s.boss.rewardMult || 3 });
   s.bossSpawned = true;
   spawnFloater(s, WORLD.w / 2, 150, "👑 Pedido do Chefe!", "#f7d774");
-  addShake(s, 6); ev(s, "ding");
+  addShake(s, 6); ev(s, "boss");
 }
 function updateEvents(s, dt) {
   if (!s.eventTypes.length) return;
@@ -182,7 +182,7 @@ function updateEvents(s, dt) {
     s.weather = { type, label: def.label, timeLeft: def.dur, dur: def.dur };
     s.eventTimer = EVENTS.interval;
     if (type === "rain") for (const pl of s.plots) if (pl.stage >= STAGE.SMALL && pl.stage < STAGE.READY) { pl.life = 1; pl.wilt = 0; }
-    ev(s, "ding");
+    ev(s, "weather:" + type);
   }
 }
 

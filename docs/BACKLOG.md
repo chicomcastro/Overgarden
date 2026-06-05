@@ -13,13 +13,13 @@ Resolver as arestas da UI online sem mexer no sim.
 - ✅ Lista de slots no lobby ("P1 (você) / P2 / vazio") com cores.
 - ✅ Mensagem de erro de conexão ("não foi possível conectar ao servidor").
 
-## PR B — Áudio + FX ⬜
-Tudo client-side (render/áudio), sim intacto.
-- ⬜ Slider de volume (hoje só mudo) + persistência.
-- ⬜ Jingles de evento (chuva/seca/rush/chefe) e fanfarra de pedido completo (WebAudio).
-- ⬜ Cliques de UI.
-- ⬜ FX por evento: chuva caindo, brilho dourado (rush/chefe), shimmer de seca.
-- ⬜ Animação de revelação de estrelas no resultado.
+## PR B — Áudio + FX ✅
+Client-side (render/áudio); sim só ganhou rótulos de cue (gameplay-neutro).
+- ✅ Slider de volume + persistência (localStorage), além do mudo.
+- ✅ Jingles de evento (chuva/seca/rush) e fanfarra de chefe (WebAudio).
+- ✅ Cliques de UI nos botões de menu.
+- ✅ FX por evento: chuva caindo + faíscas douradas no rush; tint pulsante por clima.
+- ✅ Animação de revelação de estrelas no resultado (CSS).
 
 ## PR C — Fases temáticas ⬜
 - ⬜ Campo `theme` por fase em `levels.json` (tint de fundo + rótulo); render aplica.
