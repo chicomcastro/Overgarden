@@ -118,10 +118,11 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null, leve
     score: 0, paused: false, over: false, result: null,
     eventTypes: (L.events || []).filter((t) => EVENTS.defs[t]),
     eventTimer: EVENTS.interval * 0.55, weather: null,
+    boss: L.boss || null, bossSpawned: false,
     time: L.duration,
     orders: [], orderId: 1, orderSpawnTimer: 3,
     combo: 0, comboTimer: 0,
-    stats: { delivered: 0, expired: 0 },
+    stats: { delivered: 0, expired: 0, bossCleared: false },
     particles: [], floaters: [], shake: 0, anyMoving: false,
     players, plots, stations,
     events: [],
@@ -155,6 +156,20 @@ function decayMult(s) {
   return base * (s.weather && s.weather.type === "drought" ? EVENTS.defs.drought.decay : 1);
 }
 function rushMult(s) { return s.weather && s.weather.type === "rush" ? EVENTS.defs.rush.mult : 1; }
+// End-of-round "boss": one big VIP order of a noble crop, generous timer,
+// reward ×rewardMult. Data-driven per level via level.boss; spawns once when the
+// round is `at` fraction through. Flows through the normal delivery pipeline.
+function updateBoss(s) {
+  if (!s.boss || s.bossSpawned) return;
+  if (roundProgress(s) < (s.boss.at != null ? s.boss.at : 0.6)) return;
+  const pool = s.plantPool && s.plantPool.length ? s.plantPool : PLANTS;
+  const plant = (s.boss.plant && pool.find((p) => p.name === s.boss.plant)) || pool.reduce((a, b) => (b.rarity > a.rarity ? b : a), pool[0]);
+  const qty = s.boss.qty || 3, time = s.boss.time || 50;
+  s.orders.push({ plant, need: qty, qty, timeLeft: time, maxTime: time, id: s.orderId++, boss: true, rewardMult: s.boss.rewardMult || 3 });
+  s.bossSpawned = true;
+  spawnFloater(s, WORLD.w / 2, 150, "👑 Pedido do Chefe!", "#f7d774");
+  addShake(s, 6); ev(s, "ding");
+}
 function updateEvents(s, dt) {
   if (!s.eventTypes.length) return;
   if (s.weather) { s.weather.timeLeft -= dt; if (s.weather.timeLeft <= 0) s.weather = null; return; }
@@ -224,8 +239,9 @@ function completeOrder(s, o) {
   const tip = Math.round(base * 0.5 * (o.timeLeft / o.maxTime));
   s.combo++; s.comboTimer = ORDER.comboWindow;
   const mult = 1 + 0.1 * Math.min(s.combo - 1, 9);
-  const total = Math.round((base + tip) * mult * rushMult(s));
+  const total = Math.round((base + tip) * mult * rushMult(s) * (o.boss ? (o.rewardMult || 1) : 1));
   s.score += total; s.stats.delivered++;
+  if (o.boss) s.stats.bossCleared = true;
   const st = stationOf(s, "sales");
   spawnParticles(s, st.x, st.y - 16, { n: 20, color: "#f7d774", speed: 150 });
   spawnFloater(s, st.x, st.y - 34, "+" + total + (s.combo > 1 ? "  x" + s.combo : ""), "#f7d774");
@@ -361,7 +377,7 @@ function endRound(s) {
   s.over = true;
   const goals = starGoals(s), sc = s.score;
   const stars = sc >= goals[2] ? 3 : sc >= goals[1] ? 2 : sc >= goals[0] ? 1 : 0;
-  s.result = { score: sc, stars, goals, delivered: s.stats.delivered, expired: s.stats.expired };
+  s.result = { score: sc, stars, goals, delivered: s.stats.delivered, expired: s.stats.expired, bossCleared: s.stats.bossCleared };
 }
 
 // ---- main step -------------------------------------------------------------
@@ -372,6 +388,7 @@ export function step(s, intents, dt) {
   if (s.time <= 0) { s.time = 0; endRound(s); return s; }
   updateFX(s, dt);
   updateEvents(s, dt);
+  updateBoss(s);
   updateOrders(s, dt);
   let anyMoving = false;
   for (let i = 0; i < s.players.length; i++) {

@@ -69,7 +69,7 @@ sozinho ou em co-op, com caos crescente.
 **Jogabilidade**
 - [x] **Co-op online** (netcode) — servidor WebSocket autoritativo + interpolação + drop-in/reconexão (`server/`, `web/net.js`; ver `docs/COOP_DESIGN.md`).
 - [ ] Loja entre fases (upgrades de estação) e economia.
-- [x] **Eventos/clima dinâmicos** durante a fase (chuva rega tudo, seca acelera murcha, "rush" de pedidos dourados com bônus) — opt-in por fase via `levels.json` (`events`), refletidos no servidor online. Faltam: chefes de fim de fase, fases temáticas por estação.
+- [x] **Eventos/clima dinâmicos** (chuva/seca/rush) + **chefe de fim de fase** (pedido VIP grande com recompensa multiplicada) — opt-in por fase via `levels.json` (`events`/`boss`), refletidos no online. Falta: fases temáticas por estação, loja/upgrades entre fases.
 
 **Engenharia**
 - [ ] **Decisão de engine**: Canvas puro vs. Phaser/Pixi vs. voltar ao Unity WebGL (reaproveitar assets/animações).

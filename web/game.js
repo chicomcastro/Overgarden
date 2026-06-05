@@ -223,7 +223,7 @@ function trackRoundStart() {
 function trackRoundEnd() {
   if (!humanSession || !game || !game.result) return;
   const r = game.result;
-  Telemetry.track("round_end", { mode: currentMode, level: game.levelId || game.levelName, levelName: game.levelName, players: game.playerCount, score: r.score, stars: r.stars, delivered: r.delivered, expired: r.expired });
+  Telemetry.track("round_end", { mode: currentMode, level: game.levelId || game.levelName, levelName: game.levelName, players: game.playerCount, score: r.score, stars: r.stars, delivered: r.delivered, expired: r.expired, bossCleared: !!r.bossCleared });
 }
 
 function createGame(playerCount, { difficulty = 1, level = null } = {}) {
@@ -276,6 +276,7 @@ function finishRound() {
   document.getElementById("result-stats").textContent =
     (currentMode === "campaign" ? `${game.levelName} · ` : "") +
     `Entregues: ${r.delivered} · perdidos: ${r.expired}` +
+    (r.bossCleared ? " · 👑 chefe!" : "") +
     (r.stars < 3 ? ` · próxima ★ em ${r.goals[Math.min(r.stars, 2)]}` : " · máximo!");
   setResultButtons();
   resultScreen.classList.remove("hidden");
@@ -542,13 +543,14 @@ function drawOrders() {
   const y = 58;
   for (const o of game.orders) {
     const urg = o.timeLeft / o.maxTime;
-    const col = urg > 0.5 ? "#5fd35f" : urg > 0.25 ? "#f0c419" : "#e74c3c";
-    ctx.fillStyle = "rgba(20,30,16,0.82)"; roundRect(x, y, cw, ch, 8, true, false);
-    ctx.strokeStyle = col; ctx.lineWidth = 3; roundRect(x, y, cw, ch, 8, false, true);
+    const col = o.boss ? "#f7d774" : urg > 0.5 ? "#5fd35f" : urg > 0.25 ? "#f0c419" : "#e74c3c";
+    ctx.fillStyle = o.boss ? "rgba(60,46,12,0.9)" : "rgba(20,30,16,0.82)"; roundRect(x, y, cw, ch, 8, true, false);
+    ctx.strokeStyle = col; ctx.lineWidth = o.boss ? 4 : 3; roundRect(x, y, cw, ch, 8, false, true);
+    if (o.boss) { ctx.font = "14px sans-serif"; ctx.textAlign = "center"; ctx.fillText("👑", x + cw / 2, y - 4); }
     const m = o.plant.main;
     if (m) { const ih = 32, iw = ih * (m.w / m.h); drawFrame(m.sheet, m, x + cw / 2 - iw / 2, y + 7, iw, ih); }
-    ctx.fillStyle = "#fff"; ctx.font = "bold 14px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
-    ctx.fillText("x" + o.need, x + cw / 2, y + ch - 12);
+    ctx.fillStyle = o.boss ? "#f7d774" : "#fff"; ctx.font = "bold 14px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
+    ctx.fillText((o.boss ? "CHEFE x" : "x") + o.need, x + cw / 2, y + ch - 12);
     bar(x + 8, y + ch - 7, cw - 16, 4, urg, col, "#333");
     x += cw + gap;
   }
@@ -881,7 +883,7 @@ function showOnlineResult() {
   trackRoundEnd();
   document.getElementById("result-stars").innerHTML = [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
   document.getElementById("result-score").textContent = "Score: " + r.score;
-  document.getElementById("result-stats").textContent = `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}`;
+  document.getElementById("result-stats").textContent = `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}` + (r.bossCleared ? " · 👑 chefe!" : "");
   document.getElementById("again-btn").classList.add("hidden"); // server rooms don't restart
   resultScreen.classList.remove("hidden");
 }
