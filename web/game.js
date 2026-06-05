@@ -64,8 +64,12 @@ async function loadAssets() {
 // Audio
 // ---------------------------------------------------------------------------
 let actx = null;
+const AUDIO_KEY = "overgarden.audio";
 const sound = {
   muted: false,
+  vol: 0.8, // master volume 0..1
+  _loopBase: { theme: 0.4, footsteps: 0.5 },
+  silent() { return this.muted || this.vol <= 0; },
   theme() { this._loop("theme", 0.4); },
   footstepsOn() { this._loop("footsteps", 0.5); },
   footstepsOff() { const a = ASSETS.audio.footsteps; if (a) { a.pause(); a.currentTime = 0; } },
@@ -73,36 +77,57 @@ const sound = {
   pickup() { this._once("pickup", 0.5); },
   _loop(key, vol) {
     const a = ASSETS.audio[key];
-    if (!a || this.muted) return;
-    a.loop = true; a.volume = vol;
+    if (!a || this.silent()) return;
+    a.loop = true; a.volume = vol * this.vol;
     if (a.paused) a.play().catch(() => {});
   },
   _once(key, vol) {
     const a = ASSETS.audio[key];
-    if (!a || this.muted) return;
-    a.loop = false; a.volume = vol; a.currentTime = 0;
+    if (!a || this.silent()) return;
+    a.loop = false; a.volume = vol * this.vol; a.currentTime = 0;
     a.play().catch(() => {});
   },
-  _beep(freq, dur, type, vol) {
-    if (this.muted) return;
+  _beep(freq, dur, type, vol, when = 0) {
+    if (this.silent()) return;
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
       const o = actx.createOscillator(), g = actx.createGain();
       o.type = type; o.frequency.value = freq;
       o.connect(g); g.connect(actx.destination);
-      const t = actx.currentTime;
-      g.gain.setValueAtTime(vol, t);
+      const t = actx.currentTime + when;
+      g.gain.setValueAtTime(vol * this.vol, t);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       o.start(t); o.stop(t + dur);
     } catch (_) {}
   },
-  ding() { this._beep(880, 0.12, "triangle", 0.25); setTimeout(() => this._beep(1320, 0.14, "triangle", 0.22), 90); },
+  _seq(notes, { dur = 0.12, gap = 0.09, type = "triangle", vol = 0.22 } = {}) {
+    notes.forEach((f, i) => this._beep(f, dur, type, vol, i * gap));
+  },
+  ding() { this._beep(880, 0.12, "triangle", 0.25); this._beep(1320, 0.14, "triangle", 0.22, 0.09); },
   fail() { this._beep(200, 0.25, "sawtooth", 0.2); },
+  click() { this._beep(660, 0.05, "square", 0.1); },
+  boss() { this._seq([523, 659, 784, 1046], { dur: 0.16, gap: 0.11, type: "triangle", vol: 0.26 }); },
+  weather(type) {
+    if (type === "rain") this._seq([520, 440, 360], { type: "sine", vol: 0.18, gap: 0.1 });
+    else if (type === "drought") this._seq([300, 250], { type: "sawtooth", vol: 0.16, dur: 0.18, gap: 0.12 });
+    else this._seq([660, 880, 1100], { type: "triangle", vol: 0.2, gap: 0.08 }); // rush
+  },
+  applyVolume() {
+    for (const k in this._loopBase) { const a = ASSETS.audio[k]; if (a && !a.paused) a.volume = this._loopBase[k] * this.vol; }
+  },
+  setVolume(v) {
+    this.vol = Math.max(0, Math.min(1, v));
+    try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ vol: this.vol, muted: this.muted })); } catch (_) {}
+    if (this.silent()) { for (const k in ASSETS.audio) ASSETS.audio[k].pause(); }
+    else { this.applyVolume(); if (game && gameState === "playing" && !game.paused) this.theme(); }
+  },
   setMuted(m) {
     this.muted = m;
-    for (const k in ASSETS.audio) { if (m) ASSETS.audio[k].pause(); }
-    if (!m && game && gameState === "playing" && !game.paused) this.theme();
+    try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ vol: this.vol, muted: this.muted })); } catch (_) {}
+    for (const k in ASSETS.audio) { if (this.silent()) ASSETS.audio[k].pause(); }
+    if (!this.silent() && game && gameState === "playing" && !game.paused) this.theme();
   },
+  loadPrefs() { try { const p = JSON.parse(localStorage.getItem(AUDIO_KEY)); if (p) { this.vol = p.vol != null ? p.vol : 0.8; this.muted = !!p.muted; } } catch (_) {} },
 };
 
 // Play a list of sim sound events as one-shots.
@@ -112,6 +137,8 @@ function playEvents(arr) {
     else if (e === "watering") sound.watering();
     else if (e === "ding") sound.ding();
     else if (e === "fail") sound.fail();
+    else if (e === "boss") sound.boss();
+    else if (e.startsWith("weather:")) sound.weather(e.slice(8));
   }
 }
 
@@ -346,6 +373,8 @@ function render() {
   drawFloaters();
   ctx.restore();
   drawWeatherTint();
+  updateClientFX();
+  drawClientFX();
   drawHUD();
   drawOrders();
   drawWeather();
@@ -495,6 +524,24 @@ function drawWeatherTint() {
   else if (w.type === "rain") ctx.fillStyle = `rgba(90,150,210,${0.06 + 0.04 * a})`;
   else ctx.fillStyle = `rgba(247,215,116,${0.04 + 0.03 * a})`;
   ctx.fillRect(0, 0, WORLD.w, WORLD.h);
+}
+// Client-side weather FX (cosmetic, driven by game.weather — works local & online).
+let clientFX = [], _fxLast = 0;
+function updateClientFX() {
+  const now = performance.now(); const dt = Math.min(0.05, (now - _fxLast) / 1000 || 0); _fxLast = now;
+  const w = game.weather;
+  if (w && w.type === "rain") for (let i = 0; i < 3; i++) clientFX.push({ x: Math.random() * WORLD.w, y: -10, vx: -40, vy: 540, life: 1.3, size: 2, kind: "rain" });
+  if (w && w.type === "rush" && Math.random() < 0.5) clientFX.push({ x: Math.random() * WORLD.w, y: WORLD.h + 6, vx: (Math.random() - 0.5) * 40, vy: -95, life: 1.4, size: 3, kind: "spark" });
+  if (clientFX.length > 220) clientFX.splice(0, clientFX.length - 220);
+  for (let i = clientFX.length - 1; i >= 0; i--) { const p = clientFX[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; if (p.life <= 0 || p.y > WORLD.h + 24) clientFX.splice(i, 1); }
+}
+function drawClientFX() {
+  for (const p of clientFX) {
+    ctx.globalAlpha = Math.max(0, Math.min(0.85, p.life));
+    if (p.kind === "rain") { ctx.fillStyle = "#9cc8f0"; ctx.fillRect(p.x, p.y, 1.6, 9); }
+    else { ctx.fillStyle = "#f7d774"; ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size); }
+  }
+  ctx.globalAlpha = 1;
 }
 function drawWeather() {
   const w = game.weather; if (!w) return;
@@ -694,6 +741,13 @@ document.getElementById("resume-btn").addEventListener("click", togglePause);
 document.getElementById("quit-btn").addEventListener("click", quitToMenu);
 // again/menu handlers are set per-mode in setResultButtons().
 muteBox.addEventListener("change", () => sound.setMuted(muteBox.checked));
+const volRange = document.getElementById("vol-range");
+if (volRange) volRange.addEventListener("input", () => sound.setVolume(parseInt(volRange.value, 10) / 100));
+
+// UI click feedback on menu/overlay buttons (not in-game touch controls).
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".big-btn, .ocount-btn, .diff-btn, .count-btn, .level-card, .sc-buy, .copy-btn")) sound.click();
+});
 
 // ---- Campaign level select ----
 const campaignScreen = document.getElementById("campaign-screen");
@@ -1061,6 +1115,9 @@ ctx.fillStyle = "#6ab04c";
 ctx.fillRect(0, 0, WORLD.w, WORLD.h);
 
 Telemetry.init({ endpoint: new URLSearchParams(location.search).get("telemetry") });
+sound.loadPrefs();
+if (muteBox) muteBox.checked = sound.muted;
+if (document.getElementById("vol-range")) document.getElementById("vol-range").value = Math.round(sound.vol * 100);
 
 if (location.search.includes("debug")) {
   const params = new URLSearchParams(location.search);
