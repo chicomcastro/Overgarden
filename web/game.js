@@ -678,7 +678,15 @@ function bindChoiceGroup(selector, attr, setter) {
     });
   });
 }
-bindChoiceGroup(".count-btn", "count", (v) => { selectedPlayers = v; const cc = document.getElementById("create-count"); if (cc) cc.textContent = v; });
+// Player count is selectable on both the start screen and the online screen;
+// keep them in sync.
+function setCount(v) {
+  selectedPlayers = v;
+  const cc = document.getElementById("create-count"); if (cc) cc.textContent = v;
+  document.querySelectorAll(".count-btn, .ocount-btn").forEach((b) => b.classList.toggle("selected", parseInt(b.dataset.count, 10) === v));
+}
+document.querySelectorAll(".count-btn, .ocount-btn").forEach((b) => b.addEventListener("click", () => setCount(parseInt(b.dataset.count, 10))));
+setCount(1);
 bindChoiceGroup(".diff-btn", "diff", (v) => { selectedDifficulty = v; });
 
 startBtn.addEventListener("click", startGame);
@@ -968,13 +976,27 @@ function showOnlineScreen(show) {
   onlineScreen.classList.toggle("hidden", !show);
   if (show) { populateLevelSelect(); onlineSetup.classList.remove("hidden"); onlineLobby.classList.add("hidden"); onlineError.textContent = ""; }
 }
+function renderLobbySlots() {
+  const wrap = document.getElementById("lobby-slots");
+  wrap.innerHTML = "";
+  const occupied = Net.slots || [];
+  for (let i = 0; i < Net.count; i++) {
+    const filled = occupied.includes(i);
+    const chip = document.createElement("div");
+    chip.className = "slot-chip " + (filled ? "filled" : "empty") + (i === Net.slot ? " you" : "");
+    if (filled) chip.style.background = Sim.PLAYER_COLORS[i];
+    chip.textContent = "P" + (i + 1) + (i === Net.slot ? " (você)" : filled ? "" : " · vazio");
+    wrap.appendChild(chip);
+  }
+}
 function showLobbyView() {
   onlineSetup.classList.add("hidden"); onlineLobby.classList.remove("hidden");
   document.getElementById("room-code").textContent = Net.room || "----";
   document.getElementById("lobby-start").classList.toggle("hidden", !Net.host);
   document.getElementById("lobby-wait").classList.toggle("hidden", Net.host);
+  renderLobbySlots();
   document.getElementById("lobby-players").textContent =
-    `${Net.levelName ? "Fase: " + Net.levelName + " · " : ""}Jogadores na sala: ${Net.slots ? Net.slots.length : 1} / ${Net.count}`;
+    `${Net.levelName ? "Fase: " + Net.levelName + " · " : ""}${Net.slots ? Net.slots.length : 1} / ${Net.count} na sala`;
 }
 function closeOnline() {
   online = false;
@@ -1019,6 +1041,15 @@ document.getElementById("join-room").addEventListener("click", () => {
   const code = document.getElementById("join-code").value.trim().toUpperCase();
   if (code.length < 4) { onlineError.textContent = "digite o código (4 letras)"; return; }
   connectThen(() => Net.join(code));
+});
+document.getElementById("copy-code").addEventListener("click", async () => {
+  const code = Net.room || "";
+  try {
+    if (navigator.clipboard) await navigator.clipboard.writeText(code);
+    else if (navigator.share) await navigator.share({ text: code });
+  } catch (_) {}
+  const b = document.getElementById("copy-code"), prev = b.textContent;
+  b.textContent = "Copiado!"; setTimeout(() => { b.textContent = prev; }, 1200);
 });
 document.getElementById("lobby-start").addEventListener("click", () => Net.start());
 document.getElementById("lobby-leave").addEventListener("click", () => { closeOnline(); showOnlineScreen(false); startScreen.classList.remove("hidden"); });
