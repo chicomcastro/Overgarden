@@ -12,6 +12,7 @@
     "sweep:prod": "node tests/e2e/sweep.mjs --mode production",
     "sweep:insane": "node tests/e2e/sweep.mjs --players 4",
     "coop": "node tests/e2e/coop.mjs",
+    "levels": "node tests/e2e/levels.mjs",
     "server": "node server/server.mjs",
     "test:net": "node tests/net/online.mjs"
   },

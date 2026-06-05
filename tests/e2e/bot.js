@@ -133,7 +133,7 @@
 
       if (growingCount < GROW_CAP && unmet) {
         if (treated) {
-          this.wantSeedIndex = OG.PLANTS.findIndex((p) => p.name === unmet.plant.name);
+          this.wantSeedIndex = (OG.game.plantPool || OG.PLANTS).findIndex((p) => p.name === unmet.plant.name);
           goTo(station("seed").x, station("seed").y);
           return;
         }

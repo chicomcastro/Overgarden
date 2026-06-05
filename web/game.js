@@ -948,12 +948,13 @@ if (location.search.includes("debug")) {
     addScore(n) { game.score += n; },
     seedRng: Sim.seedRng,
     assetsReady() { return !!ASSETS.atlas && Sim.PLANTS.length > 0; },
-    startHeadless({ players = 1, seed = null } = {}) {
+    startHeadless({ players = 1, seed = null, levelId = null } = {}) {
       if (seed != null) pendingSeed = seed;
+      const level = levelId ? LEVELS.find((l) => l.id === levelId) : null;
       selectedDifficulty = players; selectedPlayers = 1;
-      currentMode = "quick"; currentLevelIndex = -1;
+      currentMode = level ? "campaign" : "quick"; currentLevelIndex = level ? LEVELS.indexOf(level) : -1;
       sound.setMuted(true);
-      game = createGame(1, { difficulty: players });
+      game = createGame(1, level ? { level } : { difficulty: players });
       gameState = "playing";
       running = false;
       startScreen.classList.add("hidden"); pauseScreen.classList.add("hidden"); resultScreen.classList.add("hidden");

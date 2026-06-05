@@ -40,7 +40,7 @@
 
   function sample(OG, force) {
     const g = OG.game, S = OG.STAGE;
-    const elapsed = OG.ROUND.duration - g.time;
+    const elapsed = (g.duration || OG.ROUND.duration) - g.time;
     const last = M.series[M.series.length - 1];
     if (!force && last && elapsed - last.t < 1) return; // ~1s cadence
     const grow = g.plots.filter((p) => p.stage >= S.SMALL && p.stage < S.READY);
@@ -81,8 +81,8 @@
   }
 
   window.__OG_HARNESS__ = {
-    start({ players = 1, seed = null } = {}) {
-      window.__OG__.startHeadless({ players, seed });
+    start({ players = 1, seed = null, levelId = null } = {}) {
+      window.__OG__.startHeadless({ players, seed, levelId });
       init(window.__OG__);
       return true;
     },
@@ -98,9 +98,10 @@
       return { state: OG.gameState, time: OG.game ? OG.game.time : 0 };
     },
     metrics() {
-      const OG = window.__OG__, g = OG.game, R = OG.ROUND;
+      const OG = window.__OG__, g = OG.game;
+      const goals = OG.starGoals ? OG.starGoals() : OG.ROUND.stars;
       const s = g.score;
-      const stars = s >= R.stars[2] ? 3 : s >= R.stars[1] ? 2 : s >= R.stars[0] ? 1 : 0;
+      const stars = s >= goals[2] ? 3 : s >= goals[1] ? 2 : s >= goals[0] ? 1 : 0;
       const t = Math.max(1, M.ticks);
       return {
         summary: {
