@@ -58,7 +58,7 @@ function serialize(st) {
     stations: st.stations.map((x) => ({ type: x.type, x: x.x, y: x.y, label: x.label, icon: x.icon })),
     players: st.players.map((p) => ({ index: p.index, color: p.color, x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10, facing: p.facing, moving: p.moving, holding: p.holding, heldSeed: p.heldSeed ? p.heldSeed.name : null, heldPlant: p.heldPlant ? p.heldPlant.name : null, stamina: Math.round(p.stamina), anim: Math.round(p.anim * 100) / 100, seedMenu: { open: p.seedMenu.open, index: p.seedMenu.index } })),
     plots: st.plots.map((pl) => ({ x: pl.x, y: pl.y, stage: pl.stage, progress: Math.round(pl.progress * 1000) / 1000, life: Math.round(pl.life * 1000) / 1000, wilt: Math.round(pl.wilt * 100) / 100, plant: pl.plant ? pl.plant.name : null })),
-    orders: st.orders.map((o) => ({ id: o.id, need: o.need, qty: o.qty, timeLeft: Math.round(o.timeLeft * 100) / 100, maxTime: o.maxTime, plant: o.plant.name })),
+    orders: st.orders.map((o) => ({ id: o.id, need: o.need, qty: o.qty, timeLeft: Math.round(o.timeLeft * 100) / 100, maxTime: o.maxTime, plant: o.plant.name, boss: o.boss || false })),
     events: st.events.slice(),
   };
 }

@@ -63,9 +63,9 @@
       "difficulty": 1,
       "duration": 150,
       "stars": [
-        90,
-        180,
-        270
+        100,
+        200,
+        310
       ],
       "events": [
         "rain"
@@ -202,12 +202,18 @@
     {
       "id": "estufa",
       "name": "Estufa",
+      "boss": {
+        "at": 0.6,
+        "qty": 3,
+        "time": 50,
+        "rewardMult": 3
+      },
       "difficulty": 2,
       "duration": 150,
       "stars": [
-        130,
-        270,
-        410
+        50,
+        100,
+        150
       ],
       "events": [
         "rush",
@@ -282,12 +288,18 @@
     {
       "id": "mercado",
       "name": "Mercado",
+      "boss": {
+        "at": 0.55,
+        "qty": 3,
+        "time": 55,
+        "rewardMult": 3
+      },
       "difficulty": 3,
       "duration": 155,
       "stars": [
-        50,
-        110,
-        160
+        120,
+        240,
+        360
       ],
       "events": [
         "drought",
@@ -357,12 +369,18 @@
     {
       "id": "festival",
       "name": "Festival",
+      "boss": {
+        "at": 0.55,
+        "qty": 5,
+        "time": 60,
+        "rewardMult": 4
+      },
       "difficulty": 3,
       "duration": 170,
       "stars": [
-        110,
-        210,
-        330
+        120,
+        230,
+        360
       ],
       "events": [
         "rain",
