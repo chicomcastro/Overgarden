@@ -92,8 +92,10 @@ export function defaultLevel() {
   };
 }
 
-export function createState({ playerCount = 1, difficulty = 1, seed = null, level = null } = {}) {
+export function createState({ playerCount = 1, difficulty = 1, seed = null, level = null, mods = null } = {}) {
   const L = level || defaultLevel();
+  const M = mods || { speedMult: 1, decayMult: 1, growthMult: 1, bonusTime: 0 };
+  const duration = L.duration + (M.bonusTime || 0);
   playerCount = Math.max(1, Math.min(4, playerCount));
   difficulty = Math.max(1, Math.min(4, L.difficulty != null ? L.difficulty : difficulty));
   const plots = L.plots.map((p) => ({ x: p.x, y: p.y, stage: STAGE.VIRGIN, plant: null, progress: 0, life: 1, wilt: 0 }));
@@ -112,14 +114,14 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null, leve
   }
   return {
     _rng: seed != null ? makeRng(seed) : null,
-    mult: DIFFICULTY_MULT[difficulty - 1], difficulty, playerCount,
-    levelId: L.id, levelName: L.name, duration: L.duration, starsBase: L.stars.slice(),
+    mult: DIFFICULTY_MULT[difficulty - 1], difficulty, playerCount, mods: M,
+    levelId: L.id, levelName: L.name, duration, starsBase: L.stars.slice(),
     plantPool: pool.length ? pool : PLANTS.slice(),
     score: 0, paused: false, over: false, result: null,
     eventTypes: (L.events || []).filter((t) => EVENTS.defs[t]),
     eventTimer: EVENTS.interval * 0.55, weather: null,
     boss: L.boss || null, bossSpawned: false,
-    time: L.duration,
+    time: duration,
     orders: [], orderId: 1, orderSpawnTimer: 3,
     combo: 0, comboTimer: 0,
     stats: { delivered: 0, expired: 0, bossCleared: false },
@@ -149,11 +151,11 @@ export function nearestPlot(s, p) {
   for (const pl of s.plots) { const d = dist(p.x, p.y, pl.x, pl.y); if (d < bd) { bd = d; best = pl; } }
   return best;
 }
-function growthTime(s, plot) { return TUNE.growthBase * plot.plant.rarity * s.mult; }
+function growthTime(s, plot) { return TUNE.growthBase * plot.plant.rarity * s.mult * (s.mods.growthMult || 1); }
 function lifeTime(s, plot) { return TUNE.lifeBase * plot.plant.rarity * s.mult; }
 function decayMult(s) {
   const base = lerp(TUNE.decayRampMin, TUNE.decayRampMax, roundProgress(s));
-  return base * (s.weather && s.weather.type === "drought" ? EVENTS.defs.drought.decay : 1);
+  return base * (s.weather && s.weather.type === "drought" ? EVENTS.defs.drought.decay : 1) * (s.mods.decayMult || 1);
 }
 function rushMult(s) { return s.weather && s.weather.type === "rush" ? EVENTS.defs.rush.mult : 1; }
 // End-of-round "boss": one big VIP order of a noble crop, generous timer,
@@ -343,7 +345,7 @@ function updatePlayer(s, p, intent, dt) {
     const len = Math.hypot(dx, dy); dx /= len; dy /= len;
     if (Math.abs(dx) > Math.abs(dy)) p.facing = dx < 0 ? "left" : "right";
     else p.facing = dy < 0 ? "up" : "down";
-    const sp = p.speed * analogMag;
+    const sp = p.speed * analogMag * (s.mods.speedMult || 1);
     p.x += dx * sp * dt; p.y += dy * sp * dt; p.anim += dt * (running ? 12 : 8);
   } else { p.anim += dt * 3; }
   p.x = Math.max(28, Math.min(WORLD.w - 28, p.x));

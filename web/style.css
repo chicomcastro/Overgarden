@@ -139,6 +139,17 @@ canvas#game {
 #stats-overall { color: #d9e8c8; }
 #stats-grid:empty::after { content: "Sem partidas registradas ainda — jogue uma fase."; color: #9bb583; font-size: 14px; }
 
+#shop-coins { color: #f7d774; font-weight: bold; font-size: 20px; }
+#shop-grid { width: min(560px, 88vw); margin: 6px 0 12px; display: flex; flex-direction: column; gap: 8px; }
+.shop-card { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; background: rgba(0,0,0,0.28); border: 2px solid #5b7a45; border-radius: 10px; padding: 10px 12px; }
+.shop-card .sc-icon { font-size: 26px; text-align: center; }
+.shop-card .sc-name { font-weight: bold; color: #f4ecd6; text-align: left; }
+.shop-card .sc-desc { font-size: 12px; color: #9bb583; text-align: left; }
+.shop-card .sc-pips { letter-spacing: 2px; color: #f7d774; font-size: 13px; }
+.shop-card .sc-buy { padding: 8px 12px; border-radius: 8px; border: none; background: #6ab04c; color: #10210a; font-weight: bold; cursor: pointer; min-width: 92px; }
+.shop-card .sc-buy:disabled { background: #44503c; color: #8a9580; cursor: default; }
+.shop-card.maxed { opacity: 0.7; }
+
 #level-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
