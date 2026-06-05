@@ -327,8 +327,10 @@ function render() {
   drawParticles();
   drawFloaters();
   ctx.restore();
+  drawWeatherTint();
   drawHUD();
   drawOrders();
+  drawWeather();
   for (const p of game.players) drawInteractHint(p);
   for (const p of game.players) if (p.seedMenu.open) drawSeedMenu(p);
 }
@@ -466,6 +468,25 @@ function drawFloaters() {
 }
 
 function fmtTime(t) { const s = Math.max(0, Math.ceil(t)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+function weatherColor(type) { return type === "drought" ? "#e08a3c" : type === "rush" ? "#f7d774" : "#7ec8ff"; }
+function drawWeatherTint() {
+  const w = game.weather; if (!w) return;
+  const a = 0.5 + 0.5 * Math.sin(performance.now() / 600);
+  if (w.type === "drought") ctx.fillStyle = `rgba(224,138,60,${0.06 + 0.05 * a})`;
+  else if (w.type === "rain") ctx.fillStyle = `rgba(90,150,210,${0.06 + 0.04 * a})`;
+  else ctx.fillStyle = `rgba(247,215,116,${0.04 + 0.03 * a})`;
+  ctx.fillRect(0, 0, WORLD.w, WORLD.h);
+}
+function drawWeather() {
+  const w = game.weather; if (!w) return;
+  const txt = `${w.label} · ${Math.ceil(w.timeLeft)}s`;
+  ctx.font = "bold 18px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
+  const tw = ctx.measureText(txt).width, x = WORLD.w / 2, y = WORLD.h - 52, col = weatherColor(w.type);
+  ctx.fillStyle = "rgba(20,30,16,0.85)"; roundRect(x - tw / 2 - 16, y - 20, tw + 32, 30, 8, true, false);
+  ctx.strokeStyle = col; ctx.lineWidth = 2; roundRect(x - tw / 2 - 16, y - 20, tw + 32, 30, 8, false, true);
+  ctx.fillStyle = col; ctx.fillText(txt, x, y);
+}
 
 function drawHUD() {
   ctx.fillStyle = "rgba(20,30,16,0.75)"; roundRect(12, 10, 210, 44, 8, true, false);
