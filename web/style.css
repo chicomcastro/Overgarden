@@ -131,6 +131,14 @@ canvas#game {
 .online-label { color: #d9e8c8; font-size: 15px; display: block; margin: 4px 0; }
 .online-label select { font-size: 15px; padding: 5px 8px; border-radius: 6px; border: 2px solid #5b7a45; background: #2a3a1f; color: #fff; }
 
+#stats-grid { width: min(560px, 88vw); margin: 6px 0 12px; display: flex; flex-direction: column; gap: 6px; }
+.stat-row { display: grid; grid-template-columns: 1.4fr 0.7fr 1fr 1.1fr; gap: 8px; align-items: center; background: rgba(0,0,0,0.26); border-radius: 8px; padding: 8px 12px; font-size: 14px; }
+.stat-row.head { background: transparent; color: #9bb583; font-size: 12px; padding: 2px 12px; }
+.stat-row .sr-name { font-weight: bold; color: #f4ecd6; text-align: left; }
+.stat-row .sr-stars { color: #f7d774; letter-spacing: 1px; }
+#stats-overall { color: #d9e8c8; }
+#stats-grid:empty::after { content: "Sem partidas registradas ainda — jogue uma fase."; color: #9bb583; font-size: 14px; }
+
 #level-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

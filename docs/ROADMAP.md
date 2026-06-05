@@ -73,7 +73,7 @@ sozinho ou em co-op, com caos crescente.
 
 **Engenharia**
 - [ ] **Decisão de engine**: Canvas puro vs. Phaser/Pixi vs. voltar ao Unity WebGL (reaproveitar assets/animações).
-- [ ] Telemetria + funil (A/B de balanceamento); save na nuvem se houver contas.
+- [x] Telemetria de rodada (`web/telemetry.js`): eventos start/end por fase, ring buffer local + sink por beacon (`?telemetry=URL`) pronto pra backend, e tela "📊 Estatísticas" pra playtest. Falta: funil/A-B e save na nuvem.
 - [ ] **PWA** (instalável/offline); otimização mobile; pipeline de release versionado.
 
 **Marketing / distribuição**
