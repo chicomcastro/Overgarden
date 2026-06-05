@@ -100,6 +100,11 @@ em `levels.json`. O bot é conservador (1 cultivo por vez), então é um piso
 amigável. O caminho headless aceita `levelId` (`startHeadless({levelId})`); o
 e2e por-PR (sem `levelId`) usa o nível default e fica intacto.
 
+As metas usam o **teto medido** (melhor run do bot entre os seeds — estável e
+determinístico, ao contrário da mediana, que colapsa em fases com eventos):
+★1≈0.30·max, ★2≈0.60·max, ★3≈0.92·max. Fases com `events` (chuva/seca/rush)
+mudam o throughput, então recalibre (`--apply`) após alterá-las.
+
 ## Reproducibility
 
 Only gameplay-affecting randomness (the order stream) is seeded via a mulberry32

@@ -27,6 +27,16 @@ export const ORDER = {
   diffTime: [1.5, 1.2, 1.0, 0.8], diffSpawn: [1.3, 1.1, 0.95, 0.8], comboWindow: 12,
 };
 export const COOP = { spawnScale: [1, 0.72, 0.58, 0.5], concurrentBonus: [0, 2, 3, 4], starScale: [1, 1.8, 2.1, 2.6] };
+// Dynamic events (opt-in per level via level.events: ["rain","drought","rush"]).
+// Levels without events behave exactly as before (default/quick/e2e untouched).
+export const EVENTS = {
+  interval: 32, // seconds between events; first one a bit sooner
+  defs: {
+    rain: { dur: 6, label: "🌧️ Chuva" },              // rega tudo que está crescendo
+    drought: { dur: 9, label: "☀️ Seca", decay: 1.35 }, // murcha acelera
+    rush: { dur: 14, label: "✨ Pedidos dourados", mult: 1.6 }, // entregas valem mais
+  },
+};
 export const PLAYER_COLORS = ["#ffd24a", "#4ea8ff", "#ff6b6b", "#74e36b"];
 export const PLAYER_SPAWN = [[0, 30], [-70, 30], [70, 30], [0, 96]];
 export const ZERO_INTENT = () => ({ mx: 0, my: 0, run: false, interact: false, drop: false, navL: false, navR: false, confirm: false });
@@ -106,6 +116,8 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null, leve
     levelId: L.id, levelName: L.name, duration: L.duration, starsBase: L.stars.slice(),
     plantPool: pool.length ? pool : PLANTS.slice(),
     score: 0, paused: false, over: false, result: null,
+    eventTypes: (L.events || []).filter((t) => EVENTS.defs[t]),
+    eventTimer: EVENTS.interval * 0.55, weather: null,
     time: L.duration,
     orders: [], orderId: 1, orderSpawnTimer: 3,
     combo: 0, comboTimer: 0,
@@ -138,7 +150,24 @@ export function nearestPlot(s, p) {
 }
 function growthTime(s, plot) { return TUNE.growthBase * plot.plant.rarity * s.mult; }
 function lifeTime(s, plot) { return TUNE.lifeBase * plot.plant.rarity * s.mult; }
-function decayMult(s) { return lerp(TUNE.decayRampMin, TUNE.decayRampMax, roundProgress(s)); }
+function decayMult(s) {
+  const base = lerp(TUNE.decayRampMin, TUNE.decayRampMax, roundProgress(s));
+  return base * (s.weather && s.weather.type === "drought" ? EVENTS.defs.drought.decay : 1);
+}
+function rushMult(s) { return s.weather && s.weather.type === "rush" ? EVENTS.defs.rush.mult : 1; }
+function updateEvents(s, dt) {
+  if (!s.eventTypes.length) return;
+  if (s.weather) { s.weather.timeLeft -= dt; if (s.weather.timeLeft <= 0) s.weather = null; return; }
+  s.eventTimer -= dt;
+  if (s.eventTimer <= 0) {
+    const type = s.eventTypes[Math.floor(rng(s) * s.eventTypes.length)];
+    const def = EVENTS.defs[type];
+    s.weather = { type, label: def.label, timeLeft: def.dur, dur: def.dur };
+    s.eventTimer = EVENTS.interval;
+    if (type === "rain") for (const pl of s.plots) if (pl.stage >= STAGE.SMALL && pl.stage < STAGE.READY) { pl.life = 1; pl.wilt = 0; }
+    ev(s, "ding");
+  }
+}
 
 // ---- orders ----------------------------------------------------------------
 function orderableRarity(s) { const p = roundProgress(s); return p < 0.3 ? 1 : p < 0.6 ? 2 : 3; }
@@ -184,7 +213,7 @@ function deliverPlant(s, p) {
   if (matches.length === 0) { spawnFloater(s, st.x, st.y - 28, "sem pedido!", "#e7a76a"); return; }
   matches.sort((a, b) => a.timeLeft - b.timeLeft);
   const o = matches[0];
-  o.need--; s.score += ORDER.unitReward;
+  o.need--; s.score += Math.round(ORDER.unitReward * rushMult(s));
   p.holding = HOLD.NOTHING; p.heldPlant = null;
   spawnParticles(s, st.x, st.y - 12, { n: 6, color: "#9fe6ff", speed: 90 }); ev(s, "pickup");
   if (o.need <= 0) completeOrder(s, o);
@@ -195,7 +224,7 @@ function completeOrder(s, o) {
   const tip = Math.round(base * 0.5 * (o.timeLeft / o.maxTime));
   s.combo++; s.comboTimer = ORDER.comboWindow;
   const mult = 1 + 0.1 * Math.min(s.combo - 1, 9);
-  const total = Math.round((base + tip) * mult);
+  const total = Math.round((base + tip) * mult * rushMult(s));
   s.score += total; s.stats.delivered++;
   const st = stationOf(s, "sales");
   spawnParticles(s, st.x, st.y - 16, { n: 20, color: "#f7d774", speed: 150 });
@@ -342,6 +371,7 @@ export function step(s, intents, dt) {
   s.time -= dt;
   if (s.time <= 0) { s.time = 0; endRound(s); return s; }
   updateFX(s, dt);
+  updateEvents(s, dt);
   updateOrders(s, dt);
   let anyMoving = false;
   for (let i = 0; i < s.players.length; i++) {

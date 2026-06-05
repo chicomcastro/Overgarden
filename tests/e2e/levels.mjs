@@ -44,11 +44,15 @@ const r10 = (x) => Math.max(10, Math.round(x / 10) * 10);
 
 // Friendly campaign curve from the conservative bot baseline:
 //   ★1 = most runs clear it · ★2 ≈ a solid bot run · ★3 ≈ bot's best (humans beat it).
+// Fractions of the measured achievable ceiling (the bot's best of the seeds).
+// The bot is a conservative single-crop player and its medians collapse on
+// harder/eventful levels, so we anchor on its MAX (stable, deterministic) — a
+// reachable ceiling that humans comfortably beat.
 function suggestGoals(scores) {
-  const md = median(scores), mx = Math.max(...scores);
-  let s1 = r10(md * 0.6);          // ★1: most runs clear it (gentle entry)
-  let s2 = r10(((md + mx) / 2) * 0.95); // ★2: a solid run
-  let s3 = r10(mx);                // ★3: the bot's best — humans beat the bot, so reachable
+  const mx = Math.max(...scores);
+  let s1 = r10(mx * 0.30); // ★1: a real but easy target
+  let s2 = r10(mx * 0.60); // ★2: a solid run
+  let s3 = r10(mx * 0.92); // ★3: near the bot's best
   if (s2 <= s1) s2 = s1 + 20;
   if (s3 <= s2) s3 = s2 + 30;
   return [s1, s2, s3];
