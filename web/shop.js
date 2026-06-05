@@ -14,6 +14,9 @@ export const UPGRADES = [
   { id: "fertilizer", name: "Adubo", icon: "🌿", desc: "Plantas murcham ~12% mais devagar", max: 3, cost: [150, 320, 520] },
   { id: "greenhouse", name: "Estufa Rápida", icon: "🌱", desc: "Crescimento ~8% mais rápido", max: 3, cost: [180, 360, 600] },
   { id: "clock", name: "Relógio Extra", icon: "⏱️", desc: "+8s de rodada por nível", max: 2, cost: [220, 420] },
+  { id: "splash", name: "Regador Duplo", icon: "💦", desc: "Regar molha também um canteiro vizinho", max: 1, cost: [420] },
+  { id: "nursery", name: "Viveiro", icon: "🪴", desc: "Começa com canteiros já preparados", max: 2, cost: [200, 400] },
+  { id: "merchant", name: "Comerciante", icon: "🤝", desc: "Combo dura +2.5s por nível", max: 2, cost: [240, 440] },
 ];
 
 export const Shop = {
@@ -46,6 +49,9 @@ export const Shop = {
       decayMult: 1 - 0.12 * (L.fertilizer || 0),
       growthMult: 1 - 0.08 * (L.greenhouse || 0),
       bonusTime: 8 * (L.clock || 0),
+      waterSplash: (L.splash || 0) > 0,
+      startTreated: L.nursery || 0,
+      comboBonus: 2.5 * (L.merchant || 0),
     };
   },
 };

@@ -28,11 +28,15 @@ Client-side (render/áudio); sim só ganhou rótulos de cue (gameplay-neutro).
 - ✅ Mercado: estações normalizadas (cantos extremos quebravam bot e fluidez); Estufa: só rush (seca+chefe junto craterava).
 - ✅ Metas em **curva monotônica à mão** (bot subrepresenta fases de muitos canteiros; ★1 verificado alcançável pelo bot como piso de "campanha completável").
 
-## PR D — Novos upgrades + UX ⬜
-- ⬜ Upgrades novos com hook no sim: Regador Duplo (rega canteiro vizinho),
-  Viveiro (começa com canteiros tratados), Comerciante (combo dura mais).
-- ⬜ Glifos de controle nas dicas de interação.
-- ⬜ Recalibrar metas das fases afetadas.
+## PR D — Novos upgrades + UX ✅
+- ✅ Upgrades novos com hook no sim: **Regador Duplo** (rega o vizinho mais carente),
+  **Viveiro** (começa com N canteiros tratados), **Comerciante** (combo dura +2.5s/nível).
+- ✅ Glifos de controle nas dicas de interação (E · / · ↵ · Ⓐ conforme o dispositivo).
+- ✅ Sem recalibração: upgrades só valem no offline com o item comprado (headless = identidade).
+
+---
+**Backlog desta leva concluído.** Próximas frentes (fora do escopo): deploy do
+servidor, acessibilidade, multiplayer local no celular, host kick/migration.
 
 ## Princípios
 - Nível **default** sem features opt-in → harness/e2e por-PR inalterado (90/84).

@@ -99,6 +99,7 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null, leve
   playerCount = Math.max(1, Math.min(4, playerCount));
   difficulty = Math.max(1, Math.min(4, L.difficulty != null ? L.difficulty : difficulty));
   const plots = L.plots.map((p) => ({ x: p.x, y: p.y, stage: STAGE.VIRGIN, plant: null, progress: 0, life: 1, wilt: 0 }));
+  for (let i = 0; i < Math.min(M.startTreated || 0, plots.length); i++) { plots[i].stage = STAGE.TREATED; plots[i].life = 1; } // Viveiro
   const stations = L.stations.map((s) => ({ type: s.type, x: s.x, y: s.y, label: (STATION_META[s.type] || {}).label || s.type, icon: (STATION_META[s.type] || {}).icon }));
   const pool = L.plantPool && L.plantPool.length ? PLANTS.filter((p) => L.plantPool.includes(p.name)) : PLANTS.slice();
   const players = [];
@@ -239,7 +240,7 @@ function deliverPlant(s, p) {
 function completeOrder(s, o) {
   const base = ORDER.baseReward * o.plant.rarity * o.qty;
   const tip = Math.round(base * 0.5 * (o.timeLeft / o.maxTime));
-  s.combo++; s.comboTimer = ORDER.comboWindow;
+  s.combo++; s.comboTimer = ORDER.comboWindow + (s.mods.comboBonus || 0);
   const mult = 1 + 0.1 * Math.min(s.combo - 1, 9);
   const total = Math.round((base + tip) * mult * rushMult(s) * (o.boss ? (o.rewardMult || 1) : 1));
   s.score += total; s.stats.delivered++;
@@ -286,7 +287,16 @@ function interactPlot(s, p, plot) {
   const growing = plot.stage >= STAGE.SMALL && plot.stage < STAGE.READY;
   if (p.holding === HOLD.WATER && growing) {
     plot.life = 1; plot.wilt = 0; p.holding = HOLD.NOTHING; ev(s, "watering");
-    spawnParticles(s, plot.x, plot.y - 10, { n: 10, color: "#7ec8ff", speed: 110 }); return;
+    spawnParticles(s, plot.x, plot.y - 10, { n: 10, color: "#7ec8ff", speed: 110 });
+    if (s.mods.waterSplash) { // Regador Duplo: rega o vizinho crescente mais carente
+      let best = null, bd = Infinity;
+      for (const o of s.plots) {
+        if (o === plot || !(o.stage >= STAGE.SMALL && o.stage < STAGE.READY) || o.life >= 0.99) continue;
+        const dd = dist(plot.x, plot.y, o.x, o.y); if (dd < bd) { bd = dd; best = o; }
+      }
+      if (best) { best.life = 1; best.wilt = 0; spawnParticles(s, best.x, best.y - 10, { n: 8, color: "#7ec8ff", speed: 90 }); }
+    }
+    return;
   }
   if (p.holding === HOLD.NOTHING && plot.stage === STAGE.READY) {
     p.holding = HOLD.PLANT; p.heldPlant = plot.plant;
