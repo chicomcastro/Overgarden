@@ -632,23 +632,34 @@ function heldLabel(p) {
   }
 }
 
+function interactGlyph(p) {
+  const d = p.device;
+  if (d) {
+    if (d.type === "gamepad") return "Ⓐ";
+    const k = d.keymap && d.keymap.interact && d.keymap.interact[0];
+    if (k === "slash") return "/";
+    if (k === "enter") return "↵";
+  }
+  return "E";
+}
 function drawInteractHint(p) {
   if (p.seedMenu.open) return;
   const station = Sim.nearestStation(game, p);
   const plot = !station ? Sim.nearestPlot(game, p) : null;
+  const g = interactGlyph(p);
   let hint = null;
   if (station) {
-    if (station.type === "tool") hint = "E: pegar enxada";
-    if (station.type === "water") hint = "E: pegar água";
-    if (station.type === "seed") hint = p.holding !== HOLD.PLANT ? "E: escolher semente" : null;
-    if (station.type === "sales") hint = p.holding === HOLD.PLANT ? "E: entregar" : null;
+    if (station.type === "tool") hint = `${g}: pegar enxada`;
+    if (station.type === "water") hint = `${g}: pegar água`;
+    if (station.type === "seed") hint = p.holding !== HOLD.PLANT ? `${g}: escolher semente` : null;
+    if (station.type === "sales") hint = p.holding === HOLD.PLANT ? `${g}: entregar` : null;
   } else if (plot) {
     const growing = plot.stage >= STAGE.SMALL && plot.stage < STAGE.READY;
-    if (plot.stage === STAGE.VIRGIN && p.holding === HOLD.TOOL) hint = "E: preparar terra";
-    else if (plot.stage === STAGE.TREATED && p.holding === HOLD.SEED) hint = "E: plantar";
-    else if (growing && p.holding === HOLD.WATER) hint = "E: regar";
-    else if (plot.stage === STAGE.READY && p.holding === HOLD.NOTHING) hint = "E: colher";
-    else if (plot.stage === STAGE.DIED && p.holding === HOLD.TOOL) hint = "E: limpar terra";
+    if (plot.stage === STAGE.VIRGIN && p.holding === HOLD.TOOL) hint = `${g}: preparar terra`;
+    else if (plot.stage === STAGE.TREATED && p.holding === HOLD.SEED) hint = `${g}: plantar`;
+    else if (growing && p.holding === HOLD.WATER) hint = `${g}: regar`;
+    else if (plot.stage === STAGE.READY && p.holding === HOLD.NOTHING) hint = `${g}: colher`;
+    else if (plot.stage === STAGE.DIED && p.holding === HOLD.TOOL) hint = `${g}: limpar terra`;
   }
   if (!hint) return;
   ctx.font = "bold 16px Trebuchet MS, sans-serif"; ctx.textAlign = "center";
