@@ -90,6 +90,16 @@ goals. Throughput scales **sublinearly** (shared plots + one well), which is why
 > `setBotIntents()` — a separate path from the solo harness, so the per-PR e2e
 > is untouched.
 
+## Per-level balancing (`levels.mjs`)
+
+`npm run levels` roda o bot em **cada fase** de `web/assets/levels.json` (seeds
+fixos) e reporta a distribuição de score por fase + metas de ★ **sugeridas** a
+partir do throughput medido (★1 ≈ 0.6·mediana, ★2 ≈ run sólido, ★3 ≈ melhor run
+do bot — humanos batem o bot, então é alcançável). `--apply` reescreve as metas
+em `levels.json`. O bot é conservador (1 cultivo por vez), então é um piso
+amigável. O caminho headless aceita `levelId` (`startHeadless({levelId})`); o
+e2e por-PR (sem `levelId`) usa o nível default e fica intacto.
+
 ## Reproducibility
 
 Only gameplay-affecting randomness (the order stream) is seeded via a mulberry32
