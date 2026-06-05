@@ -68,7 +68,7 @@ sozinho ou em co-op, com caos crescente.
 
 **Jogabilidade**
 - [x] **Co-op online** (netcode) — servidor WebSocket autoritativo + interpolação + drop-in/reconexão (`server/`, `web/net.js`; ver `docs/COOP_DESIGN.md`).
-- [ ] Loja entre fases (upgrades de estação) e economia.
+- [x] **Loja + upgrades** (`web/shop.js`): moedas por rodada + 4 upgrades persistentes (velocidade/murcha/crescimento/tempo) que modulam o sim no offline (campanha/quick). Online segue vanilla.
 - [x] **Eventos/clima dinâmicos** (chuva/seca/rush) + **chefe de fim de fase** (pedido VIP grande com recompensa multiplicada) — opt-in por fase via `levels.json` (`events`/`boss`), refletidos no online. Falta: fases temáticas por estação, loja/upgrades entre fases.
 
 **Engenharia**

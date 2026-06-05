@@ -10,6 +10,7 @@
 import * as Sim from "./sim.js";
 import { Net } from "./net.js";
 import { Telemetry } from "./telemetry.js";
+import { Shop, UPGRADES } from "./shop.js";
 
 const { HOLD, STAGE, WORLD, TUNE, ROUND, ORDER, COOP } = Sim;
 
@@ -226,8 +227,8 @@ function trackRoundEnd() {
   Telemetry.track("round_end", { mode: currentMode, level: game.levelId || game.levelName, levelName: game.levelName, players: game.playerCount, score: r.score, stars: r.stars, delivered: r.delivered, expired: r.expired, bossCleared: !!r.bossCleared });
 }
 
-function createGame(playerCount, { difficulty = 1, level = null } = {}) {
-  const s = Sim.createState({ playerCount, difficulty, seed: pendingSeed, level });
+function createGame(playerCount, { difficulty = 1, level = null, mods = null } = {}) {
+  const s = Sim.createState({ playerCount, difficulty, seed: pendingSeed, level, mods });
   pendingSeed = null;
   const devices = assignDevices(playerCount);
   s.players.forEach((p, i) => { p.device = devices[i]; });
@@ -270,6 +271,8 @@ function finishRound() {
   const r = game.result;
   trackRoundEnd();
   if (currentMode === "campaign" && currentLevelIndex >= 0) saveStars(LEVELS[currentLevelIndex].id, r.stars);
+  const coinsEarned = humanSession ? Shop.reward(r) : 0;
+  if (coinsEarned) Shop.earn(coinsEarned);
   document.getElementById("result-stars").innerHTML =
     [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
   document.getElementById("result-score").textContent = "Score: " + r.score;
@@ -277,6 +280,7 @@ function finishRound() {
     (currentMode === "campaign" ? `${game.levelName} · ` : "") +
     `Entregues: ${r.delivered} · perdidos: ${r.expired}` +
     (r.bossCleared ? " · 👑 chefe!" : "") +
+    (coinsEarned ? ` · +${coinsEarned} 🪙` : "") +
     (r.stars < 3 ? ` · próxima ★ em ${r.goals[Math.min(r.stars, 2)]}` : " · máximo!");
   setResultButtons();
   resultScreen.classList.remove("hidden");
@@ -742,6 +746,29 @@ document.getElementById("stats-btn").addEventListener("click", openStats);
 document.getElementById("stats-back").addEventListener("click", () => { statsScreen.classList.add("hidden"); startScreen.classList.remove("hidden"); });
 document.getElementById("stats-clear").addEventListener("click", () => { Telemetry.clear(); buildStats(); });
 
+// ---- Shop / upgrades ----
+const shopScreen = document.getElementById("shop-screen");
+function buildShop() {
+  document.getElementById("shop-coins").textContent = `🪙 ${Shop.coins()}`;
+  const grid = document.getElementById("shop-grid");
+  grid.innerHTML = "";
+  for (const u of UPGRADES) {
+    const lvl = Shop.level(u.id), cost = Shop.costOf(u.id), maxed = lvl >= u.max;
+    const card = document.createElement("div");
+    card.className = "shop-card" + (maxed ? " maxed" : "");
+    const pips = "●".repeat(lvl) + "○".repeat(u.max - lvl);
+    const btn = maxed ? `<button class="sc-buy" disabled>MÁX</button>`
+      : `<button class="sc-buy" data-id="${u.id}" ${Shop.coins() < cost ? "disabled" : ""}>🪙 ${cost}</button>`;
+    card.innerHTML = `<div class="sc-icon">${u.icon}</div>` +
+      `<div><div class="sc-name">${u.name}</div><div class="sc-desc">${u.desc}</div><div class="sc-pips">${pips}</div></div>${btn}`;
+    grid.appendChild(card);
+  }
+  grid.querySelectorAll(".sc-buy[data-id]").forEach((b) => b.addEventListener("click", () => { if (Shop.buy(b.dataset.id)) buildShop(); }));
+}
+function openShop() { startScreen.classList.add("hidden"); buildShop(); shopScreen.classList.remove("hidden"); }
+document.getElementById("shop-btn").addEventListener("click", openShop);
+document.getElementById("shop-back").addEventListener("click", () => { shopScreen.classList.add("hidden"); startScreen.classList.remove("hidden"); });
+
 const touchControls = document.getElementById("touch-controls");
 function bindTouch() {
   if (!touchControls) return;
@@ -815,13 +842,13 @@ function launch(g) {
 function startGame() {
   if (!ASSETS.atlas) return;
   currentMode = "quick"; currentLevelIndex = -1;
-  launch(createGame(selectedPlayers, { difficulty: selectedDifficulty }));
+  launch(createGame(selectedPlayers, { difficulty: selectedDifficulty, mods: Shop.mods() }));
 }
 
 function startLevel(i) {
   if (!ASSETS.atlas || !LEVELS[i]) return;
   currentMode = "campaign"; currentLevelIndex = i;
-  launch(createGame(selectedPlayers, { level: LEVELS[i] }));
+  launch(createGame(selectedPlayers, { level: LEVELS[i], mods: Shop.mods() }));
 }
 
 function quitToMenu() {
