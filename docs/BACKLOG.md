@@ -21,11 +21,12 @@ Client-side (render/áudio); sim só ganhou rótulos de cue (gameplay-neutro).
 - ✅ FX por evento: chuva caindo + faíscas douradas no rush; tint pulsante por clima.
 - ✅ Animação de revelação de estrelas no resultado (CSS).
 
-## PR C — Fases temáticas ⬜
-- ⬜ Campo `theme` por fase em `levels.json` (tint de fundo + rótulo); render aplica.
-- ⬜ `theme` no estado + snapshot (online mostra igual).
-- ⬜ 1–2 fases novas autoradas; recalibrar metas se mudarem throughput.
-- ⬜ (Opcional) mecânica temática leve (ex.: feira = mais pedidos).
+## PR C — Fases temáticas ✅
+- ✅ `theme` por fase (spring/summer/autumn/night): cor de chão + overlay de mood; "default" = visual original (e2e intacto).
+- ✅ `theme` no estado + snapshot (online mostra o mesmo clima).
+- ✅ Fase nova: **Pomar Noturno** (night, 7 canteiros, diff 3, rain+rush, chefe).
+- ✅ Mercado: estações normalizadas (cantos extremos quebravam bot e fluidez); Estufa: só rush (seca+chefe junto craterava).
+- ✅ Metas em **curva monotônica à mão** (bot subrepresenta fases de muitos canteiros; ★1 verificado alcançável pelo bot como piso de "campanha completável").
 
 ## PR D — Novos upgrades + UX ⬜
 - ⬜ Upgrades novos com hook no sim: Regador Duplo (rega canteiro vizinho),

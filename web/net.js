@@ -95,7 +95,7 @@ export const Net = {
     const pp = prev && prev.players, qp = prev && prev.plots, qo = prev && prev.orders;
     return {
       time: s.time, score: s.score, combo: s.combo, playerCount: s.playerCount,
-      over: s.over, result: s.result, levelName: s.levelName, weather: s.weather,
+      over: s.over, result: s.result, levelName: s.levelName, theme: s.theme, weather: s.weather,
       plantPool: s.plantPool ? s.plantPool.map(plant).filter(Boolean) : null,
       particles: [], floaters: [], shake: 0, anyMoving: false,
       stations: s.stations || stations(),
