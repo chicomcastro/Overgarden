@@ -371,6 +371,7 @@ function render() {
   drawPlayers();
   drawParticles();
   drawFloaters();
+  drawThemeOverlay();
   ctx.restore();
   drawWeatherTint();
   updateClientFX();
@@ -382,13 +383,27 @@ function render() {
   for (const p of game.players) if (p.seedMenu.open) drawSeedMenu(p);
 }
 
+// Per-level visual themes (cosmetic). "default" matches the original look so
+// quick play / the e2e harness render identically.
+const THEMES = {
+  default: { ground: "#6ab04c", overlay: null },
+  spring: { ground: "#6ab04c", overlay: "rgba(150,230,160,0.05)" },
+  summer: { ground: "#74b84a", overlay: "rgba(255,235,150,0.06)" },
+  autumn: { ground: "#9a8b3c", overlay: "rgba(200,120,40,0.12)" },
+  night: { ground: "#3f4d6e", overlay: "rgba(24,34,86,0.30)" },
+};
+function theme() { return THEMES[game.theme] || THEMES.default; }
 function drawBackground() {
-  ctx.fillStyle = "#6ab04c";
+  ctx.fillStyle = theme().ground;
   ctx.fillRect(0, 0, WORLD.w, WORLD.h);
   if (ASSETS.atlas.tiles.grass) {
     for (let y = 0; y < WORLD.h; y += TILE_PX) for (let x = 0; x < WORLD.w; x += TILE_PX) drawTile("grass", 1, 3, x, y, TILE_PX, TILE_PX);
   }
   drawFence();
+}
+function drawThemeOverlay() {
+  const ov = theme().overlay; if (!ov) return;
+  ctx.fillStyle = ov; ctx.fillRect(0, 0, WORLD.w, WORLD.h);
 }
 function drawFence() {
   if (!ASSETS.atlas.tiles.fence) return;

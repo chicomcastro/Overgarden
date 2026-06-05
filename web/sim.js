@@ -115,7 +115,7 @@ export function createState({ playerCount = 1, difficulty = 1, seed = null, leve
   return {
     _rng: seed != null ? makeRng(seed) : null,
     mult: DIFFICULTY_MULT[difficulty - 1], difficulty, playerCount, mods: M,
-    levelId: L.id, levelName: L.name, duration, starsBase: L.stars.slice(),
+    levelId: L.id, levelName: L.name, theme: L.theme || "default", duration, starsBase: L.stars.slice(),
     plantPool: pool.length ? pool : PLANTS.slice(),
     score: 0, paused: false, over: false, result: null,
     eventTypes: (L.events || []).filter((t) => EVENTS.defs[t]),

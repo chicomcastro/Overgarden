@@ -54,7 +54,7 @@ function serialize(st) {
   return {
     time: st.time, score: st.score, combo: st.combo, over: st.over, result: st.result,
     goals: Sim.starGoals(st), playerCount: st.playerCount, weather: st.weather,
-    levelName: st.levelName, plantPool: st.plantPool.map((p) => p.name),
+    levelName: st.levelName, theme: st.theme, plantPool: st.plantPool.map((p) => p.name),
     stations: st.stations.map((x) => ({ type: x.type, x: x.x, y: x.y, label: x.label, icon: x.icon })),
     players: st.players.map((p) => ({ index: p.index, color: p.color, x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10, facing: p.facing, moving: p.moving, holding: p.holding, heldSeed: p.heldSeed ? p.heldSeed.name : null, heldPlant: p.heldPlant ? p.heldPlant.name : null, stamina: Math.round(p.stamina), anim: Math.round(p.anim * 100) / 100, seedMenu: { open: p.seedMenu.open, index: p.seedMenu.index } })),
     plots: st.plots.map((pl) => ({ x: pl.x, y: pl.y, stage: pl.stage, progress: Math.round(pl.progress * 1000) / 1000, life: Math.round(pl.life * 1000) / 1000, wilt: Math.round(pl.wilt * 100) / 100, plant: pl.plant ? pl.plant.name : null })),

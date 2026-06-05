@@ -6,9 +6,9 @@
       "difficulty": 1,
       "duration": 120,
       "stars": [
-        90,
-        180,
-        280
+        70,
+        150,
+        260
       ],
       "events": [],
       "plots": [
@@ -55,7 +55,8 @@
         "Carrot",
         "Potato",
         "Tomato"
-      ]
+      ],
+      "theme": "spring"
     },
     {
       "id": "fazenda",
@@ -63,9 +64,9 @@
       "difficulty": 1,
       "duration": 150,
       "stars": [
-        100,
-        200,
-        310
+        90,
+        190,
+        300
       ],
       "events": [
         "rain"
@@ -124,7 +125,8 @@
         "Tomato",
         "Corn",
         "SuspeciousLemon"
-      ]
+      ],
+      "theme": "spring"
     },
     {
       "id": "horta-dupla",
@@ -132,9 +134,9 @@
       "difficulty": 2,
       "duration": 160,
       "stars": [
-        120,
-        250,
-        380
+        110,
+        230,
+        360
       ],
       "events": [
         "rain",
@@ -197,7 +199,8 @@
         "Aubergine",
         "Pepper",
         "GrapeTomato"
-      ]
+      ],
+      "theme": "summer"
     },
     {
       "id": "estufa",
@@ -211,13 +214,12 @@
       "difficulty": 2,
       "duration": 150,
       "stars": [
-        50,
-        100,
-        150
+        130,
+        270,
+        420
       ],
       "events": [
-        "rush",
-        "drought"
+        "rush"
       ],
       "plots": [
         {
@@ -283,7 +285,8 @@
         "GrapeTomato",
         "Pepper",
         "Sweetsop"
-      ]
+      ],
+      "theme": "summer"
     },
     {
       "id": "mercado",
@@ -298,8 +301,8 @@
       "duration": 155,
       "stars": [
         120,
-        240,
-        360
+        250,
+        390
       ],
       "events": [
         "drought",
@@ -334,23 +337,23 @@
       "stations": [
         {
           "type": "tool",
-          "x": 84,
-          "y": 200
+          "x": 92,
+          "y": 250
         },
         {
           "type": "seed",
-          "x": 84,
-          "y": 470
+          "x": 92,
+          "y": 420
         },
         {
           "type": "water",
-          "x": 876,
-          "y": 200
+          "x": 868,
+          "y": 320
         },
         {
           "type": "sales",
-          "x": 876,
-          "y": 470
+          "x": 480,
+          "y": 548
         }
       ],
       "plantPool": [
@@ -364,7 +367,8 @@
         "GrapeTomato",
         "Pepper",
         "Sweetsop"
-      ]
+      ],
+      "theme": "autumn"
     },
     {
       "id": "festival",
@@ -378,9 +382,9 @@
       "difficulty": 3,
       "duration": 170,
       "stars": [
-        120,
-        230,
-        360
+        150,
+        300,
+        470
       ],
       "events": [
         "rain",
@@ -450,6 +454,90 @@
         "Carrot",
         "Potato",
         "Tomato",
+        "Corn",
+        "SuspeciousLemon",
+        "Aubergine",
+        "DarkCarrot",
+        "GrapeTomato",
+        "Pepper",
+        "Sweetsop"
+      ],
+      "theme": "night"
+    },
+    {
+      "id": "pomar-noturno",
+      "name": "Pomar Noturno",
+      "theme": "night",
+      "boss": {
+        "at": 0.55,
+        "qty": 4,
+        "time": 55,
+        "rewardMult": 4
+      },
+      "difficulty": 3,
+      "duration": 165,
+      "stars": [
+        170,
+        330,
+        500
+      ],
+      "events": [
+        "rain",
+        "rush"
+      ],
+      "plots": [
+        {
+          "x": 300,
+          "y": 230
+        },
+        {
+          "x": 430,
+          "y": 230
+        },
+        {
+          "x": 560,
+          "y": 230
+        },
+        {
+          "x": 690,
+          "y": 230
+        },
+        {
+          "x": 360,
+          "y": 400
+        },
+        {
+          "x": 490,
+          "y": 400
+        },
+        {
+          "x": 620,
+          "y": 400
+        }
+      ],
+      "stations": [
+        {
+          "type": "tool",
+          "x": 92,
+          "y": 250
+        },
+        {
+          "type": "seed",
+          "x": 92,
+          "y": 420
+        },
+        {
+          "type": "water",
+          "x": 868,
+          "y": 320
+        },
+        {
+          "type": "sales",
+          "x": 480,
+          "y": 548
+        }
+      ],
+      "plantPool": [
         "Corn",
         "SuspeciousLemon",
         "Aubergine",
