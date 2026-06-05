@@ -24,13 +24,18 @@ const TICK_HZ = 30, DT = 1 / TICK_HZ, BROADCAST_EVERY = 2; // ~15Hz snapshots
 const atlas = JSON.parse(await readFile(path.resolve(HERE, "../web/assets/atlas.json"), "utf8"));
 Sim.setPlants(Sim.buildPlants(atlas));
 
+// Campaign levels, so the host can pick a stage for the online round.
+const LEVELS = JSON.parse(await readFile(path.resolve(HERE, "../web/assets/levels.json"), "utf8")).levels || [];
+const LEVEL_BY_ID = new Map(LEVELS.map((l) => [l.id, l]));
+
 const rooms = new Map();
 const code = () => { let c = ""; for (let i = 0; i < 4; i++) c += "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]; return c; };
 
-function makeRoom(count, difficulty) {
+function makeRoom(count, difficulty, levelId) {
   let room;
   do { room = code(); } while (rooms.has(room));
-  const r = { room, count: Math.max(1, Math.min(4, count)), difficulty: Math.max(1, Math.min(4, difficulty)), clients: new Map(), intents: {}, state: null, started: false, seq: 0, tickN: 0, timer: null };
+  const level = LEVEL_BY_ID.get(levelId) || null;
+  const r = { room, count: Math.max(1, Math.min(4, count)), difficulty: Math.max(1, Math.min(4, difficulty)), level, clients: new Map(), intents: {}, state: null, started: false, seq: 0, tickN: 0, timer: null };
   rooms.set(room, r);
   return r;
 }
@@ -41,7 +46,7 @@ function broadcast(r, msg) { for (const ws of r.clients.values()) send(ws, msg);
 function freeSlot(r) { for (let i = 0; i < r.count; i++) if (!r.clients.has(i)) return i; return -1; }
 
 function lobby(r) {
-  broadcast(r, { t: "lobby", room: r.room, count: r.count, difficulty: r.difficulty, started: r.started, slots: [...r.clients.keys()].sort() });
+  broadcast(r, { t: "lobby", room: r.room, count: r.count, difficulty: r.difficulty, level: r.level ? r.level.name : null, started: r.started, slots: [...r.clients.keys()].sort() });
 }
 
 // Serialize the minimal state clients need to render (plants by name).
@@ -49,6 +54,8 @@ function serialize(st) {
   return {
     time: st.time, score: st.score, combo: st.combo, over: st.over, result: st.result,
     goals: Sim.starGoals(st), playerCount: st.playerCount,
+    levelName: st.levelName, plantPool: st.plantPool.map((p) => p.name),
+    stations: st.stations.map((x) => ({ type: x.type, x: x.x, y: x.y, label: x.label, icon: x.icon })),
     players: st.players.map((p) => ({ index: p.index, color: p.color, x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10, facing: p.facing, moving: p.moving, holding: p.holding, heldSeed: p.heldSeed ? p.heldSeed.name : null, heldPlant: p.heldPlant ? p.heldPlant.name : null, stamina: Math.round(p.stamina), anim: Math.round(p.anim * 100) / 100, seedMenu: { open: p.seedMenu.open, index: p.seedMenu.index } })),
     plots: st.plots.map((pl) => ({ x: pl.x, y: pl.y, stage: pl.stage, progress: Math.round(pl.progress * 1000) / 1000, life: Math.round(pl.life * 1000) / 1000, wilt: Math.round(pl.wilt * 100) / 100, plant: pl.plant ? pl.plant.name : null })),
     orders: st.orders.map((o) => ({ id: o.id, need: o.need, qty: o.qty, timeLeft: Math.round(o.timeLeft * 100) / 100, maxTime: o.maxTime, plant: o.plant.name })),
@@ -58,7 +65,7 @@ function serialize(st) {
 
 function startRoom(r) {
   if (r.started) return;
-  r.state = Sim.createState({ playerCount: r.count, difficulty: r.difficulty, seed: (Math.random() * 1e9) | 0 });
+  r.state = Sim.createState({ playerCount: r.count, difficulty: r.difficulty, seed: (Math.random() * 1e9) | 0, level: r.level });
   r.started = true; r.tickN = 0;
   lobby(r);
   r.timer = setInterval(() => {
@@ -92,7 +99,7 @@ wss.on("connection", (ws) => {
   ws.on("message", (buf) => {
     let m; try { m = JSON.parse(buf.toString()); } catch { return; }
     if (m.t === "create") {
-      const r = makeRoom(m.count || 1, m.difficulty || 1);
+      const r = makeRoom(m.count || 1, m.difficulty || 1, m.levelId);
       r.clients.set(0, ws); ws._room = r.room; ws._slot = 0;
       send(ws, { t: "joined", room: r.room, slot: 0, count: r.count, difficulty: r.difficulty, host: true });
       lobby(r);

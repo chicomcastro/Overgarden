@@ -32,7 +32,8 @@
         <button class="diff-btn" data-diff="3">Difícil</button>
         <button class="diff-btn" data-diff="4">Insano</button>
       </div>
-      <button id="start-btn" class="big-btn" disabled>Carregando…</button>
+      <button id="campaign-btn" class="big-btn" disabled>🗺️ Campanha</button>
+      <button id="start-btn" class="big-btn secondary" disabled>Jogo rápido</button>
       <button id="online-btn" class="big-btn secondary">🌐 Jogar online</button>
       <div class="controls">
         <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
@@ -65,11 +66,20 @@
       <button id="menu-btn" class="big-btn secondary">Menu</button>
     </div>
 
+    <!-- Campaign level select -->
+    <div id="campaign-screen" class="overlay hidden">
+      <h1>Campanha</h1>
+      <p class="desc">Ganhe ★ pra desbloquear as próximas fases. Jogue sozinho ou com até 4 no mesmo teclado/controle (escolha no menu).</p>
+      <div id="level-grid"></div>
+      <button id="campaign-back" class="big-btn secondary">Voltar</button>
+    </div>
+
     <!-- Online lobby -->
     <div id="online-screen" class="overlay hidden">
       <h1>Online</h1>
       <div id="online-setup">
         <p class="desc">Joguem juntos na mesma fazenda. O host cria a sala e compartilha o código; os outros entram (celular funciona).</p>
+        <label class="online-label">Fase: <select id="online-level"></select></label>
         <button id="create-room" class="big-btn">Criar sala (<span id="create-count">1</span> jog.)</button>
         <div class="choices">
           <input id="join-code" maxlength="4" placeholder="CÓDIGO" autocapitalize="characters" autocomplete="off" />

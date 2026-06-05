@@ -35,7 +35,8 @@ try {
   const B = await browser.newPage();
   for (const p of [A, B]) { await p.goto(`${httpBase}/index.html?debug`); await p.waitForFunction(() => window.__OG__ && window.__OG__.assetsReady(), null, { timeout: 30000 }); }
 
-  const room = await A.evaluate(async (u) => { await window.__OG_NET__.connectCreate(u, 2, 1); await new Promise((r) => setTimeout(r, 150)); return window.__OG_NET__.state().room; }, wsUrl);
+  // Host creates a room on a chosen campaign stage (Horta Dupla: 6 plots).
+  const room = await A.evaluate(async (u) => { await window.__OG_NET__.connectCreate(u, 2, 1, "horta-dupla"); await new Promise((r) => setTimeout(r, 150)); return window.__OG_NET__.state().room; }, wsUrl);
   check("host creates room (4-char code)", typeof room === "string" && room.length === 4);
 
   await B.evaluate(async (a) => window.__OG_NET__.connectJoin(a.u, a.room), { u: wsUrl, room });
@@ -46,6 +47,9 @@ try {
   await A.waitForFunction(() => window.__OG_NET__.state().phase === "playing", null, { timeout: 8000 });
   await B.waitForFunction(() => window.__OG_NET__.state().phase === "playing", null, { timeout: 8000 });
   check("both clients enter play", true);
+
+  const lvl = await B.evaluate(() => { const s = window.__OG_NET__.state().snapshot; return { name: s.levelName, plots: s.plots.length }; });
+  check("host's chosen level propagates online (Horta Dupla, 6 plots)", lvl.name === "Horta Dupla" && lvl.plots === 6);
 
   await A.keyboard.down("d"); await B.keyboard.down("ArrowLeft");
   await sleep(700);

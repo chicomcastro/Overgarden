@@ -48,7 +48,7 @@ sozinho ou em co-op, com caos crescente.
 - [ ] Variedade de pedidos (cestas com múltiplos itens, pedidos premium).
 
 **Engenharia**
-- [ ] Níveis **data-driven** (JSON: estações, canteiros, pedidos, meta, tempo).
+- [x] Níveis **data-driven** (`web/assets/levels.json`: canteiros, estações, pool de plantas, meta, tempo, dificuldade) + **campanha** de 6 fases com desbloqueio por estrelas e progresso salvo (localStorage). Online também usa a fase escolhida pelo host.
 - [ ] **Colisão real** com estações/obstáculos.
 - [x] Tick determinístico + separação de sistemas — núcleo puro `web/sim.js` (sim ≠ render/IO), compartilhado browser/servidor.
 - [x] **CI no PR**: harness e2e (bot autoplayer headless) que gera evidência visual + dados de balanceamento por seed (`tests/e2e/`).

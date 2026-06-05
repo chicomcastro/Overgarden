@@ -55,6 +55,7 @@ async function loadAssets() {
   await Promise.all([...sheets].map(async (s) => { ASSETS.img[s] = await loadImage(s); }));
   await Promise.all(Object.entries(atlas.audio).map(async ([k, file]) => { ASSETS.audio[k] = await loadAudio(file); }));
   Sim.setPlants(Sim.buildPlants(atlas));
+  try { LEVELS = (await fetch("assets/levels.json").then((r) => r.json())).levels || []; } catch (_) { LEVELS = []; }
 }
 
 // ---------------------------------------------------------------------------
@@ -209,9 +210,12 @@ let gameState = "menu"; // menu | playing | result
 let game = null;
 let pendingSeed = null;
 let footActive = false;
+let LEVELS = [];
+let currentMode = "quick"; // quick | campaign | online
+let currentLevelIndex = -1;
 
-function createGame(playerCount, difficulty) {
-  const s = Sim.createState({ playerCount, difficulty, seed: pendingSeed });
+function createGame(playerCount, { difficulty = 1, level = null } = {}) {
+  const s = Sim.createState({ playerCount, difficulty, seed: pendingSeed, level });
   pendingSeed = null;
   const devices = assignDevices(playerCount);
   s.players.forEach((p, i) => { p.device = devices[i]; });
@@ -219,6 +223,12 @@ function createGame(playerCount, difficulty) {
   s.seedMenu = s.players[0].seedMenu;
   return s;
 }
+
+// ---- Campaign progress (localStorage) ----
+const PROGRESS_KEY = "overgarden.campaign";
+function loadProgress() { try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; } catch (_) { return {}; } }
+function saveStars(id, stars) { const p = loadProgress(); if ((p[id] || 0) < stars) { p[id] = stars; try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch (_) {} } }
+function levelUnlocked(i) { return i <= 0 || (loadProgress()[LEVELS[i - 1].id] || 0) >= 1; }
 
 // Advance one frame: gather intents, step the sim, then handle the audio/UI
 // side effects the sim deliberately doesn't.
@@ -246,13 +256,33 @@ function finishRound() {
   for (const k in ASSETS.audio) ASSETS.audio[k].pause();
   showTouchControls(false);
   const r = game.result;
+  if (currentMode === "campaign" && currentLevelIndex >= 0) saveStars(LEVELS[currentLevelIndex].id, r.stars);
   document.getElementById("result-stars").innerHTML =
     [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
   document.getElementById("result-score").textContent = "Score: " + r.score;
   document.getElementById("result-stats").textContent =
-    `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}` +
-    (r.stars < 3 ? ` · próxima estrela em ${r.goals[Math.min(r.stars, 2)]}` : " · máximo!");
+    (currentMode === "campaign" ? `${game.levelName} · ` : "") +
+    `Entregues: ${r.delivered} · perdidos: ${r.expired}` +
+    (r.stars < 3 ? ` · próxima ★ em ${r.goals[Math.min(r.stars, 2)]}` : " · máximo!");
+  setResultButtons();
   resultScreen.classList.remove("hidden");
+}
+
+// Result-screen buttons depend on the mode (quick = replay/menu;
+// campaign = next stage/map).
+function setResultButtons() {
+  const again = document.getElementById("again-btn"), menu = document.getElementById("menu-btn");
+  again.classList.remove("hidden");
+  if (currentMode === "campaign") {
+    const next = currentLevelIndex + 1;
+    const hasNext = next < LEVELS.length && levelUnlocked(next);
+    again.textContent = hasNext ? "Próxima fase ▶" : "Repetir fase";
+    again.onclick = () => startLevel(hasNext ? next : currentLevelIndex);
+    menu.textContent = "Mapa"; menu.onclick = openCampaign;
+  } else {
+    again.textContent = "Jogar de novo"; again.onclick = startGame;
+    menu.textContent = "Menu"; menu.onclick = quitToMenu;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -526,7 +556,7 @@ function drawInteractHint(p) {
 }
 
 function drawSeedMenu(p) {
-  const PLANTS = Sim.PLANTS;
+  const PLANTS = game.plantPool || Sim.PLANTS;
   const idx = p.seedMenu.index;
   const spacing = 58, panelW = 260, panelH = 96;
   let cx = Math.max(panelW / 2 + 8, Math.min(WORLD.w - panelW / 2 - 8, p.x));
@@ -614,9 +644,35 @@ bindChoiceGroup(".diff-btn", "diff", (v) => { selectedDifficulty = v; });
 startBtn.addEventListener("click", startGame);
 document.getElementById("resume-btn").addEventListener("click", togglePause);
 document.getElementById("quit-btn").addEventListener("click", quitToMenu);
-document.getElementById("again-btn").addEventListener("click", startGame);
-document.getElementById("menu-btn").addEventListener("click", quitToMenu);
+// again/menu handlers are set per-mode in setResultButtons().
 muteBox.addEventListener("change", () => sound.setMuted(muteBox.checked));
+
+// ---- Campaign level select ----
+const campaignScreen = document.getElementById("campaign-screen");
+function buildCampaignGrid() {
+  const grid = document.getElementById("level-grid");
+  grid.innerHTML = "";
+  const prog = loadProgress();
+  LEVELS.forEach((lv, i) => {
+    const unlocked = levelUnlocked(i);
+    const stars = prog[lv.id] || 0;
+    const card = document.createElement("div");
+    card.className = "level-card" + (unlocked ? "" : " locked");
+    const starHtml = [0, 1, 2].map((s) => `<span class="${s < stars ? "on" : "off"}">★</span>`).join("");
+    card.innerHTML = `<div class="lv-name">${unlocked ? (i + 1) + ". " + lv.name : "🔒 " + lv.name}</div>` +
+      `<div class="lv-stars">${starHtml}</div><div class="lv-meta">${lv.duration}s · ★${lv.stars[0]}</div>`;
+    if (unlocked) card.addEventListener("click", () => startLevel(i));
+    grid.appendChild(card);
+  });
+}
+function openCampaign() {
+  startScreen.classList.add("hidden"); resultScreen.classList.add("hidden");
+  if (online) { try { Net.leave(); if (Net.ws) Net.ws.close(); } catch (_) {} online = false; }
+  buildCampaignGrid();
+  campaignScreen.classList.remove("hidden");
+}
+document.getElementById("campaign-btn").addEventListener("click", openCampaign);
+document.getElementById("campaign-back").addEventListener("click", () => { campaignScreen.classList.add("hidden"); startScreen.classList.remove("hidden"); });
 
 const touchControls = document.getElementById("touch-controls");
 function bindTouch() {
@@ -667,13 +723,15 @@ bindJoystick();
 
 function showTouchControls(on) { if (touchControls) touchControls.classList.toggle("active", on && (online || selectedPlayers === 1)); }
 
-function startGame() {
-  if (!ASSETS.atlas) return;
-  game = createGame(selectedPlayers, selectedDifficulty);
+function launch(g) {
+  game = g;
   gameState = "playing";
+  online = false;
   startScreen.classList.add("hidden");
   pauseScreen.classList.add("hidden");
   resultScreen.classList.add("hidden");
+  campaignScreen.classList.add("hidden");
+  document.getElementById("again-btn").classList.remove("hidden");
   showTouchControls(true);
   if (actx && actx.state === "suspended") actx.resume().catch(() => {});
   sound.setMuted(muteBox.checked);
@@ -684,6 +742,18 @@ function startGame() {
   requestAnimationFrame(loop);
 }
 
+function startGame() {
+  if (!ASSETS.atlas) return;
+  currentMode = "quick"; currentLevelIndex = -1;
+  launch(createGame(selectedPlayers, { difficulty: selectedDifficulty }));
+}
+
+function startLevel(i) {
+  if (!ASSETS.atlas || !LEVELS[i]) return;
+  currentMode = "campaign"; currentLevelIndex = i;
+  launch(createGame(selectedPlayers, { level: LEVELS[i] }));
+}
+
 function quitToMenu() {
   if (online) { try { Net.leave(); if (Net.ws) Net.ws.close(); } catch (_) {} online = false; }
   running = false; game = null; gameState = "menu";
@@ -692,6 +762,7 @@ function quitToMenu() {
   document.getElementById("again-btn").classList.remove("hidden");
   pauseScreen.classList.add("hidden");
   resultScreen.classList.add("hidden");
+  campaignScreen.classList.add("hidden");
   startScreen.classList.remove("hidden");
 }
 
@@ -774,7 +845,7 @@ function serverUrl() {
 
 window.__OG_NET__ = {
   Net,
-  async connectCreate(url, count, difficulty) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.create(count, difficulty); },
+  async connectCreate(url, count, difficulty, levelId) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.create(count, difficulty, levelId); },
   async connectJoin(url, room) { await Net.connect(url || serverUrl()); Net.on.snapshot = onSnapshot; Net.join(room); },
   start() { Net.start(); },
   state() { return { room: Net.room, slot: Net.slot, host: Net.host, phase: Net.phase, count: Net.count, error: Net.error, snapshot: Net.lastSnapshot }; },
@@ -788,16 +859,22 @@ const onlineSetup = document.getElementById("online-setup");
 const onlineLobby = document.getElementById("online-lobby");
 const onlineError = document.getElementById("online-error");
 
+function populateLevelSelect() {
+  const sel = document.getElementById("online-level");
+  if (!sel || sel.options.length) return;
+  for (const lv of LEVELS) { const o = document.createElement("option"); o.value = lv.id; o.textContent = lv.name; sel.appendChild(o); }
+}
 function showOnlineScreen(show) {
   onlineScreen.classList.toggle("hidden", !show);
-  if (show) { onlineSetup.classList.remove("hidden"); onlineLobby.classList.add("hidden"); onlineError.textContent = ""; }
+  if (show) { populateLevelSelect(); onlineSetup.classList.remove("hidden"); onlineLobby.classList.add("hidden"); onlineError.textContent = ""; }
 }
 function showLobbyView() {
   onlineSetup.classList.add("hidden"); onlineLobby.classList.remove("hidden");
   document.getElementById("room-code").textContent = Net.room || "----";
   document.getElementById("lobby-start").classList.toggle("hidden", !Net.host);
   document.getElementById("lobby-wait").classList.toggle("hidden", Net.host);
-  document.getElementById("lobby-players").textContent = `Jogadores na sala: ${Net.slots ? Net.slots.length : 1} / ${Net.count}`;
+  document.getElementById("lobby-players").textContent =
+    `${Net.levelName ? "Fase: " + Net.levelName + " · " : ""}Jogadores na sala: ${Net.slots ? Net.slots.length : 1} / ${Net.count}`;
 }
 function closeOnline() {
   online = false;
@@ -833,7 +910,11 @@ async function connectThen(action) {
 
 document.getElementById("online-btn").addEventListener("click", () => { startScreen.classList.add("hidden"); showOnlineScreen(true); });
 document.getElementById("online-back").addEventListener("click", () => { try { if (Net.ws) Net.ws.close(); } catch (_) {} showOnlineScreen(false); startScreen.classList.remove("hidden"); });
-document.getElementById("create-room").addEventListener("click", () => connectThen(() => Net.create(selectedPlayers, selectedDifficulty)));
+document.getElementById("create-room").addEventListener("click", () => {
+  const lvl = document.getElementById("online-level");
+  const levelId = lvl && lvl.value ? lvl.value : undefined;
+  connectThen(() => Net.create(selectedPlayers, selectedDifficulty, levelId));
+});
 document.getElementById("join-room").addEventListener("click", () => {
   const code = document.getElementById("join-code").value.trim().toUpperCase();
   if (code.length < 4) { onlineError.textContent = "digite o código (4 letras)"; return; }
@@ -870,8 +951,9 @@ if (location.search.includes("debug")) {
     startHeadless({ players = 1, seed = null } = {}) {
       if (seed != null) pendingSeed = seed;
       selectedDifficulty = players; selectedPlayers = 1;
+      currentMode = "quick"; currentLevelIndex = -1;
       sound.setMuted(true);
-      game = createGame(1, players);
+      game = createGame(1, { difficulty: players });
       gameState = "playing";
       running = false;
       startScreen.classList.add("hidden"); pauseScreen.classList.add("hidden"); resultScreen.classList.add("hidden");
@@ -880,8 +962,9 @@ if (location.search.includes("debug")) {
     startHeadlessCoop({ count = 2, difficulty = 1, seed = null } = {}) {
       if (seed != null) pendingSeed = seed;
       selectedPlayers = count; selectedDifficulty = difficulty;
+      currentMode = "quick"; currentLevelIndex = -1;
       sound.setMuted(true);
-      game = createGame(count, difficulty);
+      game = createGame(count, { difficulty });
       for (const p of game.players) p.device = { type: "bot" };
       game._botIntents = [];
       gameState = "playing";
@@ -898,5 +981,9 @@ if (location.search.includes("debug")) {
 }
 
 loadAssets()
-  .then(() => { startBtn.disabled = false; startBtn.textContent = "Começar"; })
+  .then(() => {
+    startBtn.disabled = false; startBtn.textContent = "Jogo rápido";
+    const cb = document.getElementById("campaign-btn");
+    if (cb && LEVELS.length) { cb.disabled = false; cb.textContent = "🗺️ Campanha"; }
+  })
   .catch((err) => { console.error(err); startBtn.textContent = "Erro ao carregar assets"; });

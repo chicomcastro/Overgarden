@@ -128,6 +128,34 @@ canvas#game {
   color: #fff;
 }
 .online-error { color: #ff8a7a; min-height: 18px; font-weight: bold; }
+.online-label { color: #d9e8c8; font-size: 15px; display: block; margin: 4px 0; }
+.online-label select { font-size: 15px; padding: 5px 8px; border-radius: 6px; border: 2px solid #5b7a45; background: #2a3a1f; color: #fff; }
+
+#level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: min(560px, 86vw);
+  margin: 6px 0 14px;
+}
+.level-card {
+  background: rgba(0, 0, 0, 0.28);
+  border: 2px solid #5b7a45;
+  border-radius: 10px;
+  padding: 12px 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.08s, border-color 0.12s;
+}
+.level-card:hover { transform: translateY(-2px); border-color: #8fd16a; }
+.level-card .lv-name { font-weight: bold; font-size: 16px; color: #f4ecd6; }
+.level-card .lv-stars { font-size: 18px; letter-spacing: 2px; margin-top: 4px; }
+.level-card .lv-stars .on { color: #f7d774; }
+.level-card .lv-stars .off { color: #4a5640; }
+.level-card .lv-meta { font-size: 11px; color: #9bb583; margin-top: 4px; }
+.level-card.locked { cursor: not-allowed; opacity: 0.5; border-color: #444; }
+.level-card.locked:hover { transform: none; border-color: #444; }
+.level-card.locked .lv-stars { filter: grayscale(1); }
 .diff-btn:hover, .count-btn:hover { background: #4d6a3c; }
 .diff-btn.selected, .count-btn.selected {
   background: #f7d774;

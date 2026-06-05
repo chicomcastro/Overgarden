@@ -47,7 +47,7 @@ export const Net = {
     });
   },
   _send(m) { if (this.ws && this.ws.readyState === 1) this.ws.send(JSON.stringify(m)); },
-  create(count, difficulty) { this._send({ t: "create", count, difficulty }); },
+  create(count, difficulty, levelId) { this._send({ t: "create", count, difficulty, levelId }); },
   join(room) { this._send({ t: "join", room: (room || "").toUpperCase() }); },
   setup(count, difficulty) { this._send({ t: "setup", count, difficulty }); },
   start() { this._send({ t: "start" }); },
@@ -61,7 +61,7 @@ export const Net = {
       this.phase = "lobby"; this.error = null;
       if (this.on.joined) this.on.joined(m);
     } else if (m.t === "lobby") {
-      this.count = m.count; this.difficulty = m.difficulty; this.slots = m.slots;
+      this.count = m.count; this.difficulty = m.difficulty; this.slots = m.slots; this.levelName = m.level;
       if (!m.started) this.phase = "lobby";
       if (this.on.lobby) this.on.lobby(m);
     } else if (m.t === "snapshot") {
@@ -95,9 +95,10 @@ export const Net = {
     const pp = prev && prev.players, qp = prev && prev.plots, qo = prev && prev.orders;
     return {
       time: s.time, score: s.score, combo: s.combo, playerCount: s.playerCount,
-      over: s.over, result: s.result,
+      over: s.over, result: s.result, levelName: s.levelName,
+      plantPool: s.plantPool ? s.plantPool.map(plant).filter(Boolean) : null,
       particles: [], floaters: [], shake: 0, anyMoving: false,
-      stations: stations(),
+      stations: s.stations || stations(),
       players: s.players.map((p, i) => {
         const q = pp && pp[i];
         return { ...p, x: q ? lerp(q.x, p.x, alpha) : p.x, y: q ? lerp(q.y, p.y, alpha) : p.y, anim: q ? lerp(q.anim, p.anim, alpha) : p.anim, heldSeed: plant(p.heldSeed), heldPlant: plant(p.heldPlant) };
