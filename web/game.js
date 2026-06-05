@@ -9,6 +9,7 @@
  */
 import * as Sim from "./sim.js";
 import { Net } from "./net.js";
+import { Telemetry } from "./telemetry.js";
 
 const { HOLD, STAGE, WORLD, TUNE, ROUND, ORDER, COOP } = Sim;
 
@@ -213,6 +214,17 @@ let footActive = false;
 let LEVELS = [];
 let currentMode = "quick"; // quick | campaign | online
 let currentLevelIndex = -1;
+let humanSession = false;  // true only for real play (gates telemetry off in headless)
+
+function trackRoundStart() {
+  if (!humanSession || !game) return;
+  Telemetry.track("round_start", { mode: currentMode, level: game.levelId, levelName: game.levelName, players: game.playerCount, difficulty: game.difficulty });
+}
+function trackRoundEnd() {
+  if (!humanSession || !game || !game.result) return;
+  const r = game.result;
+  Telemetry.track("round_end", { mode: currentMode, level: game.levelId || game.levelName, levelName: game.levelName, players: game.playerCount, score: r.score, stars: r.stars, delivered: r.delivered, expired: r.expired });
+}
 
 function createGame(playerCount, { difficulty = 1, level = null } = {}) {
   const s = Sim.createState({ playerCount, difficulty, seed: pendingSeed, level });
@@ -256,6 +268,7 @@ function finishRound() {
   for (const k in ASSETS.audio) ASSETS.audio[k].pause();
   showTouchControls(false);
   const r = game.result;
+  trackRoundEnd();
   if (currentMode === "campaign" && currentLevelIndex >= 0) saveStars(LEVELS[currentLevelIndex].id, r.stars);
   document.getElementById("result-stars").innerHTML =
     [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
@@ -695,6 +708,38 @@ function openCampaign() {
 document.getElementById("campaign-btn").addEventListener("click", openCampaign);
 document.getElementById("campaign-back").addEventListener("click", () => { campaignScreen.classList.add("hidden"); startScreen.classList.remove("hidden"); });
 
+// ---- Local stats (playtest) ----
+const statsScreen = document.getElementById("stats-screen");
+function buildStats() {
+  const sum = Telemetry.summary();
+  document.getElementById("stats-overall").textContent =
+    sum.totalPlays ? `${sum.totalPlays} partidas · ${sum.wins} com ★ (${Math.round(100 * sum.wins / sum.totalPlays)}%)` : "";
+  const grid = document.getElementById("stats-grid");
+  grid.innerHTML = "";
+  const ids = Object.keys(sum.byLevel);
+  if (ids.length) {
+    const head = document.createElement("div");
+    head.className = "stat-row head";
+    head.innerHTML = `<span class="sr-name">fase</span><span>partidas</span><span>melhor ★</span><span>melhor / média</span>`;
+    grid.appendChild(head);
+  }
+  // Order by campaign order when known.
+  ids.sort((a, b) => LEVELS.findIndex((l) => l.id === a) - LEVELS.findIndex((l) => l.id === b));
+  for (const id of ids) {
+    const L = sum.byLevel[id];
+    const row = document.createElement("div");
+    row.className = "stat-row";
+    row.innerHTML = `<span class="sr-name">${L.name}</span><span>${L.plays}</span>` +
+      `<span class="sr-stars">${"★".repeat(L.bestStars)}${"☆".repeat(3 - L.bestStars)}</span>` +
+      `<span>${L.bestScore} / ${L.avgScore}</span>`;
+    grid.appendChild(row);
+  }
+}
+function openStats() { startScreen.classList.add("hidden"); buildStats(); statsScreen.classList.remove("hidden"); }
+document.getElementById("stats-btn").addEventListener("click", openStats);
+document.getElementById("stats-back").addEventListener("click", () => { statsScreen.classList.add("hidden"); startScreen.classList.remove("hidden"); });
+document.getElementById("stats-clear").addEventListener("click", () => { Telemetry.clear(); buildStats(); });
+
 const touchControls = document.getElementById("touch-controls");
 function bindTouch() {
   if (!touchControls) return;
@@ -748,6 +793,8 @@ function launch(g) {
   game = g;
   gameState = "playing";
   online = false;
+  humanSession = true;
+  trackRoundStart();
   startScreen.classList.add("hidden");
   pauseScreen.classList.add("hidden");
   resultScreen.classList.add("hidden");
@@ -831,6 +878,7 @@ function onlineLoop() {
 function showOnlineResult() {
   const r = (game && game.result) || Net.result;
   if (!r) return;
+  trackRoundEnd();
   document.getElementById("result-stars").innerHTML = [0, 1, 2].map((i) => `<span class="${i < r.stars ? "on" : "off"}">★</span>`).join("");
   document.getElementById("result-score").textContent = "Score: " + r.score;
   document.getElementById("result-stats").textContent = `Pedidos entregues: ${r.delivered} · perdidos: ${r.expired}`;
@@ -847,6 +895,8 @@ function onSnapshot(s) {
 
 function beginOnline() {
   online = true; _onlineEnded = false; running = false; // stop any offline rAF
+  humanSession = true; currentMode = "online"; currentLevelIndex = -1;
+  if (Net.lastSnapshot) Telemetry.track("round_start", { mode: "online", levelName: Net.lastSnapshot.levelName, players: Net.lastSnapshot.playerCount });
   startScreen.classList.add("hidden"); pauseScreen.classList.add("hidden"); resultScreen.classList.add("hidden");
   const os = document.getElementById("online-screen"); if (os) os.classList.add("hidden");
   if (actx && actx.state === "suspended") actx.resume().catch(() => {});
@@ -950,6 +1000,8 @@ document.getElementById("lobby-leave").addEventListener("click", () => { closeOn
 ctx.fillStyle = "#6ab04c";
 ctx.fillRect(0, 0, WORLD.w, WORLD.h);
 
+Telemetry.init({ endpoint: new URLSearchParams(location.search).get("telemetry") });
+
 if (location.search.includes("debug")) {
   const params = new URLSearchParams(location.search);
   if (params.has("seed")) { pendingSeed = parseInt(params.get("seed"), 10); Sim.seedRng(pendingSeed); }
@@ -974,6 +1026,7 @@ if (location.search.includes("debug")) {
       const level = levelId ? LEVELS.find((l) => l.id === levelId) : null;
       selectedDifficulty = players; selectedPlayers = 1;
       currentMode = level ? "campaign" : "quick"; currentLevelIndex = level ? LEVELS.indexOf(level) : -1;
+      humanSession = false; // headless: no telemetry
       sound.setMuted(true);
       game = createGame(1, level ? { level } : { difficulty: players });
       gameState = "playing";
@@ -985,6 +1038,7 @@ if (location.search.includes("debug")) {
       if (seed != null) pendingSeed = seed;
       selectedPlayers = count; selectedDifficulty = difficulty;
       currentMode = "quick"; currentLevelIndex = -1;
+      humanSession = false; // headless: no telemetry
       sound.setMuted(true);
       game = createGame(count, { difficulty });
       for (const p of game.players) p.device = { type: "bot" };

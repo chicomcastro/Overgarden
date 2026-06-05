@@ -35,6 +35,7 @@
       <button id="campaign-btn" class="big-btn" disabled>🗺️ Campanha</button>
       <button id="start-btn" class="big-btn secondary" disabled>Jogo rápido</button>
       <button id="online-btn" class="big-btn secondary">🌐 Jogar online</button>
+      <button id="stats-btn" class="big-btn secondary">📊 Estatísticas</button>
       <div class="controls">
         <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
         <br />
@@ -72,6 +73,15 @@
       <p class="desc">Ganhe ★ pra desbloquear as próximas fases. Jogue sozinho ou com até 4 no mesmo teclado/controle (escolha no menu).</p>
       <div id="level-grid"></div>
       <button id="campaign-back" class="big-btn secondary">Voltar</button>
+    </div>
+
+    <!-- Local stats (playtest) -->
+    <div id="stats-screen" class="overlay hidden">
+      <h1>Estatísticas</h1>
+      <p id="stats-overall" class="desc"></p>
+      <div id="stats-grid"></div>
+      <button id="stats-clear" class="big-btn secondary">Limpar dados</button>
+      <button id="stats-back" class="big-btn secondary">Voltar</button>
     </div>
 
     <!-- Online lobby -->
