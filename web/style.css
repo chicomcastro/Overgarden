@@ -66,10 +66,9 @@ canvas#game {
 }
 
 #logo {
-  width: clamp(150px, 42%, 340px);
+  width: clamp(260px, 72%, 460px);
   height: auto;
   image-rendering: auto;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
 
 .tagline { font-size: clamp(14px, 3.4vw, 18px); color: #b7d49a; font-style: italic; }
@@ -363,7 +362,7 @@ button { -webkit-tap-highlight-color: transparent; }
              calc(env(safe-area-inset-bottom) + 16px) max(16px, env(safe-area-inset-left));
   }
   .overlay h1 { font-size: clamp(30px, 9vw, 44px); }
-  #logo { width: clamp(110px, 30vw, 190px); margin-top: 2px; }
+  #logo { width: min(80vw, 360px); margin-top: 2px; }
   .tagline { margin-top: -4px; }
 
   /* One consistent, thumb-sized CTA width down the screen. */
