@@ -60,7 +60,7 @@ canvas#game {
 
 .overlay h1 {
   font-size: clamp(34px, 7vw, 54px);
-  letter-spacing: 6px;
+  letter-spacing: 2px;
   color: #f7d774;
   text-shadow: 0 3px 0 #7a5b18;
 }
@@ -91,6 +91,7 @@ canvas#game {
 }
 
 .choices span { font-weight: bold; margin-right: 4px; min-width: 92px; text-align: right; }
+.seg { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
 .diff-btn, .count-btn {
   background: #3c5230;
@@ -216,7 +217,10 @@ canvas#game {
 }
 
 .big-btn:hover { background: #ffe48a; transform: translateY(-2px); }
+.big-btn:active { transform: translateY(1px) scale(0.99); }
 .big-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+button { -webkit-tap-highlight-color: transparent; }
+.diff-btn:active, .count-btn:active, .ocount-btn:active, .copy-btn:active, .shop-card .sc-buy:active { transform: translateY(1px); }
 .big-btn.secondary {
   background: #3c5230;
   color: #e7e0cd;
@@ -233,13 +237,14 @@ canvas#game {
   line-height: 1.6;
 }
 
-.mobile-hint { color: #f7d774; }
+.kbd-hints { line-height: 1.6; }
+.mobile-hint { display: none; color: #f7d774; }
+.audio-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: center; margin-top: 10px; }
 
 .mute-toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
   cursor: pointer;
 }
 
@@ -336,9 +341,60 @@ canvas#game {
 @media (pointer: coarse) {
   #touch-controls.active { display: flex; }
   .footnote { display: none; }
+  /* Keyboard/gamepad hints are noise on touch; show the on-screen hint instead. */
+  .kbd-hints { display: none; }
+  .mobile-hint { display: block; }
 }
 
 /* Hide footnote on short screens to maximise play area. */
 @media (max-height: 520px) {
   .footnote { display: none; }
+}
+
+/* ------------------------------------------------ Mobile-first / native feel.
+   Phone-width menus: anchor to the top (no big vertical gaps), respect the
+   notch/home-indicator safe areas, full-width stacked CTAs, and segmented
+   pickers instead of a web-form row. */
+@media (max-width: 560px) {
+  .overlay {
+    justify-content: flex-start;
+    gap: 12px;
+    padding: calc(env(safe-area-inset-top) + 22px) max(16px, env(safe-area-inset-right))
+             calc(env(safe-area-inset-bottom) + 16px) max(16px, env(safe-area-inset-left));
+  }
+  .overlay h1 { font-size: clamp(30px, 9vw, 44px); }
+  #logo { width: clamp(110px, 30vw, 190px); margin-top: 2px; }
+  .tagline { margin-top: -4px; }
+
+  /* One consistent, thumb-sized CTA width down the screen. */
+  .big-btn, .big-btn.secondary {
+    width: 100%;
+    max-width: 380px;
+    padding: 15px 20px;
+    font-size: 17px;
+  }
+
+  /* Player/difficulty as a full-width segmented control with the label above. */
+  .choices {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 380px;
+    gap: 6px;
+    margin: 0;
+  }
+  .choices span {
+    min-width: 0;
+    text-align: left;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #9bb583;
+  }
+  .seg { flex-wrap: nowrap; width: 100%; gap: 6px; }
+  .seg > button { flex: 1; min-width: 0; padding: 12px 4px; }
+
+  .controls { width: 100%; max-width: 380px; margin-top: 4px; }
+  #level-grid, #shop-grid, #stats-grid { width: 100%; max-width: 420px; }
+  #level-grid { grid-template-columns: repeat(2, 1fr); }
 }
