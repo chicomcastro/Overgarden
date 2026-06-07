@@ -9,7 +9,7 @@
   "background_color": "#1a2417",
   "theme_color": "#1a2417",
   "icons": [
-    { "src": "assets/img/ui_logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "assets/img/ui_logo.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "assets/img/app_icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/app_icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
