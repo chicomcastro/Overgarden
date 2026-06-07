@@ -1,0 +1,15 @@
+{
+  "name": "Overgarden",
+  "short_name": "Overgarden",
+  "description": "Cuide da sua fazenda num loop frenético: plante, regue, colha e entregue.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1a2417",
+  "theme_color": "#1a2417",
+  "icons": [
+    { "src": "assets/img/ui_logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/ui_logo.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

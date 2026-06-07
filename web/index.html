@@ -4,6 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Overgarden — Web</title>
+<meta name="description" content="Overgarden — cuide da sua fazenda num loop frenético: plante, regue, colha e entregue." />
+<meta name="theme-color" content="#1a2417" />
+<!-- Installable / standalone for a native-app feel on mobile -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Overgarden" />
+<link rel="apple-touch-icon" href="assets/img/ui_logo.png" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -20,17 +29,21 @@
       </p>
       <div class="choices">
         <span>Jogadores:</span>
-        <button class="count-btn selected" data-count="1">1</button>
-        <button class="count-btn" data-count="2">2</button>
-        <button class="count-btn" data-count="3">3</button>
-        <button class="count-btn" data-count="4">4</button>
+        <div class="seg">
+          <button class="count-btn selected" data-count="1">1</button>
+          <button class="count-btn" data-count="2">2</button>
+          <button class="count-btn" data-count="3">3</button>
+          <button class="count-btn" data-count="4">4</button>
+        </div>
       </div>
       <div class="choices">
         <span>Dificuldade:</span>
-        <button class="diff-btn selected" data-diff="1">Fácil</button>
-        <button class="diff-btn" data-diff="2">Médio</button>
-        <button class="diff-btn" data-diff="3">Difícil</button>
-        <button class="diff-btn" data-diff="4">Insano</button>
+        <div class="seg">
+          <button class="diff-btn selected" data-diff="1">Fácil</button>
+          <button class="diff-btn" data-diff="2">Médio</button>
+          <button class="diff-btn" data-diff="3">Difícil</button>
+          <button class="diff-btn" data-diff="4">Insano</button>
+        </div>
       </div>
       <button id="campaign-btn" class="big-btn" disabled>🗺️ Campanha</button>
       <button id="start-btn" class="big-btn secondary" disabled>Jogo rápido</button>
@@ -38,16 +51,18 @@
       <button id="shop-btn" class="big-btn secondary">🛒 Loja</button>
       <button id="stats-btn" class="big-btn secondary">📊 Estatísticas</button>
       <div class="controls">
-        <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
-        <br />
-        <strong>P2:</strong> setas · Shift-direito correr · <kbd>/</kbd> interagir · <kbd>.</kbd> largar
-        <br />
-        <strong>P3–P4:</strong> gamepad (stick mover · A interagir · B largar · RB correr)
-        <br />
-        <span class="mobile-hint">No celular (1 jogador): use os botões na tela (gire para paisagem para mais espaço).</span>
-        <br />
-        <label class="mute-toggle"><input type="checkbox" id="mute-box" /> Silenciar áudio</label>
-        <label class="vol-toggle">🔊 <input type="range" id="vol-range" min="0" max="100" value="80" /></label>
+        <div class="kbd-hints">
+          <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
+          <br />
+          <strong>P2:</strong> setas · Shift-direito correr · <kbd>/</kbd> interagir · <kbd>.</kbd> largar
+          <br />
+          <strong>P3–P4:</strong> gamepad (stick mover · A interagir · B largar · RB correr)
+        </div>
+        <span class="mobile-hint">Use os controles na tela. Gire para paisagem para mais espaço.</span>
+        <div class="audio-row">
+          <label class="mute-toggle"><input type="checkbox" id="mute-box" /> Silenciar</label>
+          <label class="vol-toggle">🔊 <input type="range" id="vol-range" min="0" max="100" value="80" /></label>
+        </div>
       </div>
     </div>
 
