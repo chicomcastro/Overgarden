@@ -59,6 +59,52 @@ const wordmark = `
     fill="url(#gold)" stroke="#3f2d12" stroke-width="9" paint-order="stroke" filter="url(#ds)">Overgarden</text>
 </svg>`;
 
+// Hero vignette — a small flat garden scene to fill the menu's top space and
+// give the screen identity (transparent so it sits on the dark menu).
+const hero = `
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="460" viewBox="0 0 760 460">
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7bbf4a"/><stop offset="1" stop-color="#4f8a32"/></linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5d34"/><stop offset="1" stop-color="#6b4a2b"/></linearGradient>
+    <linearGradient id="hleaf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe48a"/><stop offset="1" stop-color="#eebb45"/></linearGradient>
+  </defs>
+  <!-- sun + clouds -->
+  <circle cx="132" cy="112" r="58" fill="#ffe07a"/>
+  <g fill="#dfe9d2" opacity="0.45"><ellipse cx="600" cy="92" rx="72" ry="26"/><ellipse cx="664" cy="104" rx="46" ry="22"/><ellipse cx="548" cy="104" rx="40" ry="20"/></g>
+  <!-- hill + soil -->
+  <path d="M-20 332 Q 380 250 780 332 L 780 480 L -20 480 Z" fill="url(#hill)"/>
+  <ellipse cx="380" cy="374" rx="312" ry="48" fill="url(#soil)"/>
+  <!-- carrot -->
+  <g transform="translate(214,346)">
+    <path d="M-24 8 L24 8 L0 80 Z" fill="#e8893f" stroke="#9c531f" stroke-width="5" stroke-linejoin="round"/>
+    <g fill="#5fa83a" stroke="#3f6b2c" stroke-width="4" stroke-linejoin="round">
+      <path d="M0 10 C-6 -26, -24 -34, -36 -30 C-30 -10, -14 6, 0 10 Z"/>
+      <path d="M0 10 C6 -26, 24 -34, 36 -30 C30 -10, 14 6, 0 10 Z"/>
+      <path d="M0 10 C-3 -30, 0 -44, 0 -44 C3 -30, 3 -14, 0 10 Z"/>
+    </g>
+  </g>
+  <!-- sprout -->
+  <g transform="translate(346,350)">
+    <path d="M0 60 C-4 20, -4 4, 0 -24" stroke="#3f6b2c" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="M0 16 C-40 22, -64 -2, -64 -44 C-18 -44, 4 -16, 0 16 Z" fill="url(#hleaf)" stroke="#3f6b2c" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M0 8 C40 14, 64 -10, 64 -52 C18 -52, -4 -24, 0 8 Z" fill="url(#hleaf)" stroke="#3f6b2c" stroke-width="6" stroke-linejoin="round"/>
+    <circle cx="0" cy="-42" r="13" fill="#ffe48a" stroke="#3f6b2c" stroke-width="6"/>
+  </g>
+  <!-- tomato bush -->
+  <g transform="translate(486,360)">
+    <ellipse cx="0" cy="-22" rx="56" ry="46" fill="#54923a" stroke="#3f6b2c" stroke-width="5"/>
+    <circle cx="-20" cy="-12" r="12" fill="#d8483a" stroke="#9c2f25" stroke-width="3"/>
+    <circle cx="18" cy="-30" r="12" fill="#e0584a" stroke="#9c2f25" stroke-width="3"/>
+    <circle cx="8" cy="6" r="11" fill="#d8483a" stroke="#9c2f25" stroke-width="3"/>
+  </g>
+  <!-- corn -->
+  <g transform="translate(602,352)">
+    <ellipse cx="0" cy="-28" rx="20" ry="50" fill="#f0c44e" stroke="#bd8a26" stroke-width="4"/>
+    <path d="M0 22 C-26 16, -34 -12, -28 -42 C-8 -22, -2 -2, 0 22 Z" fill="#5fa83a" stroke="#3f6b2c" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M0 22 C26 16, 34 -12, 28 -42 C8 -22, 2 -2, 0 22 Z" fill="#5fa83a" stroke="#3f6b2c" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+</svg>`;
+
 const browser = await chromium.launch({ args: ["--no-sandbox"] });
 async function render(svg, w, h, file, transparent) {
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
@@ -70,5 +116,6 @@ async function render(svg, w, h, file, transparent) {
 }
 await render(icon, 512, 512, "app_icon.png", false);
 await render(wordmark, 900, 260, "ui_wordmark.png", true);
+await render(hero, 760, 460, "ui_hero.png", true);
 await browser.close();
 console.log("Pronto.");

@@ -71,6 +71,10 @@ canvas#game {
   image-rendering: auto;
 }
 
+/* Hero vignette only fills the menu's open space on phones (desktop has the
+   blurb + selectors there). */
+#hero-art { display: none; height: auto; }
+
 .tagline { font-size: clamp(14px, 3.4vw, 18px); color: #b7d49a; font-style: italic; }
 
 .desc {
@@ -370,7 +374,7 @@ button { -webkit-tap-highlight-color: transparent; }
              calc(env(safe-area-inset-bottom) + 16px) max(16px, env(safe-area-inset-left));
   }
   .overlay h1 { font-size: clamp(30px, 9vw, 44px); }
-  #logo { width: min(80vw, 360px); margin-top: 2px; }
+  #logo { width: min(88vw, 400px); margin-top: 4px; }
   .tagline { margin-top: -4px; }
 
   /* One consistent, thumb-sized CTA width down the screen. */
@@ -412,8 +416,9 @@ button { -webkit-tap-highlight-color: transparent; }
      - Push the action cluster to the bottom (thumb zone); the primary CTA
        (Campanha) lands lowest via column-reverse. */
   #start-screen .desc, #start-screen .choice-count { display: none; }
-  #start-screen #logo { order: 1; margin-top: auto; }
+  #start-screen #logo { order: 1; margin-top: 6px; }
   #start-screen .tagline { order: 2; }
+  #start-screen #hero-art { display: block; order: 3; width: min(84vw, 400px); margin: 8px auto 0; }
   #start-screen .menu-utils { order: 4; margin-top: auto; }
   #start-screen .choice-diff { order: 5; }
   #start-screen .menu-play { order: 6; flex-direction: column-reverse; align-items: stretch; }
