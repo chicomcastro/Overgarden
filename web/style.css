@@ -228,6 +228,14 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .big-btn.secondary:hover { background: #4d6a3c; }
 
+/* Menu grouping: a primary play stack + an aggregated, lower-emphasis row of
+   utilities (loja/stats) so the screen isn't a wall of equal buttons. */
+.menu-play { display: flex; flex-direction: column; align-items: center; gap: clamp(8px, 2vh, 14px); width: 100%; }
+.menu-utils { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.menu-utils .big-btn { font-size: clamp(13px, 3.2vw, 15px); padding: 9px 18px; }
+/* Online stays in the markup but hidden until the multiplayer server is deployed. */
+.util-online { display: none; }
+
 .controls {
   margin-top: 8px;
   font-size: clamp(11px, 3vw, 14px);
@@ -396,4 +404,19 @@ button { -webkit-tap-highlight-color: transparent; }
   .controls { width: 100%; max-width: 380px; margin-top: 4px; }
   #level-grid, #shop-grid, #stats-grid { width: 100%; max-width: 420px; }
   #level-grid { grid-template-columns: repeat(2, 1fr); }
+  .menu-play, .menu-utils { width: 100%; max-width: 380px; }
+
+  /* Start screen on phones: declutter + thumb-first hierarchy.
+     - Single-player only on a phone → hide the players picker.
+     - Drop the long blurb.
+     - Push the action cluster to the bottom (thumb zone); the primary CTA
+       (Campanha) lands lowest via column-reverse. */
+  #start-screen .desc, #start-screen .choice-count { display: none; }
+  #start-screen #logo { order: 1; margin-top: auto; }
+  #start-screen .tagline { order: 2; }
+  #start-screen .menu-utils { order: 4; margin-top: auto; }
+  #start-screen .choice-diff { order: 5; }
+  #start-screen .menu-play { order: 6; flex-direction: column-reverse; align-items: stretch; }
+  #start-screen .controls { order: 7; }
+  .menu-utils .big-btn { flex: 1; width: auto; max-width: none; }
 }

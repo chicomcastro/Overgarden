@@ -27,7 +27,7 @@
         Você achou uma fazenda no meio do nada. Mantenha-a viva num loop
         infinito: prepare a terra, plante, regue, colha e venda para somar pontos.
       </p>
-      <div class="choices">
+      <div class="choices choice-count">
         <span>Jogadores:</span>
         <div class="seg">
           <button class="count-btn selected" data-count="1">1</button>
@@ -36,7 +36,7 @@
           <button class="count-btn" data-count="4">4</button>
         </div>
       </div>
-      <div class="choices">
+      <div class="choices choice-diff">
         <span>Dificuldade:</span>
         <div class="seg">
           <button class="diff-btn selected" data-diff="1">Fácil</button>
@@ -45,11 +45,16 @@
           <button class="diff-btn" data-diff="4">Insano</button>
         </div>
       </div>
-      <button id="campaign-btn" class="big-btn" disabled>🗺️ Campanha</button>
-      <button id="start-btn" class="big-btn secondary" disabled>Jogo rápido</button>
-      <button id="online-btn" class="big-btn secondary">🌐 Jogar online</button>
-      <button id="shop-btn" class="big-btn secondary">🛒 Loja</button>
-      <button id="stats-btn" class="big-btn secondary">📊 Estatísticas</button>
+      <div class="menu-play">
+        <button id="campaign-btn" class="big-btn" disabled>🗺️ Campanha</button>
+        <button id="start-btn" class="big-btn secondary" disabled>Jogo rápido</button>
+      </div>
+      <div class="menu-utils">
+        <!-- Online fica fora do menu até o servidor ser deployado (.util-online em style.css). -->
+        <button id="online-btn" class="big-btn secondary util-online">🌐 Online</button>
+        <button id="shop-btn" class="big-btn secondary">🛒 Loja</button>
+        <button id="stats-btn" class="big-btn secondary">📊 Estatísticas</button>
+      </div>
       <div class="controls">
         <div class="kbd-hints">
           <strong>P1:</strong> WASD mover · SHIFT correr · E interagir · Q largar · P pausar
