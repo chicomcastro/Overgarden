@@ -402,8 +402,9 @@ function drawBackground() {
   drawFence();
 }
 function drawThemeOverlay() {
-  const ov = theme().overlay; if (!ov) return;
-  ctx.fillStyle = ov; ctx.fillRect(0, 0, WORLD.w, WORLD.h);
+  // Gentle global grade to take the edge off the saturated field (cohesion).
+  ctx.fillStyle = "rgba(60,50,30,0.05)"; ctx.fillRect(0, 0, WORLD.w, WORLD.h);
+  const ov = theme().overlay; if (ov) { ctx.fillStyle = ov; ctx.fillRect(0, 0, WORLD.w, WORLD.h); }
 }
 function drawFence() {
   if (!ASSETS.atlas.tiles.fence) return;
@@ -430,6 +431,9 @@ function drawPlot(plot) {
   const wilting = growing && plot.life <= 0;
   if (plot.plant && plot.stage >= STAGE.SMALL) {
     const baseY = plot.y + size / 2 - 14;
+    // Grounding shadow so the crop sits on the soil (unifies sprite sources).
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    ctx.beginPath(); ctx.ellipse(plot.x, baseY - 2, 16, 5, 0, 0, Math.PI * 2); ctx.fill();
     if (plot.stage === STAGE.DIED) {
       const r = plot.plant.stages[2] || plot.plant.stages[0];
       ctx.globalAlpha = 0.45; drawSpriteAnchored(r.sheet, r, plot.x, baseY, 58); ctx.globalAlpha = 1;
